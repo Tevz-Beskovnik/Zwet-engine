@@ -6,6 +6,15 @@
 *.lo
 *.o
 *.obj
+*.pdb
+*.tlog
+*.lastbuildstate
+*.recipe
+*.log
+*.idb
+*.vcxproj
+*.filters
+*.user
 
 # Precompiled Headers
 *.gch
@@ -30,3 +39,5 @@
 *.exe
 *.out
 *.app
+
+x64/Debug/Project1.vcxproj.FileListAbsolute.txt
