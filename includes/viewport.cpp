@@ -111,6 +111,11 @@ void Viewport::readShader(std::string path, std::string& shader)
     }
 };
 
+int Viewport::screenResolution()
+{
+    
+}
+
 unsigned int Viewport::compileShader(unsigned int type, const std::string& shader)
 {
     unsigned int id = glCreateShader(type);
@@ -146,17 +151,18 @@ unsigned int Viewport::createShader(const std::string vertexDir, const std::stri
 
     std::string vertexShader;
     std::string fragShader;
-
+    std::string geometryShader;
 
     readShader(vertexDir, vertexShader);
     readShader(fragDir, fragShader);
+    readShader(geometryDir, geometryShader);
 
     unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
-    //unsigned int gs = compileShader(GL_GEOMETRY_SHADER, geometryDir);
+    unsigned int gs = compileShader(GL_GEOMETRY_SHADER, geometryShader);
     unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragShader);
 
     glAttachShader(program, vs);
-    //glAttachShader(program, gs);
+    glAttachShader(program, gs);
     glAttachShader(program, fs);
 
     glLinkProgram(program);

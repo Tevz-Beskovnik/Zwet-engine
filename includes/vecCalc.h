@@ -17,5 +17,9 @@ namespace vc
 
 	vecs::vec3 vecSub(vecs::vec3, vecs::vec3);
 
-	vecs::mat4 multiplyMat(vecs::mat4, vecs::mat4);
+	vecs::mat4 rotX(float);
+
+	vecs::mat4 rotY(float);
+	
+	vecs::mat4 rotZ(float);
 };

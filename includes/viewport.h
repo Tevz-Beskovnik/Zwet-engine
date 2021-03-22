@@ -22,6 +22,8 @@ public:
 	Viewport(std::string, std::string, std::string, std::vector<float>&, GLenum);
 
 	unsigned int initRender();
+
+	int screenResolution();
 private:
 
 	void readShader(std::string, std::string&);

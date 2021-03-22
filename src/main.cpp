@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include<math.h>
 #include<cmath>
+#include "../includes/vecCalc.h"
 #include "../includes/viewport.h"
 #include "../includes/kbInput.h"
 
@@ -29,11 +30,11 @@ int main(void)
 
     const float fNear = 0.1f;
 
-    const float fFar = 1000.0f;
+    const float fFar = 100.0f;
 
     const float aspectRatio = resolution[1] / resolution[0];
 
-    window = glfwCreateWindow(int(resolution[0]), int(resolution[1]), "Window", NULL, NULL);
+    window = glfwCreateWindow((int)resolution[0], (int)resolution[1], "Window", NULL, NULL);
 
     if (!window)
     {
@@ -65,20 +66,20 @@ int main(void)
         {{ 0.5f, -0.5f, -0.5f,    0.5f, 0.5f, 0.5f,    0.5f, -0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
 
         // NORTH                                                     
-        {{ 0.5f, -0.5f, 0.5f,    0.5f, 0.5f, 0.5f,    -0.5f, 0.5f, 0.5f }, 0.5f, 0.5f, 0.0f },
-        {{ 0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, 0.5f,    -0.5f, -0.5f, 0.5f }, 0.5f, 0.5f, 0.0f },
+        {{ 0.5f, -0.5f, 0.5f,    0.5f, 0.5f, 0.5f,    -0.5f, 0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
+        {{ 0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, 0.5f,    -0.5f, -0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
 
         // WEST                                                      
-        {{ -0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, 0.5f,    -0.5f, 0.5f, -0.5f }, 1.0f, 1.0f, 0.0f },
-        {{ -0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, -0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 1.0f, 0.0f },
+        {{ -0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, 0.5f,    -0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
+        {{ -0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, -0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
 
         // TOP                                                       
         {{ -0.5f, 0.5f, -0.5f,    -0.5f, 0.5f, 0.5f,    0.5f, 0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
         {{ -0.5f, 0.5f, -0.5f,    0.5f, 0.5f, 0.5f,    0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
 
         // BOTTOM                                                    
-        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.5f },
-        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f,    0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.5f }
+        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
+        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f,    0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f }
 
     };/**/
 
@@ -94,19 +95,20 @@ int main(void)
 
     int time = glGetUniformLocation(program, "uTime");
     int projMat = glGetUniformLocation(program, "uProjMat");
-    int rotation = glGetUniformLocation(program, "uRot");
-
-    vecs::mat4 projMatC = {
-        aspectRatio * fovRad, 0.0f, 0.0f, 0.0f,
-        0.0f, fovRad, 0.0f, 0.0f,
-        0.0f, 0.0f, fFar / (fFar - fNear), 1.0f,
-        0.0f, 0.0f, (-fFar * fNear) / (fFar - fNear), 0.0f
-    };
+    int roationMat = glGetUniformLocation(program, "uRotation");
 
     int timeS = 0;
 
     float xAxis = 0;
     float zAxis = 0;
+
+    vecs::mat4 projMatC = 
+    {
+        aspectRatio * fovRad, 0.0f, 0.0f, 0.0f,
+        0.0f, fovRad, 0.0f, 0.0f,
+        0.0f, 0.0f, fFar / (fFar - fNear), 1.0f,
+        0.0f, 0.0f, (-fFar * fNear) / (fFar - fNear), 0.0f
+    };
 
     glUseProgram(program);
 
@@ -115,9 +117,14 @@ int main(void)
     {
         glUniform1f(time, float(timeS));
 
-        glUniformMatrix4fv(projMat, 1, GL_FALSE, &projMatC.r[0][0]);
+        vecs::mat4 sRotX = vc::rotX(zAxis * 0.3);
+        vecs::mat4 sRotZ = vc::rotY(xAxis * 0.3);
 
-        glUniform2f(rotation, xAxis, zAxis);
+        vecs::mat4 result = sRotX * sRotZ;
+
+        glUniformMatrix4fv(roationMat, 1, GL_FALSE, &result.r[0][0]);
+
+        glUniformMatrix4fv(projMat, 1, GL_FALSE, &projMatC.r[0][0]);
 
         xAxis += (0.2f * kbi::isKeyHeld('A')) + (-0.2f * kbi::isKeyHeld('D'));
         zAxis += (0.2f * kbi::isKeyHeld('W')) + (-0.2f * kbi::isKeyHeld('S'));

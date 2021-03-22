@@ -1,4 +1,6 @@
 #include "vecCalc.h"
+#include<cmath>
+#include<math.h>
 
 float vc::dotPru(vecs::vec3 vec1, vecs::vec3 vec2) 
 {
@@ -36,13 +38,32 @@ vecs::vec3 vc::vecSub(vecs::vec3 vec1, vecs::vec3 vec2)
 	};
 }
 
-vecs::mat4 vc::multiplyMat(vecs::mat4 mat1, vecs::mat4 mat2)
+vecs::mat4 vc::rotX(float x)
 {
-	vecs::mat4 output;
+	return {
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, cosf(x), -sinf(x), 0.0f,
+		0.0f, sinf(x), cosf(x), 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
+}
 
-	for (int i = 0; i < 4; i++)
-		for (int j = 0; j < 4; j++)
-			output.r[j][i] = mat1.r[j][0] * mat2.r[0][i] + mat1.r[j][1] * mat2.r[1][i] + mat1.r[j][2] * mat2.r[2][i] + mat1.r[j][3] * mat2.r[3][i];
+vecs::mat4 vc::rotY(float x)
+{
+	return {
+		cosf(x), 0.0f, sinf(x), 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		-sinf(x), 0.0f, cosf(x), 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
+}
 
-	return output;
+vecs::mat4 vc::rotZ(float x)
+{
+	return {
+		cosf(x), -sinf(x), 0.0f, 0.0f, 
+		sinf(x), cosf(x), 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
 }
