@@ -2,10 +2,10 @@
 
 #include<Windows.h>
 
-#define UP_ARROW 0xE5
-#define DOWN_ARROW 0xE3
-#define LEFT_ARROW 0xE1
-#define RIGHT_ARROW 0xE2
+#define UP_ARROW 72
+#define DOWN_ARROW 80
+#define LEFT_ARROW 75
+#define RIGHT_ARROW 77
 #define SPACE 0x20
 #define KB_A 0x41
 #define KB_a 0x61

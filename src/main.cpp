@@ -22,15 +22,19 @@ int main(void)
 
     /* Create a windowed mode window and its OpenGL context*/
 
-    const float resolution[2] = { 1200.0f, 900.0f };
+    float horiz, vertical;
 
-    const float fov = 70.0f;
+    screenResolution(horiz, vertical);
+
+    const float resolution[2] = { horiz, vertical };
+
+    const float fov = 90.0f;
 
     const float fovRad = cot(fov * 0.5f / 180.0f * (float)PI);
 
     const float fNear = 0.1f;
 
-    const float fFar = 100.0f;
+    const float fFar = 1000.0f;
 
     const float aspectRatio = resolution[1] / resolution[0];
 
@@ -95,14 +99,31 @@ int main(void)
 
     int time = glGetUniformLocation(program, "uTime");
     int projMat = glGetUniformLocation(program, "uProjMat");
-    int roationMat = glGetUniformLocation(program, "uRotation");
+    int uWorld = glGetUniformLocation(program, "uWorld");
+    int uView = glGetUniformLocation(program, "uView");
+    //int uCameraVec = glGetUniformLocation(program, "uCameraVec");
+    //int uTarget = glGetUniformLocation(program, "uTarget");
+    //int uCamera = glGetUniformLocation(program, "uCamera");
 
     int timeS = 0;
 
     float xAxis = 0;
     float zAxis = 0;
 
-    vecs::mat4 projMatC = 
+    //directions
+    //camera yaw
+    float yaw = 0;
+
+    vecs::vec3 vCamera = { 0.0f, 0.0f, 0.0f };
+
+    //look directions
+    vecs::vec3 vLookDir = { 0.0f, 0.0f, 1.0f };
+    vecs::vec3 vLookDirSqued = { 1.0f, 0.0f, 0.0f };
+
+    vecs::vec3 vUp = { 0.0f, 1.0f, 0.0f };
+
+    //projection mat
+    vecs::mat4 mProjMat = 
     {
         aspectRatio * fovRad, 0.0f, 0.0f, 0.0f,
         0.0f, fovRad, 0.0f, 0.0f,
@@ -112,22 +133,42 @@ int main(void)
 
     glUseProgram(program);
 
+    //world matrix (doesn't realy change so no need to make it multiple times :)
+    vecs::mat4 mWorld = myView.createWorldMatrix(1.2f, 1.7f, 1.0f);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+
+        float movementMod = 0.01f;
+        float yawMod = 0.02f;
+
+        vCamera.y += (movementMod * kbi::isKeyHeld(VK_UP)) + (-movementMod * kbi::isKeyHeld(VK_DOWN));
+        yaw += (-yawMod * kbi::isKeyHeld(VK_RIGHT) + yawMod * kbi::isKeyHeld(VK_LEFT));
+
+        //create the initial
+        vecs::vec3 vForward = vLookDir * ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
+        vecs::vec3 vSideways = vLookDirSqued * ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
+
+        vCamera = vCamera + vForward;
+        vCamera = vCamera + vSideways;
+
+        vecs::vec3 vTarget = { 0.0f, 0.0f, 1.0f };
+        vecs::vec3 vTarget2 = { 1.0f, 0.0f, 0.0f };
+
+        vecs::mat4 mCameraRot = vc::rotY(yaw);
+        vLookDir = vc::customVecMultiply(mCameraRot, vTarget);
+        vLookDirSqued = vc::customVecMultiply(mCameraRot, vTarget2);
+        vTarget = vCamera + vLookDir;
+        
+        //create the end view matrix
+        vecs::mat4 mView = myView.createViewMatrix(mProjMat, vCamera, vTarget, vUp);
+
         glUniform1f(time, float(timeS));
 
-        vecs::mat4 sRotX = vc::rotX(zAxis * 0.3);
-        vecs::mat4 sRotZ = vc::rotY(xAxis * 0.3);
+        glUniformMatrix4fv(uWorld, 1, GL_FALSE, &mWorld.r[0][0]);
 
-        vecs::mat4 result = sRotX * sRotZ;
-
-        glUniformMatrix4fv(roationMat, 1, GL_FALSE, &result.r[0][0]);
-
-        glUniformMatrix4fv(projMat, 1, GL_FALSE, &projMatC.r[0][0]);
-
-        xAxis += (0.2f * kbi::isKeyHeld('A')) + (-0.2f * kbi::isKeyHeld('D'));
-        zAxis += (0.2f * kbi::isKeyHeld('W')) + (-0.2f * kbi::isKeyHeld('S'));
+        glUniformMatrix4fv(projMat, 1, GL_FALSE, &mView.r[0][0]);
 
         timeS++;
 

@@ -1,4 +1,5 @@
 #include<Windows.h>
+#include<conio.h>
 #include"kbInput.h"
 
 bool kbi::isKeyHeld(int key) 

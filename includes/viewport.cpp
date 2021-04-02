@@ -2,6 +2,7 @@
 #include<GLFW/glfw3.h>
 #include<fstream>
 #include<vector>
+#include<wtypes.h>
 #include "viewport.h"
 #include "vecCalc.h"
 #include "vecs.h"
@@ -97,6 +98,37 @@ unsigned int Viewport::initRender()
     return shader;
 }
 
+vecs::mat4 Viewport::createWorldMatrix(float xRot, float zRot, float time)
+{
+    vecs::mat4 mRotX, mRotZ, mTranslation;
+    mRotX = vc::rotX(xRot * time);
+    mRotZ = vc::rotZ(zRot * time);
+    mTranslation = vc::translationMat(0.0f, 0.0f, 4.0f);
+
+    return mRotX * mRotZ * mTranslation;
+}
+
+vecs::mat4 Viewport::createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up)
+{
+    vecs::mat4 mView = vc::quickInverse(pointAtMatrix(pos, target, up));
+    return mView * mProjMat;
+}
+
+vecs::mat4 Viewport::pointAtMatrix(vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up)
+{
+    vecs::vec3 newForward = vc::normalize(target - pos);
+    vecs::vec3 a = newForward * vc::dotPru(up, newForward);
+    vecs::vec3 newUp = vc::normalize(up - a);
+    vecs::vec3 newRight = vc::crossPru(newUp, newForward);
+
+    vecs::mat4 matrix;
+    matrix.r[0][0] = newRight.x;	matrix.r[0][1] = newRight.y;	matrix.r[0][2] = newRight.z;	matrix.r[0][3] = 0.0f;
+    matrix.r[1][0] = newUp.x;		matrix.r[1][1] = newUp.y;		matrix.r[1][2] = newUp.z;		matrix.r[1][3] = 0.0f;
+    matrix.r[2][0] = newForward.x;	matrix.r[2][1] = newForward.y;	matrix.r[2][2] = newForward.z;	matrix.r[2][3] = 0.0f;
+    matrix.r[3][0] = pos.x;			matrix.r[3][1] = pos.y;			matrix.r[3][2] = pos.z;			matrix.r[3][3] = 1.0f;
+    return matrix;
+}
+
 void Viewport::readShader(std::string path, std::string& shader)
 {
     std::string line;
@@ -111,9 +143,16 @@ void Viewport::readShader(std::string path, std::string& shader)
     }
 };
 
-int Viewport::screenResolution()
+void screenResolution(float& horizontal, float& vertical)
 {
-    
+    RECT desktop;
+
+    const HWND hDesktop = GetDesktopWindow();
+
+    GetWindowRect(hDesktop, &desktop);
+
+    horizontal = desktop.right;
+    vertical = desktop.bottom;
 }
 
 unsigned int Viewport::compileShader(unsigned int type, const std::string& shader)
