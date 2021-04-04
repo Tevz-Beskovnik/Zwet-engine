@@ -38,6 +38,11 @@ int main(void)
 
     const float aspectRatio = resolution[1] / resolution[0];
 
+    /*movement mods for by how much it should increase the movement speed*/
+    const float movementMod = 0.03f;
+
+    const float yawMod = 0.02f;
+
     window = glfwCreateWindow((int)resolution[0], (int)resolution[1], "Window", NULL, NULL);
 
     if (!window)
@@ -62,28 +67,28 @@ int main(void)
     trig.tris = {
 
         // SOUTH
-        {{ -0.5f, -0.5f, -0.5f,    -0.5f, 0.5f, -0.5f,    0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
-        {{ -0.5f, -0.5f, -0.5f,    0.5f, 0.5f, -0.5f,    0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
+        {{ -0.5f, -0.5f, -0.5f,    -0.5f, 0.5f, -0.5f,    0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, 0.0f, -1.0f },
+        {{ -0.5f, -0.5f, -0.5f,    0.5f, 0.5f, -0.5f,    0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, 0.0f, -1.0f },
         
         // EAST                                                      
-        {{ 0.5f, -0.5f, -0.5f,    0.5f, 0.5f, -0.5f,    0.5f, 0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
-        {{ 0.5f, -0.5f, -0.5f,    0.5f, 0.5f, 0.5f,    0.5f, -0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
+        {{ 0.5f, -0.5f, -0.5f,    0.5f, 0.5f, -0.5f,    0.5f, 0.5f, 0.5f }, 1.0f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f },
+        {{ 0.5f, -0.5f, -0.5f,    0.5f, 0.5f, 0.5f,    0.5f, -0.5f, 0.5f }, 1.0f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f },
 
         // NORTH                                                     
-        {{ 0.5f, -0.5f, 0.5f,    0.5f, 0.5f, 0.5f,    -0.5f, 0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
-        {{ 0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, 0.5f,    -0.5f, -0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
+        {{ 0.5f, -0.5f, 0.5f,    0.5f, 0.5f, 0.5f,    -0.5f, 0.5f, 0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f },
+        {{ 0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, 0.5f,    -0.5f, -0.5f, 0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f },
 
         // WEST                                                      
-        {{ -0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, 0.5f,    -0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
-        {{ -0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, -0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
+        {{ -0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, 0.5f,    -0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f },
+        {{ -0.5f, -0.5f, 0.5f,    -0.5f, 0.5f, -0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f },
 
         // TOP                                                       
-        {{ -0.5f, 0.5f, -0.5f,    -0.5f, 0.5f, 0.5f,    0.5f, 0.5f, 0.5f }, 1.0f, 0.5f, 0.0f },
-        {{ -0.5f, 0.5f, -0.5f,    0.5f, 0.5f, 0.5f,    0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
+        {{ -0.5f, 0.5f, -0.5f,    -0.5f, 0.5f, 0.5f,    0.5f, 0.5f, 0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f },
+        {{ -0.5f, 0.5f, -0.5f,    0.5f, 0.5f, 0.5f,    0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f },
 
         // BOTTOM                                                    
-        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f },
-        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f,    0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f }
+        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f },
+        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f,    0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f }
 
     };/**/
 
@@ -100,10 +105,8 @@ int main(void)
     int time = glGetUniformLocation(program, "uTime");
     int projMat = glGetUniformLocation(program, "uProjMat");
     int uWorld = glGetUniformLocation(program, "uWorld");
-    int uView = glGetUniformLocation(program, "uView");
-    //int uCameraVec = glGetUniformLocation(program, "uCameraVec");
-    //int uTarget = glGetUniformLocation(program, "uTarget");
-    //int uCamera = glGetUniformLocation(program, "uCamera");
+    int uWorldInvTran = glGetUniformLocation(program, "uWorldInvTran");
+    int uCameraPos = glGetUniformLocation(program, "uCameraPos");
 
     int timeS = 0;
 
@@ -113,6 +116,7 @@ int main(void)
     //directions
     //camera yaw
     float yaw = 0;
+    float pitch = 0;
 
     vecs::vec3 vCamera = { 0.0f, 0.0f, 0.0f };
 
@@ -131,22 +135,20 @@ int main(void)
         0.0f, 0.0f, (-fFar * fNear) / (fFar - fNear), 0.0f
     };
 
-    glUseProgram(program);
-
     //world matrix (doesn't realy change so no need to make it multiple times :)
     vecs::mat4 mWorld = myView.createWorldMatrix(1.2f, 1.7f, 1.0f);
+
+    glUseProgram(program);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-
-        float movementMod = 0.01f;
-        float yawMod = 0.02f;
-
-        vCamera.y += (movementMod * kbi::isKeyHeld(VK_UP)) + (-movementMod * kbi::isKeyHeld(VK_DOWN));
+        //camera controls for yaw and pitch
+        pitch += (-yawMod * kbi::isKeyHeld(VK_DOWN) + yawMod * kbi::isKeyHeld(VK_UP));
         yaw += (-yawMod * kbi::isKeyHeld(VK_RIGHT) + yawMod * kbi::isKeyHeld(VK_LEFT));
 
-        //create the initial
+        //camera controls for movement
+        vCamera.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
         vecs::vec3 vForward = vLookDir * ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
         vecs::vec3 vSideways = vLookDirSqued * ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
 
@@ -162,13 +164,20 @@ int main(void)
         vTarget = vCamera + vLookDir;
         
         //create the end view matrix
-        vecs::mat4 mView = myView.createViewMatrix(mProjMat, vCamera, vTarget, vUp);
+        vecs::mat4 mView = myView.createViewMatrix(mProjMat, vCamera, vTarget, vUp, pitch);
+
+        //create transposed inverted matrix
+        vecs::mat4 mWorldInvTrans = vc::transposeMat(vc::quickInverse(mWorld));
 
         glUniform1f(time, float(timeS));
 
         glUniformMatrix4fv(uWorld, 1, GL_FALSE, &mWorld.r[0][0]);
 
         glUniformMatrix4fv(projMat, 1, GL_FALSE, &mView.r[0][0]);
+
+        glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &mWorldInvTrans.r[0][0]);
+
+        glUniform3f(uCameraPos, vCamera.x, vCamera.y, vCamera.z);
 
         timeS++;
 

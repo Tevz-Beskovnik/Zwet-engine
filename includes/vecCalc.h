@@ -36,4 +36,6 @@ namespace vc
 	vecs::vec3 customVecMultiply(vecs::mat4, vecs::vec3);
 
 	vecs::mat4 matrixPointAt(vecs::vec3&, vecs::vec3&, vecs::vec3&);
+
+	vecs::mat4 transposeMat(vecs::mat4);
 };

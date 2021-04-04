@@ -29,7 +29,7 @@ public:
 
 	vecs::mat4 createWorldMatrix(float, float, float);
 
-	vecs::mat4 createViewMatrix(vecs::mat4, vecs::vec3&, vecs::vec3&, vecs::vec3&);
+	vecs::mat4 createViewMatrix(vecs::mat4, vecs::vec3&, vecs::vec3&, vecs::vec3&, float);
 
 	unsigned int initRender();
 private:

@@ -30,6 +30,9 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
         oMesh.push_back(tri.color.g);
         oMesh.push_back(tri.color.b);
         //add the normal
+        oMesh.push_back(tri.normal.x);
+        oMesh.push_back(tri.normal.y);
+        oMesh.push_back(tri.normal.z);
 
         //second vec3
         oMesh.push_back(tri.p[1].x);
@@ -40,6 +43,9 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
         oMesh.push_back(tri.color.g);
         oMesh.push_back(tri.color.b);
         //add the normal
+        oMesh.push_back(tri.normal.x);
+        oMesh.push_back(tri.normal.y);
+        oMesh.push_back(tri.normal.z);
 
         //third vec3
         oMesh.push_back(tri.p[2].x);
@@ -50,6 +56,9 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
         oMesh.push_back(tri.color.g);
         oMesh.push_back(tri.color.b);
         //add the normal
+        oMesh.push_back(tri.normal.x);
+        oMesh.push_back(tri.normal.y);
+        oMesh.push_back(tri.normal.z);
     }
 };
 
@@ -71,16 +80,18 @@ unsigned int Viewport::initRender()
 
     unsigned int coords = glGetAttribLocation(shader, "position");
     unsigned int color = glGetAttribLocation(shader, "iColor");
+    unsigned int normal = glGetAttribLocation(shader, "iNormal");
 
     glEnableVertexAttribArray(0);    
     glEnableVertexAttribArray(color);
+    glEnableVertexAttribArray(normal);
 
     glVertexAttribPointer(
         coords,
         3,
         GL_FLOAT,
         GL_FALSE,
-        6 * sizeof(float),
+        9 * sizeof(float),
         0
     );
 
@@ -91,8 +102,19 @@ unsigned int Viewport::initRender()
         3,
         GL_FLOAT,
         GL_FALSE,
-        6 * sizeof(float),
+        9 * sizeof(float),
         (void*)offsetColor
+    );
+
+    ptrdiff_t offsetNormal = 6 * sizeof(float);
+
+    glVertexAttribPointer(
+        normal,
+        3,
+        GL_FLOAT,
+        GL_FALSE,
+        9 * sizeof(float),
+        (void*)offsetNormal
     );
 
     return shader;
@@ -108,9 +130,10 @@ vecs::mat4 Viewport::createWorldMatrix(float xRot, float zRot, float time)
     return mRotX * mRotZ * mTranslation;
 }
 
-vecs::mat4 Viewport::createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up)
+vecs::mat4 Viewport::createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up, float pitch)
 {
-    vecs::mat4 mView = vc::quickInverse(pointAtMatrix(pos, target, up));
+    vecs::mat4 mCameraRotX = vc::rotX(pitch);
+    vecs::mat4 mView = vc::quickInverse(mCameraRotX * pointAtMatrix(pos, target, up));
     return mView * mProjMat;
 }
 

@@ -106,7 +106,8 @@ vecs::mat4 vc::translationMat(float x, float y, float z)
 	};
 }
 
-vecs::mat4 vc::quickInverse(vecs::mat4 mat) {
+vecs::mat4 vc::quickInverse(vecs::mat4 mat)
+{
 	vecs::mat4 ret;
 	ret.r[0][0] = mat.r[0][0]; ret.r[0][1] = mat.r[1][0]; ret.r[0][2] = mat.r[2][0]; ret.r[0][3] = 0.0f;
 	ret.r[1][0] = mat.r[0][1]; ret.r[1][1] = mat.r[1][1]; ret.r[1][2] = mat.r[2][1]; ret.r[1][3] = 0.0f;
@@ -118,7 +119,8 @@ vecs::mat4 vc::quickInverse(vecs::mat4 mat) {
 	return ret;
 }
 
-vecs::vec3 vc::customVecMultiply(vecs::mat4 mat, vecs::vec3 vec) {
+vecs::vec3 vc::customVecMultiply(vecs::mat4 mat, vecs::vec3 vec)
+{
 	// Give a simple variable name to each part of the mat, a column and row number
 	float c0r0 = mat.r[0][0], c1r0 = mat.r[0][1], c2r0 = mat.r[0][2], c3r0 = mat.r[0][3];
 	float c0r1 = mat.r[1][0], c1r1 = mat.r[1][1], c2r1 = mat.r[1][2], c3r1 = mat.r[1][3];
@@ -173,4 +175,14 @@ vecs::mat4 vc::matrixPointAt(vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up
 	matrix.r[3][0] = pos.x;			matrix.r[3][1] = pos.y;			matrix.r[3][2] = pos.z;			matrix.r[3][3] = 1.0f;
 	return matrix;
 
+}
+
+vecs::mat4 vc::transposeMat(vecs::mat4 m)
+{
+	vecs::mat4 outMat;
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+			outMat.r[i][j] = m.r[j][i];
+
+	return outMat;
 }

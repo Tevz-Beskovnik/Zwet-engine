@@ -80,6 +80,7 @@ namespace vecs
 	struct triangle {
 		vec3 p[3];
 		rgb color;
+		vec3 normal;
 	};
 
 	struct mesh {

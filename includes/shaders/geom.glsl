@@ -4,33 +4,38 @@ layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 in vec3 oColor[];
+in vec3 oFragPos[];
+in vec3 oNormal[];
 
 out vec3 iColor;
+out vec3 iFragPos;
+out vec3 iNormal;
 out float iDp;
 
 uniform mat4 uProjMat;
-//uniform mat4 uView;
 
 void main()
 {
-	vec4 vert1 = gl_in[0].gl_Position;
-	vec4 vert2 = gl_in[1].gl_Position;
-	vec4 vert3 = gl_in[2].gl_Position;
+	vec4 vert1 = uProjMat * gl_in[0].gl_Position;
+	vec4 vert2 = uProjMat * gl_in[1].gl_Position;
+	vec4 vert3 = uProjMat * gl_in[2].gl_Position;
 	
-	float dp = dot(normalize(cross(vert2.xyz - vert1.xyz, vert3.xyz - vert1.xyz)), vec3(0.0, 1.0, -1.0));
-	
-	gl_Position = uProjMat * vec4(vert1);
+	gl_Position = vert1;
+	iFragPos = oFragPos[0];
 	iColor = oColor[0];
-	iDp = dp;
+	iNormal = oNormal[0];
 	EmitVertex();
 
-	gl_Position = uProjMat * vec4(vert2);
+	gl_Position = vert2;
+	iFragPos = oFragPos[1];
 	iColor = oColor[1];
-	iDp = dp;
+	iNormal = oNormal[1];
 	EmitVertex();
 
-	gl_Position = uProjMat * vec4(vert3);
+	gl_Position = vert3;
+	iFragPos = oFragPos[2];
 	iColor = oColor[2];
-	iDp = dp;
+	iNormal = oNormal[2];
 	EmitVertex();
+	EndPrimitive();
 }
