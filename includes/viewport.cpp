@@ -66,9 +66,11 @@ unsigned int Viewport::initRender()
 {
     float* positions = &startVec[0];
 
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_FRONT);
+
 
     unsigned int buffer;
 
@@ -247,6 +249,7 @@ unsigned int Viewport::createShader(const std::string vertexDir, const std::stri
     }
 
     glDeleteShader(vs);
+    glDeleteShader(gs);
     glDeleteShader(fs);
 
     return program;

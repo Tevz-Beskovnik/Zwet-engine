@@ -1,7 +1,11 @@
 #pragma once
+#include<string>
+#include<fstream>
 #include<vector>
 #include<cmath>
+#include<strstream>
 #include<math.h>
+#include<algorithm>
 
 namespace vecs
 {
@@ -88,4 +92,6 @@ namespace vecs
 	};
 
 	void identityMat(mat4&);
+
+	bool loadFromObjectFile(std::string, vecs::mesh&);
 };

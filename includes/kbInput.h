@@ -60,5 +60,10 @@
 
 namespace kbi {
 	bool isKeyHeld(int);
+
 	bool isKeyToggled(int);
+
+	int cursorX();
+
+	int cursorY();
 }

@@ -7,9 +7,11 @@ in vec3 iFragPos;
 in vec3 iNormal;
 in float iDp;
 
+uniform vec3 uCameraPos;
+
 /*ambient lighting*/
-vec3 lightColor = vec3(1.0, 1.0, 1.0);
-float ambientStrength = 0.1;
+vec3 lightColor = vec3(0.9803, 0.9372, 0.537);
+float ambientStrength = 0.7;
 vec3 ambient = ambientStrength * lightColor;
 
 /*difuse lighting*/
@@ -19,11 +21,10 @@ float diff = max(dot(iNormal, lightDir), 0.0);
 vec3 diffuse = diff * lightColor;
 
 /*specular lighting*/
-uniform vec3 uCameraPos;
 float specularStrength = 0.5;
 vec3 viewDir = normalize(uCameraPos - iFragPos);
 vec3 reflectDir = reflect(-lightDir, iNormal);
-float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
 vec3 specular = specularStrength * spec * lightColor;
 
 /*combine all three to make PHONG LIGTING JAAAAAAA*/
@@ -31,5 +32,5 @@ void main()
 {
     vec3 res = (ambient + diffuse + specular) * iColor;
 
-    color = vec4(res, 1.0);
+    color = vec4(res, 0.0);
 }

@@ -59,12 +59,23 @@ int main(void)
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    std::string vert = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/vert.glsl";
-    std::string frag = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/frag.glsl";
-    std::string geometry = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/geom.glsl";
+    std::string vert = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vert.glsl";
+    std::string frag = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag.glsl";
+    std::string geometry = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom.glsl";
     vecs::mesh trig;
 
-    trig.tris = {
+    vecs::loadFromObjectFile("C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/ship2.obj", trig);
+
+    /*for (const auto& tri : trig.tris)
+    {
+        std::cout << tri.normal.x << " " << tri.normal.y << " " << tri.normal.z << std::endl;
+    }
+
+    /*trig.tris = {
+
+        // floor
+        {{ -5.0f, -0.5f, -5.0f,    -5.0f, -0.5f, 5.0f,    5.0f, -0.5f, 5.0f }, 0.0f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f },
+        {{ -5.0f, -0.5f, -5.0f,    5.0f, -0.5f, 5.0f,    5.0f, -0.5f, -5.0f }, 0.0f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f },
 
         // SOUTH
         {{ -0.5f, -0.5f, -0.5f,    -0.5f, 0.5f, -0.5f,    0.5f, 0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, 0.0f, -1.0f },
@@ -88,8 +99,11 @@ int main(void)
 
         // BOTTOM                                                    
         {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f },
-        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f,    0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f }
+        {{ 0.5f, -0.5f, 0.5f,    -0.5f, -0.5f, -0.5f,    0.5f, -0.5f, -0.5f }, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f },
 
+        //floor bottom
+        {{ 5.0f, -0.5f, 5.0f,    -5.0f, -0.5f, 5.0f,    -5.0f, -0.5f, -5.0f }, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f },
+        {{ 5.0f, -0.5f, 5.0f,    -5.0f, -0.5f, -5.0f,    5.0f, -0.5f, -5.0f }, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f },
     };/**/
 
     GLenum type = GL_STATIC_DRAW;
@@ -136,7 +150,7 @@ int main(void)
     };
 
     //world matrix (doesn't realy change so no need to make it multiple times :)
-    vecs::mat4 mWorld = myView.createWorldMatrix(1.2f, 1.7f, 1.0f);
+    vecs::mat4 mWorld = myView.createWorldMatrix(0.0f, 0.0f, 0.0f);
 
     glUseProgram(program);
 
@@ -182,8 +196,10 @@ int main(void)
         timeS++;
 
         /* Render here */
-        glClearColor(0.35f, 0.45f, 0.4f, 1.0f);
+        //glClearColor(0.537f, 0.796f, 0.9803f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         glDrawArrays(GL_TRIANGLES, 0, myView.vecSize / 6);
 
