@@ -112,9 +112,24 @@ int main(void)
     
     convertMeshToArray(trig, convTris);
 
-    Viewport myView(vert, frag, geometry, convTris, type);
+    std::vector<ShaderInfo> shaders = {
+        {
+            frag,
+            GL_FRAGMENT_SHADER
+        },
+        {
+            vert,
+            GL_VERTEX_SHADER
+        },
+        {
+            geometry,
+            GL_GEOMETRY_SHADER
+        }
+    };
 
-    unsigned int program = myView.initRender();
+    Viewport myView(convTris, type);
+
+    unsigned int program = myView.bindBuffer(shaders, true);
 
     int time = glGetUniformLocation(program, "uTime");
     int projMat = glGetUniformLocation(program, "uProjMat");

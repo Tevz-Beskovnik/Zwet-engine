@@ -7,13 +7,10 @@
 #include "vecCalc.h"
 #include "vecs.h"
 
-Viewport::Viewport(std::string vertDir, std::string fargDirC, std::string geometryDirC, std::vector<float>& vecC, GLenum type)
+Viewport::Viewport(std::vector<float>& vecC, GLenum type)
 {
-    vertexDir = vertDir;
-    fragDir = fargDirC;
     startVec = vecC;
     drawType = type;
-    geometryDir = geometryDirC;
     vecSize = vecC.size();
 }
 
@@ -62,11 +59,12 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
     }
 };
 
-unsigned int Viewport::initRender()
+unsigned int Viewport::bindBuffer(std::vector<ShaderInfo> shaders, bool depthTest)
 {
     float* positions = &startVec[0];
 
-    glEnable(GL_DEPTH_TEST);
+    if(depthTest == true)
+        glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_FRONT);
@@ -78,7 +76,7 @@ unsigned int Viewport::initRender()
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, vecSize * sizeof(float), positions, drawType);
 
-    unsigned int shader = createShader(vertexDir, fragDir, geometryDir);
+    unsigned int shader = createShader(shaders);
 
     unsigned int coords = glGetAttribLocation(shader, "position");
     unsigned int color = glGetAttribLocation(shader, "iColor");
@@ -139,7 +137,7 @@ vecs::mat4 Viewport::createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs
     return mView * mProjMat;
 }
 
-vecs::mat4 Viewport::pointAtMatrix(vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up)
+vecs::mat4 pointAtMatrix(vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up)
 {
     vecs::vec3 newForward = vc::normalize(target - pos);
     vecs::vec3 a = newForward * vc::dotPru(up, newForward);
@@ -154,7 +152,7 @@ vecs::mat4 Viewport::pointAtMatrix(vecs::vec3& pos, vecs::vec3& target, vecs::ve
     return matrix;
 }
 
-void Viewport::readShader(std::string path, std::string& shader)
+void readShader(std::string path, std::string& shader)
 {
     std::string line;
     std::ifstream shaderFile(path);
@@ -180,7 +178,7 @@ void screenResolution(float& horizontal, float& vertical)
     vertical = desktop.bottom;
 }
 
-unsigned int Viewport::compileShader(unsigned int type, const std::string& shader)
+unsigned int compileShader(unsigned int type, const std::string& shader)
 {
     unsigned int id = glCreateShader(type);
     const char* src = shader.c_str();
@@ -209,25 +207,21 @@ unsigned int Viewport::compileShader(unsigned int type, const std::string& shade
     return id;
 };
 
-unsigned int Viewport::createShader(const std::string vertexDir, const std::string fragDir, const std::string geometryDir)
+unsigned int createShader(std::vector<ShaderInfo> shaders)
 {
     unsigned int program = glCreateProgram();
 
-    std::string vertexShader;
-    std::string fragShader;
-    std::string geometryShader;
+    std::vector<unsigned int> delShader;
 
-    readShader(vertexDir, vertexShader);
-    readShader(fragDir, fragShader);
-    readShader(geometryDir, geometryShader);
+    for (const auto& shader : shaders) {
+        std::string shaderSrc;
 
-    unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int gs = compileShader(GL_GEOMETRY_SHADER, geometryShader);
-    unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragShader);
+        readShader(shader.shader, shaderSrc);
 
-    glAttachShader(program, vs);
-    glAttachShader(program, gs);
-    glAttachShader(program, fs);
+        unsigned int sh = compileShader(shader.shaderType, shaderSrc);
+        glAttachShader(program, sh);
+        delShader.push_back(sh);
+    }
 
     glLinkProgram(program);
     glValidateProgram(program);
@@ -248,9 +242,10 @@ unsigned int Viewport::createShader(const std::string vertexDir, const std::stri
         return 0;
     }
 
-    glDeleteShader(vs);
-    glDeleteShader(gs);
-    glDeleteShader(fs);
+    for (const auto& delSh : delShader)
+    {
+        glDeleteShader(delSh);
+    }
 
     return program;
 };
