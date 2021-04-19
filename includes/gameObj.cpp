@@ -2,21 +2,21 @@
 
 void GameObject::createObj(unsigned int drawType)
 {
-	if (objectModelDir != "" && objectMesh.tris.empty() != false)
+	if (objectModelDir != "" && info.objectMesh.tris.empty() != false)
 		createMesh();
-	if (objectMesh.tris.empty() != false)
+	if (info.objectMesh.tris.empty() != false)
 		createObjectShaders(drawType);
 }
 
 void GameObject::setMesh(vecs::mesh m)
 {
-	objectMesh = m;
+	info.objectMesh = m;
 }
 
 void GameObject::createMesh(void)
 {
 	//load object from file
-	bool pass = vecs::loadFromObjectFile(objectModelDir, objectMesh);
+	bool pass = vecs::loadFromObjectFile(objectModelDir, info.objectMesh);
 	if (pass != true)
 		throw "Provided file path is not valid or does not exist!";
 }
@@ -24,11 +24,11 @@ void GameObject::createMesh(void)
 void GameObject::createObjectShaders(unsigned int drawType)
 {
 	std::vector<float> convertedObjectMesh;
-	convertMeshToArray(objectMesh, convertedObjectMesh);
+	convertMeshToArray(info.objectMesh, convertedObjectMesh);
 
 	Viewport objectView(convertedObjectMesh, drawType);
 
-	objectProgram = objectView.bindBuffer(shaderDirs, depthTest);
+	info.program = objectView.bindBuffer(shaderDirs, depthTest);
 }
 
 void GameObject::setShaderInfo(std::vector<ShaderInfo> shadDirs)
@@ -43,14 +43,12 @@ void GameObject::setObjectMesh(std::string objDir)
 
 void GameObject::setObjectName(std::string name)
 {
-	objectName = name;
+	info.name = name;
 }
 
 void GameObject::setObjectPosition(vecs::vec3 pos)
 {
-	x = pos.x;
-	y = pos.y;
-	z = pos.z;
+	info.position = pos;
 }
 
 void GameObject::setDepthTest(bool dpthTest)
@@ -60,10 +58,28 @@ void GameObject::setDepthTest(bool dpthTest)
 
 void GameObject::setBoundingBox(vecs::mesh bBox)
 {
-	boundingBox = bBox;
+	info.boundingBox = bBox;
 }
 
-ObjectInfo GameObject::getObject(std::string objName, Scene s)
+ObjectInfo obGet(std::string objName, Scene sc)
 {
-	return s.getObject(objName);
+	return sc.getObject(objName);
+}
+
+void GameObject::stepFunction(std::function<ObjectInfo (ObjectInfo, std::function<ObjectInfo(std::string, Scene)>, Scene)> f)
+{
+	ObjectInfo updatedInfo = f(info, obGet, objectParentScene);
+	bool objUpdate = updateObjectInfo();
+	if (objUpdate != true)
+		throw "Something went wrong in the scene system, object isn't registered or data got changed.";
+}
+
+void GameObject::setScene(Scene scene)
+{
+	objectParentScene = scene;
+}
+
+bool GameObject::updateObjectInfo(void)
+{
+	return objectParentScene.updateObject(info);
 }

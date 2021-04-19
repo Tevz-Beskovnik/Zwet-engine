@@ -3,6 +3,7 @@
 #include<string>
 #include<iostream>
 #include<vector>
+#include<functional>
 #include "kbInput.h"
 #include "vecCalc.h"
 #include "vecs.h"
@@ -16,21 +17,18 @@ struct ObjectInfo
 	std::string name;
 	vecs::vec3 position;
 	vecs::mesh boundingBox;
+	vecs::mesh objectMesh;
+	unsigned int program;
 };
 
 class GameObject {
 	public:
-		std::string objectName;
-		float x;
-		float y;
-		float z;
-
 		void createObj(unsigned int);
 
 		void setShaderInfo(std::vector<ShaderInfo>);
 
 		//TODO set function that will run on step (add function that will run on create) maybe
-		void setFunction();
+		void stepFunction(std::function<ObjectInfo (ObjectInfo, std::function<ObjectInfo (std::string, Scene)>, Scene)>);
 
 		void setObjectName(std::string);
 
@@ -43,16 +41,17 @@ class GameObject {
 		void setMesh(vecs::mesh);
 
 		void setBoundingBox(vecs::mesh);
-
-		ObjectInfo getObject(std::string, Scene);
+		 
+		void setScene(Scene);
 
 	private:
-		vecs::mesh objectMesh;
-		vecs::mesh boundingBox;
-		unsigned int objectProgram;
+		Scene& objectParentScene;
+		ObjectInfo info;
 		std::vector<ShaderInfo> shaderDirs;
 		std::string objectModelDir;
 		bool depthTest;
+
+		bool updateObjectInfo(void);
 
 		void createMesh(void);
 
