@@ -10,50 +10,33 @@
 #include "vecCalc.h"
 #include "collision.h"
 #include "viewport.h"
-#include "scene.h"
 
-struct ObjectInfo
+//all posible object need for the object (no this probably isn't all the info needed)
+typedef struct ObjectInfo
 {
 	std::string name;
 	vecs::vec3 position;
 	vecs::mesh boundingBox;
 	vecs::mesh objectMesh;
 	unsigned int program;
-};
+	std::vector<ShaderInfo> shaderDirs;
+	std::string objectModelDir;
+	bool depthTest;
+	std::map<std::string, int> objectInts;
+	std::map<std::string, float> objectFloats;
+	std::map<std::string, vecs::vec3> objectVectors;
+	std::map<std::string, vecs::mat4> objectMats;
+	int triangles;
+} Obj;
 
-class GameObject {
-	public:
-		void createObj(unsigned int);
+void createMesh(ObjectInfo&);
 
-		void setShaderInfo(std::vector<ShaderInfo>);
+void createObjectShaders(unsigned int, ObjectInfo&);
 
-		//TODO set function that will run on step (add function that will run on create) maybe
-		void stepFunction(std::function<ObjectInfo (ObjectInfo, std::function<ObjectInfo (std::string, Scene)>, Scene)>);
+void addInt(std::string, int, ObjectInfo&);
 
-		void setObjectName(std::string);
+void addFloat(std::string, float, ObjectInfo&);
 
-		void setObjectMesh(std::string);
+void addVec(std::string, vecs::vec3, ObjectInfo&);
 
-		void setObjectPosition(vecs::vec3);
-
-		void setDepthTest(bool);
-
-		void setMesh(vecs::mesh);
-
-		void setBoundingBox(vecs::mesh);
-		 
-		void setScene(Scene);
-
-	private:
-		Scene& objectParentScene;
-		ObjectInfo info;
-		std::vector<ShaderInfo> shaderDirs;
-		std::string objectModelDir;
-		bool depthTest;
-
-		bool updateObjectInfo(void);
-
-		void createMesh(void);
-
-		void createObjectShaders(unsigned int);
-};
+void addMat(std::string, vecs::mat4, ObjectInfo&);

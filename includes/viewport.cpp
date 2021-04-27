@@ -120,7 +120,7 @@ unsigned int Viewport::bindBuffer(std::vector<ShaderInfo> shaders, bool depthTes
     return shader;
 }
 
-vecs::mat4 Viewport::createWorldMatrix(float xRot, float zRot, float time)
+vecs::mat4 createWorldMatrix(float xRot, float zRot, float time)
 {
     vecs::mat4 mRotX, mRotZ, mTranslation;
     mRotX = vc::rotX(xRot * time);
@@ -130,7 +130,7 @@ vecs::mat4 Viewport::createWorldMatrix(float xRot, float zRot, float time)
     return mRotX * mRotZ * mTranslation;
 }
 
-vecs::mat4 Viewport::createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up, float pitch)
+vecs::mat4 createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up, float pitch)
 {
     vecs::mat4 mCameraRotX = vc::rotX(pitch);
     vecs::mat4 mView = vc::quickInverse(mCameraRotX * pointAtMatrix(pos, target, up));

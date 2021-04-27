@@ -12,11 +12,15 @@ void convertMeshToArray(const vecs::mesh, std::vector<float>&);
 
 void screenResolution(float&, float&);
 
-struct ShaderInfo
+vecs::mat4 createWorldMatrix(float, float, float);
+
+vecs::mat4 createViewMatrix(vecs::mat4, vecs::vec3&, vecs::vec3&, vecs::vec3&, float);
+
+typedef struct
 {
 	std::string shader;
 	unsigned int shaderType;
-};
+} ShaderInfo;
 
 class Viewport {
 
@@ -26,10 +30,6 @@ public:
 	int vecSize;
 
 	Viewport(std::vector<float>&, GLenum);
-
-	vecs::mat4 createWorldMatrix(float, float, float);
-
-	vecs::mat4 createViewMatrix(vecs::mat4, vecs::vec3&, vecs::vec3&, vecs::vec3&, float);
 
 	unsigned int bindBuffer(std::vector<ShaderInfo>, bool);
 };

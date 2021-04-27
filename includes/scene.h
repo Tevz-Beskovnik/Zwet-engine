@@ -1,16 +1,28 @@
 #pragma once
-#include<iterator>
-#include "gameObj.h";
+
+#include "gameObj.h"
+
+
 
 class Scene
 {
 	public:
-		void addObject(ObjectInfo);
+		int totalTris = 0;
+
+		void setGameObject(ObjectInfo);
 	
-		ObjectInfo getObject(std::string);
+		void setStepFunction(std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string)>);
 	
-		bool updateObject(ObjectInfo);
+		void setCreateFunction(std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string)>);
+	
+		void callStepFunction(std::string);
+	
+		void callCreateFunction(std::string);
 	
 	private:
-		std::map<std::string, ObjectInfo> objects;
+
+		std::map<std::string, ObjectInfo> sceneObjects;
+		std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string)>> stepFunctions;
+		std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string)>> createFunctions;
+
 };

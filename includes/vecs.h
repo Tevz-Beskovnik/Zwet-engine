@@ -23,7 +23,7 @@ namespace vecs
 
 	};
 
-	struct vec3 {
+	struct vec3{
 		float x, y, z;
 
 		inline vec3 operator+(vec3 vec)
@@ -81,12 +81,12 @@ namespace vecs
 		float r, g, b;
 	};
 
-	struct triangle {
+	struct triangle{
 		vec3 p[3];
 		rgb color;
 		vec3 normal;
 	};
-
+	
 	struct mesh {
 		std::vector<triangle> tris;
 	};
