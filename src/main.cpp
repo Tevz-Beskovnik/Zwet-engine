@@ -1,12 +1,14 @@
+#ifndef PI
+    #define PI 3.14159265358979323846
+#endif // PI
+
+#include<math.h>
 #include <iostream>
 #include<string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include<math.h>
 #include<cmath>
 #include "../includes/scene.h"
-
-#define PI 3.14159265358979323846
 
 float cot(float i) { return(1 / tanf(i)); }
 

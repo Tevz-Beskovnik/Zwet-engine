@@ -48,3 +48,24 @@ void Scene::callCreateFunction(std::string objName)
 
 	el->second(sceneObjects, objName);
 }
+
+void Scene::addProjMat(float width, float height, float fFar, float fNear, float fov)
+{
+	const float fovRad = 1 / tanf(fov * 0.5f / 180.0f * (float)PI);
+
+	const float aspectRatio = height / width;
+
+	sceneCamera.projMat = {
+		aspectRatio * fovRad, 0.0f, 0.0f, 0.0f,
+		0.0f, fovRad, 0.0f, 0.0f,
+		0.0f, 0.0f, fFar / (fFar - fNear), 1.0f,
+		0.0f, 0.0f, (-fFar * fNear) / (fFar - fNear), 0.0f
+	};
+}
+
+void Scene::calculateViewMat()
+{
+	/*vecs::vec3 vForward = 
+	vecs::vec3 vSideways
+	vecs::vec3 vVertical*/
+}
