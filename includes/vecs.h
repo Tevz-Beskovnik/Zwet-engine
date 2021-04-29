@@ -1,3 +1,7 @@
+#ifndef identityMatix
+	#define identityMatix { { 1.0f, 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f } }
+#endif //!identityMatix
+
 #pragma once
 #include<string>
 #include<fstream>

@@ -130,10 +130,12 @@ vecs::mat4 createWorldMatrix(float xRot, float zRot, float time)
     return mRotX * mRotZ * mTranslation;
 }
 
-vecs::mat4 createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up, float pitch)
+vecs::mat4 createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up, float pitch, float yaw, float roll)
 {
     vecs::mat4 mCameraRotX = vc::rotX(pitch);
-    vecs::mat4 mView = vc::quickInverse(mCameraRotX * pointAtMatrix(pos, target, up));
+    vecs::mat4 mCameraRotY = vc::rotY(yaw);
+    vecs::mat4 mCameraRotZ = vc::rotZ(roll);
+    vecs::mat4 mView = vc::quickInverse((mCameraRotX * mCameraRotZ * mCameraRotY) * pointAtMatrix(pos, target, up));
     return mView * mProjMat;
 }
 

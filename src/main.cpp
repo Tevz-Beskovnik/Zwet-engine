@@ -140,7 +140,7 @@ int main(void)
         vTarget = objects[self].objectVectors["vCamera"] + objects[self].objectVectors["vLookDir"];
 
         //create the end view matrix
-        vecs::mat4 mView = createViewMatrix(objects[self].objectMats["mProjMat"], objects[self].objectVectors["vCamera"], vTarget, objects[self].objectVectors["vUp"], objects[self].objectFloats["pitch"]);
+        vecs::mat4 mView = createViewMatrix(objects[self].objectMats["mProjMat"], objects[self].objectVectors["vCamera"], vTarget, objects[self].objectVectors["vUp"], objects[self].objectFloats["pitch"], 0.0f, 0.0f);
 
         //create transposed inverted matrix
         vecs::mat4 mWorldInvTrans = vc::transposeMat(vc::quickInverse(objects[self].objectMats["mWorld"]));
