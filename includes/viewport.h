@@ -12,7 +12,7 @@ void convertMeshToArray(const vecs::mesh, std::vector<float>&);
 
 void screenResolution(float&, float&);
 
-vecs::mat4 createWorldMatrix(float, float, float);
+vecs::mat4 createWorldMatrix(vecs::vec3, vecs::vec3, float);
 
 vecs::mat4 createViewMatrix(vecs::mat4, vecs::vec3&, vecs::vec3&, vecs::vec3&, float, float, float);
 
@@ -32,6 +32,8 @@ public:
 	Viewport(std::vector<float>&, GLenum);
 
 	unsigned int bindBuffer(std::vector<ShaderInfo>, bool);
+
+	//unsigned int rebindBuffer(unsigned int, bool);
 };
 
 void readShader(std::string, std::string&);

@@ -14,20 +14,34 @@
 //all posible object need for the object (no this probably isn't all the info needed)
 typedef struct ObjectInfo
 {
+	//name of object for refrencing in other objects
 	std::string name;
-	vecs::vec3 position;
+
+	//position and rotation of object
+	vecs::vec3 position = { 0.0f };
+	vecs::vec3 staticObjectRotation = { 0.0f };
+	vecs::vec3 dynamicObjectRotation = { 0.0f };
+
+	//things to do with the mesh loading of mesh collision, shading and rendering
 	vecs::mesh boundingBox;
 	vecs::mesh objectMesh;
 	unsigned int program;
+	unsigned int drawType;
 	std::vector<ShaderInfo> shaderDirs;
 	std::string objectModelDir;
-	bool depthTest;
+	bool depthTest = true;
+	
+	//local variables that can be set in the create function
 	std::map<std::string, int> objectInts;
 	std::map<std::string, float> objectFloats;
 	std::map<std::string, vecs::vec3> objectVectors;
 	std::map<std::string, vecs::mat4> objectMats;
+
+	//number of triangles in the mesh
 	int triangles;
 } Obj;
+
+void applyStaticRotation(ObjectInfo&);
 
 void createMesh(ObjectInfo&);
 

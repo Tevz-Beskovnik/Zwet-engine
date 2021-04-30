@@ -1,11 +1,30 @@
 #include "gameObj.h"
 
+void applyStaticRotation(ObjectInfo& info)
+{
+	//apply a static rotation to a objects mesh
+	vecs::mesh end;
+
+	for (const auto& tri : info.objectMesh.tris)
+	{
+		vecs::vec3 t0 = vc::customVecMultiply(createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[0]);
+		vecs::vec3 t1 = vc::customVecMultiply(createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[1]);
+		vecs::vec3 t2 = vc::customVecMultiply(createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[2]);
+
+		end.tris.push_back({ { t0, t1, t2 }, tri.color, tri.normal });
+	}
+
+	info.objectMesh = end;
+}
+
 void createMesh(ObjectInfo& info)
 {
 	//load object from file
 	bool pass = vecs::loadFromObjectFile(info.objectModelDir, info.objectMesh);
 	if (pass != true)
-		throw "Provided file path is not valid or does not exist!";
+		throw "Provided file path is not valid or does not exist!";	
+
+	applyStaticRotation(info);
 }
 
 void createObjectShaders(unsigned int drawType, ObjectInfo& info)

@@ -120,12 +120,13 @@ unsigned int Viewport::bindBuffer(std::vector<ShaderInfo> shaders, bool depthTes
     return shader;
 }
 
-vecs::mat4 createWorldMatrix(float xRot, float zRot, float time)
+vecs::mat4 createWorldMatrix(vecs::vec3 rot, vecs::vec3 translation, float time)
 {
-    vecs::mat4 mRotX, mRotZ, mTranslation;
-    mRotX = vc::rotX(xRot * time);
-    mRotZ = vc::rotZ(zRot * time);
-    mTranslation = vc::translationMat(0.0f, 0.0f, 4.0f);
+    vecs::mat4 mRotX, mRotY, mRotZ, mTranslation;
+    mRotX = vc::rotX(rot.x * time);
+    mRotY = vc::rotY(rot.y * time);
+    mRotZ = vc::rotZ(rot.z * time);
+    mTranslation = vc::translationMat(translation.x, translation.y, translation.z);
 
     return mRotX * mRotZ * mTranslation;
 }

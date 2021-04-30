@@ -2,55 +2,72 @@
 
 void Scene::setGameObject(ObjectInfo info)
 {
-	sceneObjects.insert(std::pair<std::string, ObjectInfo>(info.name, info));
+	//put a new object in the scene
+	ObjectInfo temp = info;
 
-	totalTris += info.triangles;
+	createMesh(temp);
+
+	createObjectShaders(temp.drawType, temp);
+
+	sceneObjects.insert(std::pair<std::string, ObjectInfo>(info.name, temp));
+
+	totalTris += temp.triangles;
 }
 
-void Scene::setStepFunction(std::string objName, std::function<void(std::map<std::string, ObjectInfo>&, std::string)> func)
+void Scene::setStepFunction(std::string objName, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)> func)
 {
+	//set the function that is suppost to run at step (every render cycle)
 	std::map<std::string, ObjectInfo>::iterator it;
 
 	it = sceneObjects.find(objName);
 	if (it == sceneObjects.end())
 		throw "The object you are tring to asign a function to doesn't exist";
 
-	stepFunctions.insert(std::pair<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string)>>(objName, func));
+	stepFunctions.insert(std::pair<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>(objName, func));
 }
 
-void Scene::setCreateFunction(std::string objName, std::function<void(std::map<std::string, ObjectInfo>&, std::string)> func)
+void Scene::setCreateFunction(std::string objName, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)> func)
 {
+	//set the create function (runs before the render cycle)
 	std::map<std::string, ObjectInfo>::iterator it;
 
 	it = sceneObjects.find(objName);
 	if(it == sceneObjects.end())
 		throw "The object you are tring to asign a function to doesn't exist";
 
-	createFunctions.insert(std::pair<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string)>>(objName, func));
+	createFunctions.insert(std::pair<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>(objName, func));
 }
 
 void Scene::callStepFunction(std::string objName)
 {
-	std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string)>>::const_iterator el;
+	//call the before asigned step function
+	std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>::const_iterator el;
 	el = stepFunctions.find(objName);
-	if (el == stepFunctions.end())
-		throw "The object you are calling the step function for does not exist";
+	el->second(sceneObjects, objName, sceneCamera);
 
-	el->second(sceneObjects, objName);
+	//get uniform locations to bind the predefined uniforms
+	int uWorld = glGetUniformLocation(sceneObjects[objName].program, "uWorld");
+	int uWorldInvTran = glGetUniformLocation(sceneObjects[objName].program, "uWorldInvTran");
+	int uViewMat = glGetUniformLocation(sceneObjects[objName].program, "uViewMat");
+	int uCameraPos = glGetUniformLocation(sceneObjects[objName].program, "uCameraPos");
+
+	glUniformMatrix4fv(uWorld, 1, GL_FALSE, &worldMat.r[0][0]);
+	glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &transposedWorldMat.r[0][0]);
+	glUniformMatrix4fv(uViewMat, 1, GL_FALSE, &viewMat.r[0][0]);
+	glUniform3f(uCameraPos, sceneCamera.pos.x, sceneCamera.pos.y, sceneCamera.pos.z);
 }
 
 void Scene::callCreateFunction(std::string objName)
 {
-	std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string)>>::const_iterator el;
+	//call the before asigned create function
+	std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>::const_iterator el;
 	el = createFunctions.find(objName);
-	if (el == createFunctions.end())
-		throw "The object you are calling the step function for does not exist";
-
-	el->second(sceneObjects, objName);
+	el->second(sceneObjects, objName, sceneCamera);
 }
 
 void Scene::addCameraProjMat(float width, float height, float fFar, float fNear, float fov)
 {
+	//add the projection matrix to the scene camera
 	const float fovRad = 1 / tanf(fov * 0.5f / 180.0f * (float)PI);
 
 	const float aspectRatio = height / width;
@@ -63,39 +80,64 @@ void Scene::addCameraProjMat(float width, float height, float fFar, float fNear,
 	};
 }
 
-vecs::mat4 Scene::calculateViewMat()
+void Scene::calculateViewMat(Camera& cam)
 {
-	//check if the camera is moving
-	vecs::vec3 vForward = sceneCamera.lookDir * sceneCamera.forward;
-	vecs::vec3 vSideways = sceneCamera.lookDirSqued * sceneCamera.sideways;
-	vecs::vec3 vVertical = sceneCamera.lookDirSquedUp * sceneCamera.vertical;
-
 	//add the new look directions to the camera position
-	sceneCamera.pos = sceneCamera.pos + vForward;
-	sceneCamera.pos = sceneCamera.pos + vSideways;
-	sceneCamera.pos = sceneCamera.pos + vVertical;
+	cam.pos = cam.pos + (cam.lookDir * cam.forward) + (cam.lookDirSqued * cam.sideways) + (cam.lookDirSquedUp * cam.vertical);
 
 	//targets for all 3 axis
 	vecs::vec3 vTargetF = { 0.0f, 0.0f, 1.0f };
-	vecs::vec3 vTargetS = { 1.0f, 0.0f, 0.0f };
-	vecs::vec3 vTargetV = { 0.0f, 1.0f, 0.0f };
 
 	//create camera rotation matrix for yaw
-	vecs::mat4 mCameraRot = vc::rotY(sceneCamera.yaw);
+	vecs::mat4 mCameraRot = vc::rotY(cam.yaw);
 
 	//add up the new look directions with the new camera rotation
-	sceneCamera.lookDir = vc::customVecMultiply(mCameraRot, vTargetF);
-	sceneCamera.lookDirSqued = vc::customVecMultiply(mCameraRot, vTargetS);
-	sceneCamera.lookDirSquedUp = vc::customVecMultiply(mCameraRot, vTargetV);
+	cam.lookDir = vc::customVecMultiply(mCameraRot, vTargetF);
+	cam.lookDirSqued = vc::customVecMultiply(mCameraRot, { 1.0f, 0.0f, 0.0f });
+	cam.lookDirSquedUp = vc::customVecMultiply(mCameraRot, { 0.0f, 1.0f, 0.0f });
 
 	//asign new target
-	vTargetF = sceneCamera.pos + sceneCamera.lookDir;
+	vTargetF = cam.pos + cam.lookDir;
 
-	return createViewMatrix(sceneCamera.projMat, sceneCamera.pos, vTargetF, sceneCamera.up, sceneCamera.pitch, sceneCamera.yaw, sceneCamera.roll);
+	viewMat =  createViewMatrix(cam.projMat, cam.pos, vTargetF, cam.up, cam.pitch, 0.0f, 0.0f);
 }
 
-vecs::mat4 Scene::calculateWorldMat()
+void Scene::calculateWorldMat()
 {
-	worldMat = createWorldMatrix(sceneRotationX, sceneRotationY, sceneRotationZ);
+	//calculates the world and the inverted transposed world mat 
+	worldMat = createWorldMatrix(dynamicSceneRotation, { 0.0f, 0.0f, 0.0f }, 1.0f);
 	transposedWorldMat = vc::transposeMat(vc::quickInverse(worldMat));
+}
+
+void Scene::applyStaticSceneRotation()
+{
+	for (auto& kv : sceneObjects)
+	{
+		vecs::mesh endWorld;
+
+		for (const auto& tri : kv.second.objectMesh.tris)
+		{
+			vecs::vec3 t0 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[0]);
+			vecs::vec3 t1 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[1]);
+			vecs::vec3 t2 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[2]);
+
+			endWorld.tris.push_back({ { t0, t1, t2 }, tri.color, tri.normal });
+		}
+
+		kv.second.objectMesh = endWorld;
+	}
+}
+
+void Scene::sceneStep()
+{
+	//things that need to be called at step but not multiple times
+	calculateViewMat(sceneCamera);
+	calculateWorldMat();
+}
+
+void Scene::sceneCreate()
+{
+	//things that run before the render cycle and don't need to be done repetativly
+	calculateViewMat(sceneCamera);
+	calculateWorldMat();
 }

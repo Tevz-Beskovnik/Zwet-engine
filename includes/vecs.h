@@ -14,7 +14,12 @@
 namespace vecs
 {
 	struct mat4 {
-		float r[4][4] = { 0 };
+		float r[4][4] = { 
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
 
 		inline mat4 operator*(vecs::mat4 mat)
 		{

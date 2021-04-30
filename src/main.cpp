@@ -20,13 +20,25 @@ int main(void)
     if (!glfwInit())
          return -1;
 
-    /* Create a windowed mode window and its OpenGL context*/
+    //things to do with projection matrix
 
     float horiz, vertical;
 
     screenResolution(horiz, vertical);
 
     const float resolution[2] = { horiz, vertical };
+
+    const float fov = 90.0f;
+
+    const float fovRad = cot(fov * 0.5f / 180.0f * (float)PI);
+
+    const float fNear = 0.1f;
+
+    const float fFar = 1000.0f;
+
+    const float aspectRatio = resolution[1] / resolution[0];
+
+    /* Create a windowed mode window and its OpenGL context*/
 
     window = glfwCreateWindow((int)resolution[0], (int)resolution[1], "Window", NULL, NULL);
 
@@ -44,12 +56,28 @@ int main(void)
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
+    /*||||||||||||||||||||||||
+    ||GAME ENGINE COMPONENTS||
+    ||||||||||||||||||||||||*/
+
+    //define the scene
     Scene mainScene;
 
+    //add the projection mat to the scene camera
+    mainScene.addCameraProjMat(resolution[0], resolution[1], fFar, fNear, fov);
+
+    //create new game object
     ObjectInfo test;
+
+    //set the object name
     test.name = "test1";
-    test.position = { 0.0f, 0.0f, 0.0f };
+
+    //set the object position
+    test.position = { 0.0f, 0.0f, 4.0f };
+
+    //enable depth test and apend all paths to shaers / object files
     test.depthTest = true;
+    test.drawType = GL_STATIC_DRAW;
     test.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/ship2.obj";
     test.shaderDirs = {
         {
@@ -66,102 +94,45 @@ int main(void)
         }
     };
 
-    createMesh(test);
-    createObjectShaders(GL_STATIC_DRAW, test);
-
+    //add the object to the game scene
     mainScene.setGameObject(test);
 
-    mainScene.setCreateFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self) {
-            float horiz, vertical;
-
-            screenResolution(horiz, vertical);
-
-            const float resolution[2] = { horiz, vertical };
-
-            const float fov = 90.0f;
-
-            const float fovRad = cot(fov * 0.5f / 180.0f * (float)PI);
-
-            const float fNear = 0.1f;
-
-            const float fFar = 1000.0f;
-
-            const float aspectRatio = resolution[1] / resolution[0];
-
-            //define all intagers
-            addInt("time", glGetUniformLocation(objects[self].program, "uTime"), objects[self]);
-            addInt("projMat", glGetUniformLocation(objects[self].program, "uProjMat"), objects[self]);
-            addInt("uWorld", glGetUniformLocation(objects[self].program, "uWorld"), objects[self]);
-            addInt("uWorldInvTran", glGetUniformLocation(objects[self].program, "uWorldInvTran"), objects[self]);
-            addInt("uCameraPos", glGetUniformLocation(objects[self].program, "uCameraPos"), objects[self]);
-
-            addFloat("yaw", 0.0f, objects[self]);
-            addFloat("pitch", 0.0f, objects[self]);
-
-            addVec("vCamera", { 0.0f, 0.0f, 0.0f }, objects[self]);
-            addVec("vLookDir", { 0.0f, 0.0f, 1.0f }, objects[self]);
-            addVec("vLookDirSqued", { 1.0f, 0.0f, 0.0f }, objects[self]);
-            addVec("vUp", { 0.0f, 1.0f, 0.0f }, objects[self]);
-
-            addMat("mProjMat", {
-                aspectRatio * fovRad, 0.0f, 0.0f, 0.0f,
-                0.0f, fovRad, 0.0f, 0.0f,
-                0.0f, 0.0f, fFar / (fFar - fNear), 1.0f,
-                0.0f, 0.0f, (-fFar * fNear) / (fFar - fNear), 0.0f
-                }, objects[self]);
-            addMat("mWorld", createWorldMatrix(0.0f, 0.0f, 0.0f), objects[self]);
-
+    //add a create function to the added object
+    mainScene.setCreateFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
             glUseProgram(objects[self].program);
         });
 
-    mainScene.setStepFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self) {
+    //add a step function to the added object
+    mainScene.setStepFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
         /*movement mods for by how much it should increase the movement speed*/
         const float movementMod = 0.03f;
         const float yawMod = 0.02f;
 
         //camera controls for yaw and pitch
-        objects[self].objectFloats["pitch"] += (-yawMod * kbi::isKeyHeld(VK_DOWN) + yawMod * kbi::isKeyHeld(VK_UP));
-        objects[self].objectFloats["yaw"] += (-yawMod * kbi::isKeyHeld(VK_RIGHT) + yawMod * kbi::isKeyHeld(VK_LEFT));
+        cam.pitch += (-yawMod * kbi::isKeyHeld(VK_DOWN) + yawMod * kbi::isKeyHeld(VK_UP));
+        cam.yaw += (-yawMod * kbi::isKeyHeld(VK_RIGHT) + yawMod * kbi::isKeyHeld(VK_LEFT));
 
         //camera controls for movement
-        objects[self].objectVectors["vCamera"].y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
-        vecs::vec3 vForward = objects[self].objectVectors["vLookDir"] * ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
-        vecs::vec3 vSideways = objects[self].objectVectors["vLookDirSqued"] * ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
-
-        objects[self].objectVectors["vCamera"] = objects[self].objectVectors["vCamera"] + vForward;
-        objects[self].objectVectors["vCamera"] = objects[self].objectVectors["vCamera"] + vSideways;
-
-        vecs::vec3 vTarget = { 0.0f, 0.0f, 1.0f };
-        vecs::vec3 vTarget2 = { 1.0f, 0.0f, 0.0f };
-
-        vecs::mat4 mCameraRot = vc::rotY(objects[self].objectFloats["yaw"]);
-        objects[self].objectVectors["vLookDir"] = vc::customVecMultiply(mCameraRot, vTarget);
-        objects[self].objectVectors["vLookDirSqued"] = vc::customVecMultiply(mCameraRot, vTarget2);
-        vTarget = objects[self].objectVectors["vCamera"] + objects[self].objectVectors["vLookDir"];
-
-        //create the end view matrix
-        vecs::mat4 mView = createViewMatrix(objects[self].objectMats["mProjMat"], objects[self].objectVectors["vCamera"], vTarget, objects[self].objectVectors["vUp"], objects[self].objectFloats["pitch"], 0.0f, 0.0f);
-
-        //create transposed inverted matrix
-        vecs::mat4 mWorldInvTrans = vc::transposeMat(vc::quickInverse(objects[self].objectMats["mWorld"]));
-
-        glUniform1f(objects[self].objectInts["time"], float(0));
-
-        glUniformMatrix4fv(objects[self].objectInts["uWorld"], 1, GL_FALSE, &(objects[self].objectMats["mWorld"].r[0][0]));
-
-        glUniformMatrix4fv(objects[self].objectInts["projMat"], 1, GL_FALSE, &mView.r[0][0]);
-
-        glUniformMatrix4fv(objects[self].objectInts["uWorldInvTran"], 1, GL_FALSE, &mWorldInvTrans.r[0][0]);
-
-        glUniform3f(objects[self].objectInts["uCameraPos"], objects[self].objectVectors["vCamera"].x, objects[self].objectVectors["vCamera"].y, objects[self].objectVectors["vCamera"].z);
+        cam.pos.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
+        cam.forward = ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
+        cam.sideways = ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
         });
 
+    //calling the create function
     mainScene.callCreateFunction(test.name);
+
+    //calling the scenes create function
+    mainScene.sceneCreate();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+
+        //calling the objects step function
         mainScene.callStepFunction(test.name);
+
+        //calling the scenes step function
+        mainScene.sceneStep();
 
         /* Render here */
         //glClearColor(0.537f, 0.796f, 0.9803f, 1.0f);
