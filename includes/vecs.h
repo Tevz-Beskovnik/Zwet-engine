@@ -102,5 +102,5 @@ namespace vecs
 
 	void identityMat(mat4&);
 
-	bool loadFromObjectFile(std::string, vecs::mesh&);
+	bool loadFromObjectFile(std::string, vecs::mesh&, vecs::rgb);
 };

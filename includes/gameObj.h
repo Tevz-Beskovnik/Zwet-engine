@@ -22,10 +22,15 @@ typedef struct ObjectInfo
 	vecs::vec3 staticObjectRotation = { 0.0f };
 	vecs::vec3 dynamicObjectRotation = { 0.0f };
 
+	//color
+	vecs::rgb color = { 1.0f, 1.0f, 1.0f };
+
 	//things to do with the mesh loading of mesh collision, shading and rendering
 	vecs::mesh boundingBox;
 	vecs::mesh objectMesh;
+	std::vector<float> convertedMesh;
 	unsigned int program;
+	unsigned int buffer;
 	unsigned int drawType;
 	std::vector<ShaderInfo> shaderDirs;
 	std::string objectModelDir;

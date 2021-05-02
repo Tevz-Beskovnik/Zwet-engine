@@ -73,7 +73,11 @@ int main(void)
     test.name = "test1";
 
     //set the object position
-    test.position = { 0.0f, 0.0f, 4.0f };
+    test.position = { 0.0f, -3.0f, 2.0f };
+    //test.staticObjectRotation = { PI/2.0f, 0.0f, 0.0f };
+
+    //set the color
+    test.color = { 1.0f, 0.0f, 0.0f };
 
     //enable depth test and apend all paths to shaers / object files
     test.depthTest = true;
@@ -94,13 +98,69 @@ int main(void)
         }
     };
 
+    ObjectInfo test2;
+
+    //set the object name
+    test2.name = "test2";
+
+    //set the object position
+    test2.position = { 8.0f, 1.0f, 0.0f };
+
+    //set color
+    test2.color = { 0.0f, 1.0f, 0.0f };
+
+    //enable depth test and apend all paths to shaers / object files
+    test2.depthTest = true;
+    test2.drawType = GL_STATIC_DRAW;
+    test2.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/cube.obj";
+    test2.shaderDirs = {
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vert.glsl",
+            GL_VERTEX_SHADER
+        },
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag.glsl",
+            GL_FRAGMENT_SHADER
+        },
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom.glsl",
+            GL_GEOMETRY_SHADER
+        }
+    };
+
+    ObjectInfo test3;
+
+    //set the object name
+    test3.name = "test3";
+
+    //set the object position
+    test3.position = { -8.0f, -1.0f, 2.0f };
+
+    //enable depth test and apend all paths to shaers / object files
+    test3.depthTest = true;
+    test3.drawType = GL_STATIC_DRAW;
+    test3.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/pot2.obj";
+    test3.shaderDirs = {
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vert.glsl",
+            GL_VERTEX_SHADER
+        },
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag.glsl",
+            GL_FRAGMENT_SHADER
+        },
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom.glsl",
+            GL_GEOMETRY_SHADER
+        }
+    };
+
     //add the object to the game scene
     mainScene.setGameObject(test);
 
-    //add a create function to the added object
-    mainScene.setCreateFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
-            glUseProgram(objects[self].program);
-        });
+    mainScene.setGameObject(test2);
+
+    mainScene.setGameObject(test3);
 
     //add a step function to the added object
     mainScene.setStepFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
@@ -116,10 +176,17 @@ int main(void)
         cam.pos.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
         cam.forward = ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
         cam.sideways = ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
+
+        /*objects[self].position.x = cam.pos.x;
+        objects[self].position.y = cam.pos.y - 3;
+        objects[self].position.z = cam.pos.z + 2;*/
         });
 
-    //calling the create function
-    mainScene.callCreateFunction(test.name);
+    mainScene.setStepFunction(test2.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        });
+
+    mainScene.setStepFunction(test3.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        });
 
     //calling the scenes create function
     mainScene.sceneCreate();
@@ -127,20 +194,22 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         //calling the objects step function
         mainScene.callStepFunction(test.name);
+
+        mainScene.callStepFunction(test2.name);
+
+        mainScene.callStepFunction(test3.name);
 
         //calling the scenes step function
         mainScene.sceneStep();
 
         /* Render here */
         //glClearColor(0.537f, 0.796f, 0.9803f, 1.0f);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        glDrawArrays(GL_TRIANGLES, 0, mainScene.totalTris / 6);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

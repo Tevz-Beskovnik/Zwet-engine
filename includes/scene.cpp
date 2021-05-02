@@ -3,15 +3,17 @@
 void Scene::setGameObject(ObjectInfo info)
 {
 	//put a new object in the scene
-	ObjectInfo temp = info;
+	info.program = createShader(info.shaderDirs);
 
-	createMesh(temp);
+	createMesh(info);
 
-	createObjectShaders(temp.drawType, temp);
+	applyStaticRotation(info);
 
-	sceneObjects.insert(std::pair<std::string, ObjectInfo>(info.name, temp));
+	convertMeshToArray(info.objectMesh, info.convertedMesh);
 
-	totalTris += temp.triangles;
+	sceneObjects.insert(std::pair<std::string, ObjectInfo>(info.name, info));
+
+	totalTris += info.triangles;
 }
 
 void Scene::setStepFunction(std::string objName, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)> func)
@@ -40,21 +42,39 @@ void Scene::setCreateFunction(std::string objName, std::function<void(std::map<s
 
 void Scene::callStepFunction(std::string objName)
 {
+	Viewport vp(sceneObjects[objName].convertedMesh, sceneObjects[objName].drawType);
+
+	vp.bindBuffer(sceneObjects[objName].program, sceneObjects[objName].depthTest, sceneObjects[objName].buffer);
+
+	sceneObjects[objName].triangles = vp.vecSize;
+
+	glUseProgram(sceneObjects[objName].program);
+
 	//call the before asigned step function
 	std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>::const_iterator el;
 	el = stepFunctions.find(objName);
 	el->second(sceneObjects, objName, sceneCamera);
+
+	vecs::vec3 vec = {
+		sceneObjects[objName].position.x,
+		sceneObjects[objName].position.y,
+		sceneObjects[objName].position.z
+	};
 
 	//get uniform locations to bind the predefined uniforms
 	int uWorld = glGetUniformLocation(sceneObjects[objName].program, "uWorld");
 	int uWorldInvTran = glGetUniformLocation(sceneObjects[objName].program, "uWorldInvTran");
 	int uViewMat = glGetUniformLocation(sceneObjects[objName].program, "uViewMat");
 	int uCameraPos = glGetUniformLocation(sceneObjects[objName].program, "uCameraPos");
+	int uObjPos = glGetUniformLocation(sceneObjects[objName].program, "uObjPos");
 
 	glUniformMatrix4fv(uWorld, 1, GL_FALSE, &worldMat.r[0][0]);
 	glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &transposedWorldMat.r[0][0]);
 	glUniformMatrix4fv(uViewMat, 1, GL_FALSE, &viewMat.r[0][0]);
 	glUniform3f(uCameraPos, sceneCamera.pos.x, sceneCamera.pos.y, sceneCamera.pos.z);
+	glUniform3f(uObjPos, vec.x, vec.y, vec.z);
+
+	glDrawArrays(GL_TRIANGLES, 0, sceneObjects[objName].triangles / 6);
 }
 
 void Scene::callCreateFunction(std::string objName)

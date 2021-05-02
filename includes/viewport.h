@@ -31,7 +31,7 @@ public:
 
 	Viewport(std::vector<float>&, GLenum);
 
-	unsigned int bindBuffer(std::vector<ShaderInfo>, bool);
+	void bindBuffer(unsigned int&, bool, unsigned int);
 
 	//unsigned int rebindBuffer(unsigned int, bool);
 };

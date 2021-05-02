@@ -20,7 +20,7 @@ void applyStaticRotation(ObjectInfo& info)
 void createMesh(ObjectInfo& info)
 {
 	//load object from file
-	bool pass = vecs::loadFromObjectFile(info.objectModelDir, info.objectMesh);
+	bool pass = vecs::loadFromObjectFile(info.objectModelDir, info.objectMesh, info.color);
 	if (pass != true)
 		throw "Provided file path is not valid or does not exist!";	
 
@@ -29,14 +29,14 @@ void createMesh(ObjectInfo& info)
 
 void createObjectShaders(unsigned int drawType, ObjectInfo& info)
 {
-	std::vector<float> convertedObjectMesh;
+	/*std::vector<float> convertedObjectMesh;
 	convertMeshToArray(info.objectMesh, convertedObjectMesh);
 
 	Viewport objectView(convertedObjectMesh, drawType);
 
-	info.program = objectView.bindBuffer(info.shaderDirs, info.depthTest);
+	info.program = objectView.bindBuffer(info.shaderDirs, info.depthTest, info.buffer);
 
-	info.triangles = objectView.vecSize;
+	info.triangles = objectView.vecSize;*/
 }
 
 void addInt(std::string name, int num, ObjectInfo& obj)

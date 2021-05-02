@@ -13,7 +13,7 @@ void vecs::identityMat(vecs::mat4& mat)
 	mat.r[3][3] = 1.0f;
 }
 
-bool vecs::loadFromObjectFile(std::string path, vecs::mesh& object)
+bool vecs::loadFromObjectFile(std::string path, vecs::mesh& object, vecs::rgb color)
 {
 	std::ifstream f(path);
 	if (!f.is_open())
@@ -52,7 +52,10 @@ bool vecs::loadFromObjectFile(std::string path, vecs::mesh& object)
 			int f[3];
 			int vn;
 			s >> junk >> f[0] >> junk >> junk >> vn >> f[1] >> junk >> junk >> vn >> f[2] >> junk >> junk >> vn;
-			object.tris.push_back({ { verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] }, 1.0f, 1.0f, 0.0f, normals[vn-1] });
+			if(normals.empty() == false)
+				object.tris.push_back({ { verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] }, color, normals[vn-1] });
+			else
+				object.tris.push_back({ { verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] }, color, 1.0f, 0.0f, 0.0f });
 		}
 	}
 

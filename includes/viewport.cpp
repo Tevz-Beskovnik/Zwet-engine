@@ -59,7 +59,7 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
     }
 };
 
-unsigned int Viewport::bindBuffer(std::vector<ShaderInfo> shaders, bool depthTest)
+void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buffer)
 {
     float* positions = &startVec[0];
 
@@ -69,14 +69,9 @@ unsigned int Viewport::bindBuffer(std::vector<ShaderInfo> shaders, bool depthTes
     glFrontFace(GL_CCW);
     glCullFace(GL_FRONT);
 
-
-    unsigned int buffer;
-
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, vecSize * sizeof(float), positions, drawType);
-
-    unsigned int shader = createShader(shaders);
 
     unsigned int coords = glGetAttribLocation(shader, "position");
     unsigned int color = glGetAttribLocation(shader, "iColor");
@@ -116,8 +111,6 @@ unsigned int Viewport::bindBuffer(std::vector<ShaderInfo> shaders, bool depthTes
         9 * sizeof(float),
         (void*)offsetNormal
     );
-
-    return shader;
 }
 
 vecs::mat4 createWorldMatrix(vecs::vec3 rot, vecs::vec3 translation, float time)

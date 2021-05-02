@@ -47,7 +47,15 @@ class Scene
 		void setStepFunction(std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>);
 	
 		void setCreateFunction(std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>);
-	
+		
+		/*TODO
+			-recalculate surface normals whem applying static rotation to object,
+			-add texturing to objects, read UV map from obj file,
+			-add abilit to read color info of objects (gotta look into that),
+			-detach main game loop from the main file (for ease of use),
+			-detach calling step function from main game loop (for ease of use),
+			-etc......
+		*/
 		void callStepFunction(std::string);
 	
 		void callCreateFunction(std::string);
