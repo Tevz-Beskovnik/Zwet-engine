@@ -1,6 +1,6 @@
 #include "scene.h"
 
-void Scene::setGameObject(ObjectInfo info)
+void Scene::addGameObject(ObjectInfo info)
 {
 	//put a new object in the scene
 	info.program = createShader(info.shaderDirs);
@@ -53,6 +53,9 @@ void Scene::callStepFunction(std::string objName)
 	//call the before asigned step function
 	std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>::const_iterator el;
 	el = stepFunctions.find(objName);
+	if (el == stepFunctions.end())
+		return;
+
 	el->second(sceneObjects, objName, sceneCamera);
 
 	vecs::vec3 vec = {
@@ -61,18 +64,40 @@ void Scene::callStepFunction(std::string objName)
 		sceneObjects[objName].position.z
 	};
 
+	vecs::vec3 camPos = {
+		sceneCamera.pos.x, 
+		sceneCamera.pos.y, 
+		sceneCamera.pos.z
+	};
+
+	vecs::mat4 yawMat = vc::rotY(-sceneCamera.yaw);
+	vecs::mat4 pitchMat = vc::rotX(-sceneCamera.pitch);
+	vecs::mat4 rollMat = vc::rotZ(-sceneCamera.roll);
+
 	//get uniform locations to bind the predefined uniforms
 	int uWorld = glGetUniformLocation(sceneObjects[objName].program, "uWorld");
 	int uWorldInvTran = glGetUniformLocation(sceneObjects[objName].program, "uWorldInvTran");
 	int uViewMat = glGetUniformLocation(sceneObjects[objName].program, "uViewMat");
 	int uCameraPos = glGetUniformLocation(sceneObjects[objName].program, "uCameraPos");
 	int uObjPos = glGetUniformLocation(sceneObjects[objName].program, "uObjPos");
+	int uYaw = glGetUniformLocation(sceneObjects[objName].program, "uYaw");
+	int uYawMat = glGetUniformLocation(sceneObjects[objName].program, "uYawMat");
+	int uPitch = glGetUniformLocation(sceneObjects[objName].program, "uPitch");
+	int uPitchMat = glGetUniformLocation(sceneObjects[objName].program, "uPitchMat");
+	int uRoll = glGetUniformLocation(sceneObjects[objName].program, "uRoll");
+	int uRollMat = glGetUniformLocation(sceneObjects[objName].program, "uRollMat");
 
 	glUniformMatrix4fv(uWorld, 1, GL_FALSE, &worldMat.r[0][0]);
 	glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &transposedWorldMat.r[0][0]);
 	glUniformMatrix4fv(uViewMat, 1, GL_FALSE, &viewMat.r[0][0]);
-	glUniform3f(uCameraPos, sceneCamera.pos.x, sceneCamera.pos.y, sceneCamera.pos.z);
+	glUniform3f(uCameraPos, camPos.x, camPos.y, camPos.z);
 	glUniform3f(uObjPos, vec.x, vec.y, vec.z);
+	glUniform1f(uYaw, sceneCamera.yaw);
+	glUniform1f(uPitch, sceneCamera.pitch);
+	glUniform1f(uRoll, sceneCamera.roll);
+	glUniformMatrix4fv(uYawMat, 1, GL_FALSE, &yawMat.r[0][0]);
+	glUniformMatrix4fv(uPitchMat, 1, GL_FALSE, &pitchMat.r[0][0]);
+	glUniformMatrix4fv(uRollMat, 1, GL_FALSE, &rollMat.r[0][0]);
 
 	glDrawArrays(GL_TRIANGLES, 0, sceneObjects[objName].triangles / 6);
 }
@@ -82,6 +107,9 @@ void Scene::callCreateFunction(std::string objName)
 	//call the before asigned create function
 	std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>::const_iterator el;
 	el = createFunctions.find(objName);
+	if (el == createFunctions.end())
+		return;
+
 	el->second(sceneObjects, objName, sceneCamera);
 }
 
@@ -160,4 +188,16 @@ void Scene::sceneCreate()
 	//things that run before the render cycle and don't need to be done repetativly
 	calculateViewMat(sceneCamera);
 	calculateWorldMat();
+}
+
+std::vector<std::string> Scene::objectNames()
+{
+	std::vector<std::string> objName;
+
+	for (const auto& sceneObj : sceneObjects)
+	{
+		objName.push_back(sceneObj.second.name);
+	}
+
+	return objName;
 }

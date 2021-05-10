@@ -42,23 +42,30 @@ class Scene
 
 		void addCameraProjMat(float width, float height, float fFar, float fNear, float fov);
 
-		void setGameObject(ObjectInfo);
+		void addGameObject(ObjectInfo);
 	
 		void setStepFunction(std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>);
 	
 		void setCreateFunction(std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>);
 		
 		/*TODO
-			-recalculate surface normals whem applying static rotation to object,
 			-add texturing to objects, read UV map from obj file,
 			-add abilit to read color info of objects (gotta look into that),
-			-detach main game loop from the main file (for ease of use),
-			-detach calling step function from main game loop (for ease of use),
+			-possiblity to create multiple instances of the same object that have the same create and step functions,
+				-add objectID system za managenje tega,
+				-možnost kreiranja drugih objektov iz step / create funkcij drugih objecktov,
+				-when adding this make sure to make a proper *create* function that runs on object
+				 creation and not when the game starts becouse you can add them at run time duh,
+				-add a event that runs before the game starts (becouse the create function now
+				 does something else now (mostly for optimisation (or disern when the create is at begin of game or at runtime :)))).))
+			-parent child system (to je probably malo komplicirano),
 			-etc......
 		*/
 		void callStepFunction(std::string);
 	
 		void callCreateFunction(std::string);
+
+		std::vector<std::string> objectNames();
 	
 	private:
 		vecs::mat4 worldMat;

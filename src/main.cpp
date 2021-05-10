@@ -73,8 +73,8 @@ int main(void)
     test.name = "test1";
 
     //set the object position
-    test.position = { 0.0f, -3.0f, 2.0f };
-    //test.staticObjectRotation = { PI/2.0f, 0.0f, 0.0f };
+    test.position = { 0.0f, -6.0f, 4.0f };
+    test.staticObjectRotation = { PI/2.0f, 0.0f, 0.0f };
 
     //set the color
     test.color = { 1.0f, 0.0f, 0.0f };
@@ -156,11 +156,11 @@ int main(void)
     };
 
     //add the object to the game scene
-    mainScene.setGameObject(test);
+    mainScene.addGameObject(test);
 
-    mainScene.setGameObject(test2);
+    mainScene.addGameObject(test2);
 
-    mainScene.setGameObject(test3);
+    mainScene.addGameObject(test3);
 
     //add a step function to the added object
     mainScene.setStepFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
@@ -176,10 +176,6 @@ int main(void)
         cam.pos.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
         cam.forward = ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
         cam.sideways = ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
-
-        /*objects[self].position.x = cam.pos.x;
-        objects[self].position.y = cam.pos.y - 3;
-        objects[self].position.z = cam.pos.z + 2;*/
         });
 
     mainScene.setStepFunction(test2.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {

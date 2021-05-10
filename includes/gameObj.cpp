@@ -11,7 +11,16 @@ void applyStaticRotation(ObjectInfo& info)
 		vecs::vec3 t1 = vc::customVecMultiply(createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[1]);
 		vecs::vec3 t2 = vc::customVecMultiply(createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[2]);
 
-		end.tris.push_back({ { t0, t1, t2 }, tri.color, tri.normal });
+		vecs::vec3 U = t1 - t0;
+		vecs::vec3 V = t2 - t0;
+
+		vecs::vec3 newNormal = {
+			(U.y * V.z) - (V.y * U.z),
+			(U.z * V.x) - (V.z * U.x),
+			(U.x * V.y) - (V.x * U.y)
+		};
+
+		end.tris.push_back({ { t0, t1, t2 }, tri.color, newNormal });
 	}
 
 	info.objectMesh = end;
@@ -25,18 +34,6 @@ void createMesh(ObjectInfo& info)
 		throw "Provided file path is not valid or does not exist!";	
 
 	applyStaticRotation(info);
-}
-
-void createObjectShaders(unsigned int drawType, ObjectInfo& info)
-{
-	/*std::vector<float> convertedObjectMesh;
-	convertMeshToArray(info.objectMesh, convertedObjectMesh);
-
-	Viewport objectView(convertedObjectMesh, drawType);
-
-	info.program = objectView.bindBuffer(info.shaderDirs, info.depthTest, info.buffer);
-
-	info.triangles = objectView.vecSize;*/
 }
 
 void addInt(std::string name, int num, ObjectInfo& obj)
