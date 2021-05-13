@@ -8,20 +8,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include<cmath>
-#include "../includes/scene.h"
+#include "../includes/core.h"
 
 float cot(float i) { return(1 / tanf(i)); }
 
 int main(void)
 {
-    GLFWwindow* window;
-
-    /* Initialize the library*/
-    if (!glfwInit())
-         return -1;
-
-    //things to do with projection matrix
-
     float horiz, vertical;
 
     screenResolution(horiz, vertical);
@@ -38,27 +30,15 @@ int main(void)
 
     const float aspectRatio = resolution[1] / resolution[0];
 
-    /* Create a windowed mode window and its OpenGL context*/
-
-    window = glfwCreateWindow((int)resolution[0], (int)resolution[1], "Window", NULL, NULL);
-
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current*/
-    glfwMakeContextCurrent(window);
-
-    if (glewInit() != GLEW_OK)
-        std::cout << "Glew error!" << std::endl;
-
-    std::cout << glGetString(GL_VERSION) << std::endl;
-
     /*||||||||||||||||||||||||
     ||GAME ENGINE COMPONENTS||
     ||||||||||||||||||||||||*/
+
+    //define game engine
+    Engine gameEngine(1920.0f, 1080.0f);
+
+    //call this before calling any scene operations (trust me :) ).
+    gameEngine.setup();
 
     //define the scene
     Scene mainScene;
@@ -184,37 +164,9 @@ int main(void)
     mainScene.setStepFunction(test3.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
         });
 
-    //calling the scenes create function
-    mainScene.sceneCreate();
+    gameEngine.setScene(mainScene);
 
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        //calling the objects step function
-        mainScene.callStepFunction(test.name);
-
-        mainScene.callStepFunction(test2.name);
-
-        mainScene.callStepFunction(test3.name);
-
-        //calling the scenes step function
-        mainScene.sceneStep();
-
-        /* Render here */
-        //glClearColor(0.537f, 0.796f, 0.9803f, 1.0f);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
+    gameEngine.run();
 
     return 0;
 }

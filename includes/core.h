@@ -12,20 +12,18 @@
 #include"scene.h"
 
 class Engine {
-	/*
-		-detach main game loop from the main file (for ease of use),
-			-this will be done here when the run() function is called will have internal loop,
-			-maybe add it as a timer ¯\_(ツ)_/¯ (have no clue how to do that),
-		-detach calling step function from main game loop (for ease of use),
-			-don't realy know how to do that with my current object - scene system
-			-i'll do it with a for loop for now but not sure how to do it to make if more afficient (maybe its gonna be fine this way)
+	/*TODO
+		-this will be done here when the run() function is called will have internal loop,
+		-ect...
 	*/
 	public:
 		Engine(float, float);
 	
+		void setup();
+
 		void run();
 	
-		Scene& getScene();
+		void setScene(Scene);
 	
 	private:
 		Scene gameScene;

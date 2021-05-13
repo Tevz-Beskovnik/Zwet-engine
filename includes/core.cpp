@@ -14,16 +14,28 @@ Engine::Engine(float width, float height)
 	engineWindow = glfwCreateWindow((int)windowWidth, (int)windowHeight, "Window", NULL, NULL);
 }
 
-void Engine::run()
+void Engine::setup()
 {
 	//initialize glfw and the window
 	initEngineWindow();
 
+	/*
+	This has to be initialized before binding any objects to the scene becouse we are calling openGL functions and
+	if the window context is not set before calling the function we get a nasty memory access violation :)))
+	*/
+}
+
+void Engine::run()
+{
 	//execute all things that have to happend at create time
 	create();
 
 	while (!glfwWindowShouldClose(engineWindow))
 	{
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
 		//execute all the things that have to happend at frame
 		frame();
 
@@ -37,22 +49,22 @@ void Engine::run()
 	endEngineWindow();
 }
 
-Scene& Engine::getScene()
+void Engine::setScene(Scene sc)
 {
 	//return the refrence to the games scene
-	return gameScene;
+	gameScene = sc;
 }
 
 void Engine::frame()
 {
-	//call scene step function
-	gameScene.sceneStep();
-
 	//call step function for each object
 	for (const auto& objectName : sceneObjectNames)
 	{
 		gameScene.callStepFunction(objectName);
 	}
+
+	//call scene step function
+	gameScene.sceneStep();
 }
 
 void Engine::create()
@@ -60,14 +72,14 @@ void Engine::create()
 	//get a list of all the object names
 	sceneObjectNames = gameScene.objectNames();
 
-	//call scene create function
-	gameScene.sceneCreate();
-
 	//call create function for all of the objects
 	for (const auto& objectName : sceneObjectNames)
 	{
 		gameScene.callCreateFunction(objectName);
 	}
+
+	//call scene create function
+	gameScene.sceneCreate();
 }
 
 void Engine::initEngineWindow()

@@ -57,7 +57,7 @@ class Scene
 				-when adding this make sure to make a proper *create* function that runs on object
 				 creation and not when the game starts becouse you can add them at run time duh,
 				-add a event that runs before the game starts (becouse the create function now
-				 does something else now (mostly for optimisation (or disern when the create is at begin of game or at runtime :)))).))
+				 does something else now (mostly for optimisation (or disern when the create is at begin of game or at runtime :D))
 			-parent child system (to je probably malo komplicirano),
 			-etc......
 		*/
