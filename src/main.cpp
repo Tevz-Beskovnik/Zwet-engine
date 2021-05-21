@@ -5,15 +5,25 @@
 #include<math.h>
 #include <iostream>
 #include<string>
+#include<windows.h>
 #include <GL/glew.h>
+#include <algorithm>
 #include <GLFW/glfw3.h>
+#include <filesystem>
 #include<cmath>
 #include "../includes/core.h"
+namespace fs = std::filesystem;
 
 float cot(float i) { return(1 / tanf(i)); }
 
 int main(void)
 {
+    std::u8string path_string(fs::current_path().u8string());
+    std::string endp(path_string.begin(), path_string.end());
+    endp += "/";
+    std::replace(endp.begin(), endp.end(), '\\', '/');
+    std::cout << endp;
+
     float horiz, vertical;
 
     screenResolution(horiz, vertical);
@@ -61,25 +71,25 @@ int main(void)
     //set the color
     test.color = { 1.0f, 0.0f, 0.0f };
 
-    Texture newTex("C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/textures/JermaSus.jpg");
+    Texture newTex(endp + "includes/shaders/textures/JermaSus.jpg");
 
     test.tex = newTex;
 
     //enable depth test and apend all paths to shaers / object files
     test.depthTest = true;
     test.drawType = GL_STATIC_DRAW;
-    test.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/ship7.obj";
+    test.objectModelDir = endp + "includes/shaders/models/ship7.obj";
     test.shaderDirs = {
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vertShip.glsl",
+            endp + "includes/shaders/cube/vertShip.glsl",
             GL_VERTEX_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag2.glsl",
+            endp + "includes/shaders/cube/frag2.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom2.glsl",
+            endp + "includes/shaders/cube/geom2.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -95,25 +105,25 @@ int main(void)
     //set color
     //test2.color = { 0.0f, 1.0f, 0.0f };
 
-    Texture tex2("C:/Users/tevzb/Desktop/slikice/20190929_184536.jpg");
+    Texture tex2(endp + "includes/shaders/textures/JermaSus.jpg");
 
     test2.tex = tex2;
 
     //enable depth test and apend all paths to shaers / object files
     test2.depthTest = true;
     test2.drawType = GL_STATIC_DRAW;
-    test2.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/cube2.obj";
+    test2.objectModelDir = endp + "includes/shaders/models/cube2.obj";
     test2.shaderDirs = {
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vertCube.glsl",
+            endp + "includes/shaders/cube/vertCube.glsl",
             GL_VERTEX_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag2.glsl",
+            endp + "includes/shaders/cube/frag2.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom2.glsl",
+            endp + "includes/shaders/cube/geom2.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -129,18 +139,18 @@ int main(void)
     //enable depth test and apend all paths to shaers / object files
     test3.depthTest = true;
     test3.drawType = GL_STATIC_DRAW;
-    test3.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/pot2.obj";
+    test3.objectModelDir = endp + "includes/shaders/models/pot2.obj";
     test3.shaderDirs = {
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vert.glsl",
+            endp + "includes/shaders/cube/vert.glsl",
             GL_VERTEX_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag.glsl",
+            endp + "includes/shaders/cube/frag.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom.glsl",
+            endp + "includes/shaders/cube/geom.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -154,18 +164,18 @@ int main(void)
     //enable depth test and apend all paths to shaers / object files
     test4.depthTest = true;
     test4.drawType = GL_STATIC_DRAW;
-    test4.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/cube.obj";
+    test4.objectModelDir = endp + "includes/shaders/models/cube.obj";
     test4.shaderDirs = {
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vertCube.glsl",
+            endp + "includes/shaders/cube/vertCube.glsl",
             GL_VERTEX_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag.glsl",
+            endp + "includes/shaders/cube/frag.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom.glsl",
+            endp + "includes/shaders/cube/geom.glsl",
             GL_GEOMETRY_SHADER
         }
     };

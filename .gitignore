@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+*.props
 
 # Compiled Object files
 *.slo
@@ -12,7 +13,6 @@
 *.recipe
 *.log
 *.idb
-*.vcxproj
 *.filters
 *.user
 

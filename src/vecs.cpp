@@ -1,5 +1,4 @@
-#include "vecs.h"
-#include<iostream>
+#include "../includes/vecs.h"
 
 void vecs::identityMat(vecs::mat4& mat)
 {
@@ -29,7 +28,7 @@ bool vecs::loadFromObjectFile(std::string path, vecs::mesh& object, vecs::rgb co
 		char line[128];
 		f.getline(line, 128);
 
-		std::strstream s;
+		std::stringstream s;
 		s << line;
 
 		char junk;

@@ -1,4 +1,4 @@
-#include "gameObj.h"
+#include "../includes/gameObj.h"
 
 void applyStaticRotation(ObjectInfo& info)
 {

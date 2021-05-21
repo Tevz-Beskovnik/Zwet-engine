@@ -7,7 +7,7 @@
 #include<fstream>
 #include<vector>
 #include<cmath>
-#include<strstream>
+#include<sstream>
 #include<math.h>
 #include<algorithm>
 

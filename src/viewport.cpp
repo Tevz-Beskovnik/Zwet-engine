@@ -1,14 +1,12 @@
-#define _CRTDBG_MAP_ALLOC
-
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
 #include<fstream>
 #include<vector>
 #include<wtypes.h>
-#include "viewport.h"
-#include "vecCalc.h"
+#include "../includes/viewport.h"
+#include "../includes/vecCalc.h"
 #include<crtdbg.h>
-#include "vecs.h"
+#include "../includes/vecs.h"
 
 Viewport::Viewport(std::vector<float>& vecC, GLenum type)
 {
@@ -73,7 +71,7 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
 
 void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buffer)
 {
-    float* positions = &startVec[0];
+    float* positions = startVec.data();
 
     if(depthTest == true)
         glEnable(GL_DEPTH_TEST);
@@ -137,8 +135,6 @@ void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buf
         11 * sizeof(float),
         (void*)offsetUV
     );
-
-    delete positions;
 }
 
 vecs::mat4 createWorldMatrix(vecs::vec3 rot, vecs::vec3 translation, float time)
