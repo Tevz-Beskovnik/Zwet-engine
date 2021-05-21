@@ -6,7 +6,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+
 *.pdb
 *.tlog
 *.lastbuildstate
