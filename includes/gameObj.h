@@ -10,6 +10,7 @@
 #include "vecCalc.h"
 #include "collision.h"
 #include "viewport.h"
+#include "texture.h"
 
 //all posible object need for the object (no this probably isn't all the info needed)
 typedef struct ObjectInfo
@@ -44,6 +45,9 @@ typedef struct ObjectInfo
 
 	//number of triangles in the mesh
 	int triangles;
+
+	//texturing
+	Texture tex = Texture("");
 } Obj;
 
 void applyStaticRotation(ObjectInfo&);

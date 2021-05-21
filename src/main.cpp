@@ -43,6 +43,8 @@ int main(void)
     //define the scene
     Scene mainScene;
 
+    mainScene.sceneCamera.pos = { 0.0f, 0.0f, 0.0f };
+
     //add the projection mat to the scene camera
     mainScene.addCameraProjMat(resolution[0], resolution[1], fFar, fNear, fov);
 
@@ -53,27 +55,31 @@ int main(void)
     test.name = "test1";
 
     //set the object position
-    test.position = { 0.0f, -6.0f, 4.0f };
+    test.position = /*{ 0.0f, 0.0f, 0.0f };/**/ { 0.0f, -4.0f, 4.0f };
     test.staticObjectRotation = { PI/2.0f, 0.0f, 0.0f };
 
     //set the color
     test.color = { 1.0f, 0.0f, 0.0f };
 
+    Texture newTex("C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/textures/JermaSus.jpg");
+
+    test.tex = newTex;
+
     //enable depth test and apend all paths to shaers / object files
     test.depthTest = true;
     test.drawType = GL_STATIC_DRAW;
-    test.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/ship2.obj";
+    test.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/ship7.obj";
     test.shaderDirs = {
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vert.glsl",
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vertShip.glsl",
             GL_VERTEX_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag.glsl",
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag2.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom.glsl",
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom2.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -87,23 +93,27 @@ int main(void)
     test2.position = { 8.0f, 1.0f, 0.0f };
 
     //set color
-    test2.color = { 0.0f, 1.0f, 0.0f };
+    //test2.color = { 0.0f, 1.0f, 0.0f };
+
+    Texture tex2("C:/Users/tevzb/Desktop/slikice/20190929_184536.jpg");
+
+    test2.tex = tex2;
 
     //enable depth test and apend all paths to shaers / object files
     test2.depthTest = true;
     test2.drawType = GL_STATIC_DRAW;
-    test2.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/cube.obj";
+    test2.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/cube2.obj";
     test2.shaderDirs = {
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vert.glsl",
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vertCube.glsl",
             GL_VERTEX_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag.glsl",
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag2.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom.glsl",
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom2.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -135,6 +145,31 @@ int main(void)
         }
     };
 
+    ObjectInfo test4;
+
+    //set the object position
+    test4.position = { 0.0f, 0.0f, 0.0f };
+    test4.color = { 1.0f, 1.0f, 0.0f };
+
+    //enable depth test and apend all paths to shaers / object files
+    test4.depthTest = true;
+    test4.drawType = GL_STATIC_DRAW;
+    test4.objectModelDir = "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/models/cube.obj";
+    test4.shaderDirs = {
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/vertCube.glsl",
+            GL_VERTEX_SHADER
+        },
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/frag.glsl",
+            GL_FRAGMENT_SHADER
+        },
+        {
+            "C:/Users/tevzb/Desktop/koda/physics_engine/3D_voxel_physics/Project1/includes/shaders/cube/geom.glsl",
+            GL_GEOMETRY_SHADER
+        }
+    };
+
     //add the object to the game scene
     mainScene.addGameObject(test);
 
@@ -142,10 +177,12 @@ int main(void)
 
     mainScene.addGameObject(test3);
 
+    //mainScene.addGameObject(test4);
+
     //add a step function to the added object
     mainScene.setStepFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
         /*movement mods for by how much it should increase the movement speed*/
-        const float movementMod = 0.03f;
+        const float movementMod = 0.13f;
         const float yawMod = 0.02f;
 
         //camera controls for yaw and pitch
@@ -156,6 +193,22 @@ int main(void)
         cam.pos.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
         cam.forward = ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
         cam.sideways = ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
+
+        /*objects[self].position.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
+        objects[self].position.z += ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
+        objects[self].position.x += ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));*/
+
+        objects[self].objectFloats["pitch"] += (-yawMod * kbi::isKeyHeld('J') + yawMod * kbi::isKeyHeld('N'));
+        objects[self].objectFloats["yaw"] += (-yawMod * kbi::isKeyHeld('B') + yawMod * kbi::isKeyHeld('M'));
+
+        int yaw = glGetUniformLocation(objects[self].program, "objYaw");
+        int pitch = glGetUniformLocation(objects[self].program, "objPitch");
+
+        vecs::mat4 objYaw = vc::rotY(objects[self].objectFloats["yaw"]);
+        vecs::mat4 objPicth = vc::rotX(objects[self].objectFloats["pitch"]);
+
+        glUniformMatrix4fv(yaw, 1, GL_FALSE, &objYaw.r[0][0]);
+        glUniformMatrix4fv(pitch, 1, GL_FALSE, &objPicth.r[0][0]);
         });
 
     mainScene.setStepFunction(test2.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
@@ -164,9 +217,23 @@ int main(void)
     mainScene.setStepFunction(test3.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
         });
 
+    /*mainScene.setStepFunction(test4.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        const float movementMod = 0.03f;
+
+        objects[self].position.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
+        objects[self].position.z += ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
+        objects[self].position.x += ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
+        });*/
+
+    mainScene.setCreateFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+            objects[self].objectFloats.insert(std::pair<std::string, float>("yaw", 0.0f));
+            objects[self].objectFloats.insert(std::pair<std::string, float>("pitch", 0.0f));
+        });
+
     gameEngine.setScene(mainScene);
 
     gameEngine.run();
 
+    _CrtDumpMemoryLeaks();
     return 0;
 }

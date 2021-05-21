@@ -20,8 +20,8 @@ void Engine::setup()
 	initEngineWindow();
 
 	/*
-	This has to be initialized before binding any objects to the scene becouse we are calling openGL functions and
-	if the window context is not set before calling the function we get a nasty memory access violation :)))
+	This has to be initialized beindfore bing any objects to the scene becouse we are calling openGL in the binding
+	functions and if the window context is not set before calling the function we get a nasty memory access violation :)))
 	*/
 }
 

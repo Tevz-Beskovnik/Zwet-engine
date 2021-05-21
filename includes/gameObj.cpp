@@ -20,7 +20,7 @@ void applyStaticRotation(ObjectInfo& info)
 			(U.x * V.y) - (V.x * U.y)
 		};
 
-		end.tris.push_back({ { t0, t1, t2 }, tri.color, newNormal });
+		end.tris.push_back({ { t0, t1, t2 }, { tri.texUv[0], tri.texUv[1], tri.texUv[2] }, tri.color, newNormal });
 	}
 
 	info.objectMesh = end;

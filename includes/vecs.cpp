@@ -22,6 +22,7 @@ bool vecs::loadFromObjectFile(std::string path, vecs::mesh& object, vecs::rgb co
 	// Local cache of verts
 	std::vector<vecs::vec3> verts;
 	std::vector<vecs::vec3> normals;
+	std::vector<vecs::vec2> UVs;
 
 	while (!f.eof())
 	{
@@ -33,11 +34,18 @@ bool vecs::loadFromObjectFile(std::string path, vecs::mesh& object, vecs::rgb co
 
 		char junk;
 
-		if (line[0] == 'v' && line[1] != 'n')
+		if (line[0] == 'v' && line[1] != 'n' && line[1] != 't')
 		{
 			vecs::vec3 v;
 			s >> junk >> v.x >> v.y >> v.z;
 			verts.push_back(v);
+		}
+
+		if (line[0] == 'v' && line[1] == 't')
+		{
+			float i, j;
+			s >> junk >> junk >> i >> j;
+			UVs.push_back({ (float)i, (float)j });
 		}
 
 		if (line[0] == 'v' && line[1] == 'n')
@@ -51,11 +59,22 @@ bool vecs::loadFromObjectFile(std::string path, vecs::mesh& object, vecs::rgb co
 		{
 			int f[3];
 			int vn;
-			s >> junk >> f[0] >> junk >> junk >> vn >> f[1] >> junk >> junk >> vn >> f[2] >> junk >> junk >> vn;
-			if(normals.empty() == false)
-				object.tris.push_back({ { verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] }, color, normals[vn-1] });
+			int uv[3];
+			if (UVs.empty() == false && normals.empty() == false)
+			{
+				s >> junk >> f[0] >> junk >> uv[0] >> junk >> vn >> f[1] >> junk >> uv[1] >> junk >> vn >> f[2] >> junk >> uv[2] >> junk >> vn;
+				object.tris.push_back({ { verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] }, { UVs[uv[0] - 1], UVs[uv[1] - 1], UVs[uv[2] - 1] }, color, normals[vn - 1] });
+			}
+			else if(normals.empty() == false)
+			{ 	
+				s >> junk >> f[0] >> junk >> junk >> vn >> f[1] >> junk >> junk >> vn >> f[2] >> junk >> junk >> vn;
+				object.tris.push_back({ { verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] }, { 0.0f }, color, normals[vn-1] });
+			}
 			else
-				object.tris.push_back({ { verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] }, color, 1.0f, 0.0f, 0.0f });
+			{
+				s >> junk >> f[0] >> f[1] >> f[2];
+				object.tris.push_back({ { verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] }, { 0.0f }, color, 1.0f, 0.0f, 0.0f });
+			}
 		}
 	}
 

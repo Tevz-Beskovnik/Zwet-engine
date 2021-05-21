@@ -1,3 +1,5 @@
+#define _CRTDBG_MAP_ALLOC
+
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
 #include<fstream>
@@ -5,6 +7,7 @@
 #include<wtypes.h>
 #include "viewport.h"
 #include "vecCalc.h"
+#include<crtdbg.h>
 #include "vecs.h"
 
 Viewport::Viewport(std::vector<float>& vecC, GLenum type)
@@ -30,6 +33,9 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
         oMesh.push_back(tri.normal.x);
         oMesh.push_back(tri.normal.y);
         oMesh.push_back(tri.normal.z);
+        //uvs
+        oMesh.push_back(tri.texUv[0].x);
+        oMesh.push_back(tri.texUv[0].y);
 
         //second vec3
         oMesh.push_back(tri.p[1].x);
@@ -43,6 +49,9 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
         oMesh.push_back(tri.normal.x);
         oMesh.push_back(tri.normal.y);
         oMesh.push_back(tri.normal.z);
+        //uvs
+        oMesh.push_back(tri.texUv[1].x);
+        oMesh.push_back(tri.texUv[1].y);
 
         //third vec3
         oMesh.push_back(tri.p[2].x);
@@ -56,6 +65,9 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
         oMesh.push_back(tri.normal.x);
         oMesh.push_back(tri.normal.y);
         oMesh.push_back(tri.normal.z);
+        //uvs
+        oMesh.push_back(tri.texUv[2].x);
+        oMesh.push_back(tri.texUv[2].y);
     }
 };
 
@@ -68,6 +80,7 @@ void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buf
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_FRONT);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -76,17 +89,19 @@ void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buf
     unsigned int coords = glGetAttribLocation(shader, "position");
     unsigned int color = glGetAttribLocation(shader, "iColor");
     unsigned int normal = glGetAttribLocation(shader, "iNormal");
+    unsigned int UV = glGetAttribLocation(shader, "iUV");
 
     glEnableVertexAttribArray(0);    
     glEnableVertexAttribArray(color);
     glEnableVertexAttribArray(normal);
+    glEnableVertexAttribArray(UV);
 
     glVertexAttribPointer(
         coords,
         3,
         GL_FLOAT,
         GL_FALSE,
-        9 * sizeof(float),
+        11 * sizeof(float),
         0
     );
 
@@ -97,7 +112,7 @@ void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buf
         3,
         GL_FLOAT,
         GL_FALSE,
-        9 * sizeof(float),
+        11 * sizeof(float),
         (void*)offsetColor
     );
 
@@ -108,9 +123,22 @@ void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buf
         3,
         GL_FLOAT,
         GL_FALSE,
-        9 * sizeof(float),
+        11 * sizeof(float),
         (void*)offsetNormal
     );
+
+    ptrdiff_t offsetUV = 9 * sizeof(float);
+
+    glVertexAttribPointer(
+        UV,
+        2,
+        GL_FLOAT,
+        GL_FALSE,
+        11 * sizeof(float),
+        (void*)offsetUV
+    );
+
+    delete positions;
 }
 
 vecs::mat4 createWorldMatrix(vecs::vec3 rot, vecs::vec3 translation, float time)

@@ -13,7 +13,7 @@
 
 class Engine {
 	/*TODO
-		-this will be done here when the run() function is called will have internal loop,
+		-add physics engine (obably runs on own clock),
 		-ect...
 	*/
 	public:

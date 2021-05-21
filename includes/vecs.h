@@ -32,6 +32,10 @@ namespace vecs
 
 	};
 
+	struct vec2 {
+		float x, y;
+	};
+
 	struct vec3{
 		float x, y, z;
 
@@ -92,6 +96,7 @@ namespace vecs
 
 	struct triangle{
 		vec3 p[3];
+		vec2 texUv[3];
 		rgb color;
 		vec3 normal;
 	};

@@ -42,11 +42,11 @@ void Scene::setCreateFunction(std::string objName, std::function<void(std::map<s
 
 void Scene::callStepFunction(std::string objName)
 {
-	Viewport vp(sceneObjects[objName].convertedMesh, sceneObjects[objName].drawType);
+	Viewport* vp = new Viewport(sceneObjects[objName].convertedMesh, sceneObjects[objName].drawType);
 
-	vp.bindBuffer(sceneObjects[objName].program, sceneObjects[objName].depthTest, sceneObjects[objName].buffer);
+	vp->bindBuffer(sceneObjects[objName].program, sceneObjects[objName].depthTest, sceneObjects[objName].buffer);
 
-	sceneObjects[objName].triangles = vp.vecSize;
+	sceneObjects[objName].triangles = vp->vecSize;
 
 	glUseProgram(sceneObjects[objName].program);
 
@@ -69,12 +69,15 @@ void Scene::callStepFunction(std::string objName)
 		sceneCamera.pos.y, 
 		sceneCamera.pos.z
 	};
+	
+	sceneObjects[objName].tex.bind();
 
 	vecs::mat4 yawMat = vc::rotY(-sceneCamera.yaw);
 	vecs::mat4 pitchMat = vc::rotX(-sceneCamera.pitch);
 	vecs::mat4 rollMat = vc::rotZ(-sceneCamera.roll);
 
 	//get uniform locations to bind the predefined uniforms
+	int uTexture = glGetUniformLocation(sceneObjects[objName].program, "uTexture");
 	int uWorld = glGetUniformLocation(sceneObjects[objName].program, "uWorld");
 	int uWorldInvTran = glGetUniformLocation(sceneObjects[objName].program, "uWorldInvTran");
 	int uViewMat = glGetUniformLocation(sceneObjects[objName].program, "uViewMat");
@@ -87,6 +90,7 @@ void Scene::callStepFunction(std::string objName)
 	int uRoll = glGetUniformLocation(sceneObjects[objName].program, "uRoll");
 	int uRollMat = glGetUniformLocation(sceneObjects[objName].program, "uRollMat");
 
+	glUniform1i(uTexture, 0);
 	glUniformMatrix4fv(uWorld, 1, GL_FALSE, &worldMat.r[0][0]);
 	glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &transposedWorldMat.r[0][0]);
 	glUniformMatrix4fv(uViewMat, 1, GL_FALSE, &viewMat.r[0][0]);
@@ -100,6 +104,12 @@ void Scene::callStepFunction(std::string objName)
 	glUniformMatrix4fv(uRollMat, 1, GL_FALSE, &rollMat.r[0][0]);
 
 	glDrawArrays(GL_TRIANGLES, 0, sceneObjects[objName].triangles / 6);
+
+	glDeleteBuffers(1, &sceneObjects[objName].buffer);
+
+	sceneObjects[objName].tex.unbind();
+
+	delete vp;
 }
 
 void Scene::callCreateFunction(std::string objName)
@@ -169,7 +179,8 @@ void Scene::applyStaticSceneRotation()
 			vecs::vec3 t1 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[1]);
 			vecs::vec3 t2 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[2]);
 
-			endWorld.tris.push_back({ { t0, t1, t2 }, tri.color, tri.normal });
+			endWorld.tris.push_back({ { t0, t1, t2 }, { tri.texUv[0], tri.texUv[1], tri.texUv[2] }, tri.color, tri.normal
+		});
 		}
 
 		kv.second.objectMesh = endWorld;
