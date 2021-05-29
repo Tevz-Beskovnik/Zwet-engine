@@ -12,8 +12,6 @@ void Scene::addGameObject(ObjectInfo info)
 	convertMeshToArray(info.objectMesh, info.convertedMesh);
 
 	sceneObjects.insert(std::pair<std::string, ObjectInfo>(info.name, info));
-
-	totalTris += info.triangles;
 }
 
 void Scene::setStepFunction(std::string objName, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)> func)

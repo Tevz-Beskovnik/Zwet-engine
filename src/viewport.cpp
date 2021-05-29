@@ -69,7 +69,12 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
     }
 };
 
-void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buffer)
+void Viewport::genBuffer(unsigned int& buffer)
+{
+    glGenBuffers(1, &buffer);
+}
+
+void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int& buffer)
 {
     float* positions = startVec.data();
 
@@ -80,7 +85,6 @@ void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int buf
     glCullFace(GL_FRONT);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, vecSize * sizeof(float), positions, drawType);
 

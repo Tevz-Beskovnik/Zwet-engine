@@ -29,7 +29,6 @@ typedef struct Camera
 class Scene
 {
 	public:
-		int totalTris = 0;
 		vecs::vec3 staticSceneRotation = { 0.0f };
 		vecs::vec3 dynamicSceneRotation = { 0.0f };
 		Camera sceneCamera;

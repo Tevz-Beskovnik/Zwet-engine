@@ -32,6 +32,9 @@ void Engine::run()
 
 	while (!glfwWindowShouldClose(engineWindow))
 	{
+		// Poll for and process events
+		glfwPollEvents();
+
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -41,9 +44,6 @@ void Engine::run()
 
 		// Swap front and back buffers
 		glfwSwapBuffers(engineWindow);
-
-		// Poll for and process events
-		glfwPollEvents();
 	}
 
 	endEngineWindow();
@@ -84,6 +84,11 @@ void Engine::create()
 
 void Engine::initEngineWindow()
 {
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
 	if (!engineWindow)
 	{
 		glfwTerminate();

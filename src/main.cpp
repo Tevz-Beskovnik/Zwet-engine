@@ -244,6 +244,5 @@ int main(void)
 
     gameEngine.run();
 
-    _CrtDumpMemoryLeaks();
     return 0;
 }
