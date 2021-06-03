@@ -8,9 +8,9 @@
 #include "vecCalc.h"
 #include "vecs.h"
 #include "vecCalc.h"
-#include "collision.h"
 #include "viewport.h"
 #include "texture.h"
+#include "physicsCore.h"
 
 //all posible object need for the object (no this probably isn't all the info needed)
 typedef struct ObjectInfo
@@ -43,18 +43,17 @@ typedef struct ObjectInfo
 	std::map<std::string, vecs::vec3> objectVectors;
 	std::map<std::string, vecs::mat4> objectMats;
 
-	//number of triangles in the mesh
-	int triangles;
-
 	//texturing
 	Texture tex = Texture("");
+
+	//physics object
+	bool enablePhysics = false;
+	PhyObject physicsObject;
 } Obj;
 
 void applyStaticRotation(ObjectInfo&);
 
 void createMesh(ObjectInfo&);
-
-void createObjectShaders(unsigned int, ObjectInfo&);
 
 void addInt(std::string, int, ObjectInfo&);
 

@@ -64,6 +64,10 @@ int main(void)
     //set the object name
     test.name = "test1";
 
+    test.enablePhysics = true;
+
+    test.physicsObject.mass = 2.0f;
+
     //set the object position
     test.position = /*{ 0.0f, 0.0f, 0.0f };/**/ { 0.0f, -4.0f, 4.0f };
     test.staticObjectRotation = { PI/2.0f, 0.0f, 0.0f };
@@ -71,25 +75,25 @@ int main(void)
     //set the color
     test.color = { 1.0f, 0.0f, 0.0f };
 
-    Texture newTex(endp + "includes/shaders/textures/JermaSus.jpg");
+    Texture newTex(endp + "resources/textures/JermaSus.jpg");
 
     test.tex = newTex;
 
     //enable depth test and apend all paths to shaers / object files
     test.depthTest = true;
     test.drawType = GL_STATIC_DRAW;
-    test.objectModelDir = endp + "includes/shaders/models/ship7.obj";
+    test.objectModelDir = endp + "resources/models/ship7.obj";
     test.shaderDirs = {
         {
-            endp + "includes/shaders/cube/vertShip.glsl",
+            endp + "resources/shaders/vertCube.glsl",
             GL_VERTEX_SHADER
         },
         {
-            endp + "includes/shaders/cube/frag2.glsl",
+            endp + "resources/shaders/frag2.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            endp + "includes/shaders/cube/geom2.glsl",
+            endp + "resources/shaders/geom2.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -105,25 +109,25 @@ int main(void)
     //set color
     //test2.color = { 0.0f, 1.0f, 0.0f };
 
-    Texture tex2(endp + "includes/shaders/textures/JermaSus.jpg");
+    Texture tex2(endp + "resources/textures/lol.jpg");
 
     test2.tex = tex2;
 
     //enable depth test and apend all paths to shaers / object files
     test2.depthTest = true;
     test2.drawType = GL_STATIC_DRAW;
-    test2.objectModelDir = endp + "includes/shaders/models/cube2.obj";
+    test2.objectModelDir = endp + "resources/models/cube2.obj";
     test2.shaderDirs = {
         {
-            endp + "includes/shaders/cube/vertCube.glsl",
+            endp + "resources/shaders/vertCube.glsl",
             GL_VERTEX_SHADER
         },
         {
-            endp + "includes/shaders/cube/frag2.glsl",
+            endp + "resources/shaders/frag2.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            endp + "includes/shaders/cube/geom2.glsl",
+            endp + "resources/shaders/geom2.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -139,18 +143,18 @@ int main(void)
     //enable depth test and apend all paths to shaers / object files
     test3.depthTest = true;
     test3.drawType = GL_STATIC_DRAW;
-    test3.objectModelDir = endp + "includes/shaders/models/pot2.obj";
+    test3.objectModelDir = endp + "resources/models/pot2.obj";
     test3.shaderDirs = {
         {
-            endp + "includes/shaders/cube/vert.glsl",
+            endp + "resources/shaders/vert.glsl",
             GL_VERTEX_SHADER
         },
         {
-            endp + "includes/shaders/cube/frag.glsl",
+            endp + "resources/shaders/frag.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            endp + "includes/shaders/cube/geom.glsl",
+            endp + "resources/shaders/geom.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -164,18 +168,18 @@ int main(void)
     //enable depth test and apend all paths to shaers / object files
     test4.depthTest = true;
     test4.drawType = GL_STATIC_DRAW;
-    test4.objectModelDir = endp + "includes/shaders/models/cube.obj";
+    test4.objectModelDir = endp + "resources/models/cube.obj";
     test4.shaderDirs = {
         {
-            endp + "includes/shaders/cube/vertCube.glsl",
+            endp + "resources/shaders/vertCube.glsl",
             GL_VERTEX_SHADER
         },
         {
-            endp + "includes/shaders/cube/frag.glsl",
+            endp + "resources/shaders/frag.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            endp + "includes/shaders/cube/geom.glsl",
+            endp + "resources/shaders/geom.glsl",
             GL_GEOMETRY_SHADER
         }
     };

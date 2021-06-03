@@ -23,7 +23,7 @@ mat4 trans = mat4(
 
 void main()
 {
-	vec4 pos = vec4(position, 1.0);// * trans;
+	vec4 pos = vec4(position, 1.0) * trans;
 	vec4 res = pos;
 	gl_Position = res;
 	oFragPos = res.xyz;

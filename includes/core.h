@@ -9,7 +9,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include<cmath>
-#include"scene.h"
+#include"sceneCore.h"
 
 class Engine {
 	/*TODO
@@ -27,9 +27,11 @@ class Engine {
 	
 	private:
 		Scene gameScene;
+
 		GLFWwindow* engineWindow;
 		float windowHeight = 600.0f;
 		float windowWidth = 800.0f;
+		float currentTime, lastTime, deltaTime;
 		std::vector<std::string> sceneObjectNames;
 	
 		void initEngineWindow();

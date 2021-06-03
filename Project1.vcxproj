@@ -159,25 +159,25 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);glfw3.lib;opengl32.lib;glew32s.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <Import Project="$(MSBuildThisFileDirectory)/conandeps.props"/>
+  <Import Project="$(MSBuildThisFileDirectory)/conandeps.props" />
   <ItemGroup>
-    <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\gameObj.cpp" />
     <ClCompile Include="src\kbInput.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="src\physicsCore.cpp" />
+    <ClCompile Include="src\sceneCore.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\vecCalc.cpp" />
     <ClCompile Include="src\vecs.cpp" />
     <ClCompile Include="src\viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="includes\collision.h" />
     <ClInclude Include="includes\core.h" />
     <ClInclude Include="includes\gameObj.h" />
     <ClInclude Include="includes\kbInput.h" />
-    <ClInclude Include="includes\scene.h" />
+    <ClInclude Include="includes\physicsCore.h" />
+    <ClInclude Include="includes\sceneCore.h" />
     <ClInclude Include="includes\stb_image.h" />
     <ClInclude Include="includes\texture.h" />
     <ClInclude Include="includes\vecCalc.h" />

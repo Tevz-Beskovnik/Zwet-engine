@@ -1,10 +1,18 @@
 #include"../includes/core.h"
 
+double old = 0;
+void blockFramerate() {
+	if (old == 0) {
+		old = glfwGetTime();
+	}
+	while (glfwGetTime() - old < 1.0 / 60.0) {
+	}
+	old = glfwGetTime();
+}
+
 Engine::Engine(float width, float height)
+	:windowWidth(width), windowHeight(height), currentTime(glfwGetTime()), lastTime(0), deltaTime(currentTime - lastTime)
 {
-	//set the windows width and height
-	windowHeight = height;
-	windowWidth = width;
 
 	// Initialize the library
 	if (!glfwInit())
@@ -32,6 +40,7 @@ void Engine::run()
 
 	while (!glfwWindowShouldClose(engineWindow))
 	{
+		blockFramerate();
 		// Poll for and process events
 		glfwPollEvents();
 
@@ -57,14 +66,21 @@ void Engine::setScene(Scene sc)
 
 void Engine::frame()
 {
+	currentTime = glfwGetTime();
+
+	deltaTime = currentTime - lastTime;
+
+	std::cout << deltaTime << std::endl;
+	//call scene step function
+	gameScene.sceneStep(deltaTime);
+
 	//call step function for each object
 	for (const auto& objectName : sceneObjectNames)
 	{
 		gameScene.callStepFunction(objectName);
 	}
 
-	//call scene step function
-	gameScene.sceneStep();
+	lastTime = glfwGetTime();
 }
 
 void Engine::create()

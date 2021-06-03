@@ -1,4 +1,4 @@
-#include "../includes/scene.h"
+#include "../includes/sceneCore.h"
 
 void Scene::addGameObject(ObjectInfo info)
 {
@@ -10,6 +10,8 @@ void Scene::addGameObject(ObjectInfo info)
 	applyStaticRotation(info);
 
 	convertMeshToArray(info.objectMesh, info.convertedMesh);
+
+	info.physicsObject.position = info.position;
 
 	sceneObjects.insert(std::pair<std::string, ObjectInfo>(info.name, info));
 }
@@ -44,8 +46,6 @@ void Scene::callStepFunction(std::string objName)
 
 	vp->bindBuffer(sceneObjects[objName].program, sceneObjects[objName].depthTest, sceneObjects[objName].buffer);
 
-	sceneObjects[objName].triangles = vp->vecSize;
-
 	glUseProgram(sceneObjects[objName].program);
 
 	//call the before asigned step function
@@ -55,12 +55,10 @@ void Scene::callStepFunction(std::string objName)
 		return;
 
 	el->second(sceneObjects, objName, sceneCamera);
-
-	vecs::vec3 vec = {
-		sceneObjects[objName].position.x,
-		sceneObjects[objName].position.y,
-		sceneObjects[objName].position.z
-	};
+	
+	vecs::vec3 vec = { sceneObjects[objName].physicsObject.position.x, 
+					   sceneObjects[objName].physicsObject.position.y, 
+					   sceneObjects[objName].physicsObject.position.z };
 
 	vecs::vec3 camPos = {
 		sceneCamera.pos.x, 
@@ -101,7 +99,7 @@ void Scene::callStepFunction(std::string objName)
 	glUniformMatrix4fv(uPitchMat, 1, GL_FALSE, &pitchMat.r[0][0]);
 	glUniformMatrix4fv(uRollMat, 1, GL_FALSE, &rollMat.r[0][0]);
 
-	glDrawArrays(GL_TRIANGLES, 0, sceneObjects[objName].triangles / 6);
+	glDrawArrays(GL_TRIANGLES, 0, sceneObjects[objName].convertedMesh.size() / 6);
 
 	glDeleteBuffers(1, &sceneObjects[objName].buffer);
 
@@ -117,6 +115,9 @@ void Scene::callCreateFunction(std::string objName)
 	el = createFunctions.find(objName);
 	if (el == createFunctions.end())
 		return;
+
+	if (sceneObjects[objName].enablePhysics)
+		phyWorld.addObject(&sceneObjects[objName].physicsObject);
 
 	el->second(sceneObjects, objName, sceneCamera);
 }
@@ -177,19 +178,20 @@ void Scene::applyStaticSceneRotation()
 			vecs::vec3 t1 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[1]);
 			vecs::vec3 t2 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[2]);
 
-			endWorld.tris.push_back({ { t0, t1, t2 }, { tri.texUv[0], tri.texUv[1], tri.texUv[2] }, tri.color, tri.normal
-		});
+			endWorld.tris.push_back({ { t0, t1, t2 }, { tri.texUv[0], tri.texUv[1], tri.texUv[2] }, tri.color, tri.normal});
 		}
 
 		kv.second.objectMesh = endWorld;
 	}
 }
 
-void Scene::sceneStep()
+void Scene::sceneStep(float deltaTime)
 {
 	//things that need to be called at step but not multiple times
 	calculateViewMat(sceneCamera);
 	calculateWorldMat();
+
+	phyWorld.step(deltaTime);
 }
 
 void Scene::sceneCreate()

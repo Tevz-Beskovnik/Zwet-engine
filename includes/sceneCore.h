@@ -6,6 +6,7 @@
 
 #include<math.h>
 #include "gameObj.h"
+#include"physicsCore.h"
 
 typedef struct Camera
 {
@@ -33,7 +34,7 @@ class Scene
 		vecs::vec3 dynamicSceneRotation = { 0.0f };
 		Camera sceneCamera;
 
-		void sceneStep();
+		void sceneStep(float deltaTime);
 
 		void sceneCreate();
 
@@ -48,10 +49,7 @@ class Scene
 		void setCreateFunction(std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>);
 		
 		/*TODO
-			-DO THE FUCKING TEXTURING ALLREADY - WIP
 			-create animation engine (as in 3d movement)
-			-add texturing to objects, read UV map from obj file,
-			-add abilit to read color info of objects (gotta look into that),
 			-possiblity to create multiple instances of the same object that have the same create and step functions,
 				-add objectID system za managenje tega,
 				-možnost kreiranja drugih objektov iz step / create funkcij drugih objecktov,
@@ -69,6 +67,7 @@ class Scene
 		std::vector<std::string> objectNames();
 	
 	private:
+		PhysicsWorld phyWorld;
 		vecs::mat4 worldMat;
 		vecs::mat4 transposedWorldMat;
 		vecs::mat4 viewMat;

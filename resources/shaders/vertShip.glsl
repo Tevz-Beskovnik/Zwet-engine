@@ -36,8 +36,8 @@ mat4 trans2 = mat4(
 
 void main()
 {
-	vec4 pos = vec4(position, 1.0); // * trans;
-	vec4 res = pos;/*vec4(position + uCameraPos, 1.0);/**///(vec4(pos.xyz, 1.0) * (trans2 * uPitchMat * uYawMat * trans));/**/
+	vec4 pos = vec4(position, 1.0) * trans;
+	vec4 res = /*vec4(position + uCameraPos, 1.0);/**/(vec4(pos.xyz, 1.0) * (trans2 * uPitchMat * uYawMat * trans));/**/
 	gl_Position = res;
 	oFragPos = res.xyz;
 	oColor = iColor;
