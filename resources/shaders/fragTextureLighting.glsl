@@ -5,9 +5,12 @@ layout(location = 0) out vec4 color;
 in vec3 iColor;
 in vec3 iFragPos;
 in vec3 iNormal;
+in vec2 iUV;
 in float iDp;
 
 uniform vec3 uCameraPos;
+
+uniform sampler2D uTexture;
 
 /*ambient lighting*/
 vec3 lightColor = vec3(0.9803, 0.9372, 0.537);
@@ -30,7 +33,7 @@ vec3 specular = specularStrength * spec * lightColor;
 /*combine all three to make PHONG LIGTING JAAAAAAA*/
 void main() 
 {
-    vec3 res = (ambient + diffuse + specular) * iColor;
-
-    color = vec4(res, 0.0);
+    vec3 res = (ambient + diffuse + specular) /** iColor/**/;
+    vec4 tex = texture(uTexture, iUV);
+    color = vec4(res * tex.xyz, 1.0);
 }

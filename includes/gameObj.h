@@ -35,6 +35,7 @@ typedef struct ObjectInfo
 	unsigned int drawType;
 	std::vector<ShaderInfo> shaderDirs;
 	std::string objectModelDir;
+	Viewport viewport = Viewport(convertedMesh, GL_STATIC_DRAW);
 	bool depthTest = true;
 	
 	//local variables that can be set in the create function

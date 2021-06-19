@@ -11,7 +11,13 @@ void Scene::addGameObject(ObjectInfo info)
 
 	convertMeshToArray(info.objectMesh, info.convertedMesh);
 
+	info.viewport = Viewport(info.convertedMesh, info.drawType);
+
 	info.physicsObject.position = info.position;
+
+	info.viewport.genBuffer(&info.buffer);
+
+	info.viewport.bindBufferData(info.buffer);
 
 	sceneObjects.insert(std::pair<std::string, ObjectInfo>(info.name, info));
 }
@@ -42,9 +48,7 @@ void Scene::setCreateFunction(std::string objName, std::function<void(std::map<s
 
 void Scene::callStepFunction(std::string objName)
 {
-	Viewport* vp = new Viewport(sceneObjects[objName].convertedMesh, sceneObjects[objName].drawType);
-
-	vp->bindBuffer(sceneObjects[objName].program, sceneObjects[objName].depthTest, sceneObjects[objName].buffer);
+	sceneObjects[objName].viewport.bindAttributes(sceneObjects[objName].program, sceneObjects[objName].buffer);
 
 	glUseProgram(sceneObjects[objName].program);
 
@@ -101,11 +105,7 @@ void Scene::callStepFunction(std::string objName)
 
 	glDrawArrays(GL_TRIANGLES, 0, sceneObjects[objName].convertedMesh.size() / 6);
 
-	glDeleteBuffers(1, &sceneObjects[objName].buffer);
-
 	sceneObjects[objName].tex.unbind();
-
-	delete vp;
 }
 
 void Scene::callCreateFunction(std::string objName)
@@ -118,6 +118,13 @@ void Scene::callCreateFunction(std::string objName)
 
 	if (sceneObjects[objName].enablePhysics)
 		phyWorld.addObject(&sceneObjects[objName].physicsObject);
+
+	if (sceneObjects[objName].depthTest == true)
+		glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CCW);
+	glCullFace(GL_FRONT);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	el->second(sceneObjects, objName, sceneCamera);
 }

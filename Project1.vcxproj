@@ -192,6 +192,7 @@
     <None Include="includes\shaders\cube\vert.glsl" />
     <None Include="includes\shaders\cube\vertCube.glsl" />
     <None Include="includes\shaders\cube\vertShip.glsl" />
+    <None Include="resources\shaders\fragTextureLighting.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

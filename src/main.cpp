@@ -45,7 +45,7 @@ int main(void)
     ||||||||||||||||||||||||*/
 
     //define game engine
-    Engine gameEngine(1920.0f, 1080.0f);
+    Engine gameEngine(1920.0f, 1080.0f, 60.0f);
 
     //call this before calling any scene operations (trust me :) ).
     gameEngine.setup();
@@ -64,12 +64,12 @@ int main(void)
     //set the object name
     test.name = "test1";
 
-    test.enablePhysics = true;
+    //test.enablePhysics = true;
 
     test.physicsObject.mass = 2.0f;
 
     //set the object position
-    test.position = /*{ 0.0f, 0.0f, 0.0f };/**/ { 0.0f, -4.0f, 4.0f };
+    test.position = /*{ 0.0f, 0.0f, 0.0f };/**/ { 0.0f, 20.0f, 4.0f };
     test.staticObjectRotation = { PI/2.0f, 0.0f, 0.0f };
 
     //set the color
@@ -161,25 +161,28 @@ int main(void)
 
     ObjectInfo test4;
 
-    //set the object position
-    test4.position = { 0.0f, 0.0f, 0.0f };
-    test4.color = { 1.0f, 1.0f, 0.0f };
+    test4.name = "car";
 
-    //enable depth test and apend all paths to shaers / object files
+    test4.position = { 0.0f, 0.0f, 3.0f };
+
+    Texture tex4(endp + "resources/textures/lowPoly.jpg");
+
+    test4.tex = tex4;
+
     test4.depthTest = true;
     test4.drawType = GL_STATIC_DRAW;
-    test4.objectModelDir = endp + "resources/models/cube.obj";
+    test4.objectModelDir = endp + "resources/models/car2.obj";
     test4.shaderDirs = {
         {
-            endp + "resources/shaders/vertCube.glsl",
+            endp + "resources/shaders/vertShip.glsl",
             GL_VERTEX_SHADER
         },
         {
-            endp + "resources/shaders/frag.glsl",
+            endp + "resources/shaders/fragTextureLighting.glsl",
             GL_FRAGMENT_SHADER
         },
         {
-            endp + "resources/shaders/geom.glsl",
+            endp + "resources/shaders/geom2.glsl",
             GL_GEOMETRY_SHADER
         }
     };
@@ -191,13 +194,13 @@ int main(void)
 
     mainScene.addGameObject(test3);
 
-    //mainScene.addGameObject(test4);
+    mainScene.addGameObject(test4);
 
     //add a step function to the added object
     mainScene.setStepFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
-        /*movement mods for by how much it should increase the movement speed*/
-        const float movementMod = 0.13f;
-        const float yawMod = 0.02f;
+        /*movement mods for by how muh it should increase the movement speed*/
+        const float movementMod = 0.08f;
+        const float yawMod = 0.03f;
 
         //camera controls for yaw and pitch
         cam.pitch += (-yawMod * kbi::isKeyHeld(VK_DOWN) + yawMod * kbi::isKeyHeld(VK_UP));
@@ -207,10 +210,6 @@ int main(void)
         cam.pos.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
         cam.forward = ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
         cam.sideways = ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
-
-        /*objects[self].position.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
-        objects[self].position.z += ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
-        objects[self].position.x += ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));*/
 
         objects[self].objectFloats["pitch"] += (-yawMod * kbi::isKeyHeld('J') + yawMod * kbi::isKeyHeld('N'));
         objects[self].objectFloats["yaw"] += (-yawMod * kbi::isKeyHeld('B') + yawMod * kbi::isKeyHeld('M'));
@@ -231,13 +230,8 @@ int main(void)
     mainScene.setStepFunction(test3.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
         });
 
-    /*mainScene.setStepFunction(test4.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
-        const float movementMod = 0.03f;
-
-        objects[self].position.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
-        objects[self].position.z += ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
-        objects[self].position.x += ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
-        });*/
+    mainScene.setStepFunction(test4.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        });
 
     mainScene.setCreateFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
             objects[self].objectFloats.insert(std::pair<std::string, float>("yaw", 0.0f));

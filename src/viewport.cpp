@@ -69,31 +69,29 @@ void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
     }
 };
 
-void Viewport::genBuffer(unsigned int& buffer)
+void Viewport::genBuffer(unsigned int* buffer)
 {
-    glGenBuffers(1, &buffer);
+    glGenBuffers(1, buffer);
 }
 
-void Viewport::bindBuffer(unsigned int& shader, bool depthTest, unsigned int& buffer)
+void Viewport::bindBufferData(unsigned int& buffer)
 {
     float* positions = startVec.data();
 
-    if(depthTest == true)
-        glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);
-    glCullFace(GL_FRONT);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, vecSize * sizeof(float), positions, drawType);
+}
 
-    unsigned int coords = glGetAttribLocation(shader, "position");
-    unsigned int color = glGetAttribLocation(shader, "iColor");
-    unsigned int normal = glGetAttribLocation(shader, "iNormal");
-    unsigned int UV = glGetAttribLocation(shader, "iUV");
+void Viewport::bindAttributes(unsigned int& program, unsigned int& buffer)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
-    glEnableVertexAttribArray(0);    
+    unsigned int coords = glGetAttribLocation(program, "position");
+    unsigned int color = glGetAttribLocation(program, "iColor");
+    unsigned int normal = glGetAttribLocation(program, "iNormal");
+    unsigned int UV = glGetAttribLocation(program, "iUV");
+
+    glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(color);
     glEnableVertexAttribArray(normal);
     glEnableVertexAttribArray(UV);

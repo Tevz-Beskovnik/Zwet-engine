@@ -31,11 +31,11 @@ public:
 
 	Viewport(std::vector<float>&, GLenum);
 
-	void genBuffer(unsigned int&);
+	void genBuffer(unsigned int*);
 
-	void bindBuffer(unsigned int&, bool, unsigned int&);
+	void bindBufferData(unsigned int&);
 
-	//unsigned int rebindBuffer(unsigned int, bool);
+	void bindAttributes(unsigned int&, unsigned int&);
 };
 
 void readShader(std::string, std::string&);

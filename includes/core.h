@@ -17,7 +17,7 @@ class Engine {
 		-ect...
 	*/
 	public:
-		Engine(float, float);
+		Engine(float, float, float fpsCap);
 	
 		void setup();
 
@@ -31,6 +31,7 @@ class Engine {
 		GLFWwindow* engineWindow;
 		float windowHeight = 600.0f;
 		float windowWidth = 800.0f;
+		float fpsCap;
 		float currentTime, lastTime, deltaTime;
 		std::vector<std::string> sceneObjectNames;
 	

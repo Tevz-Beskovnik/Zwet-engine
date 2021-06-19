@@ -14,7 +14,7 @@ uniform sampler2D uTexture;
 
 /*ambient lighting*/
 vec3 lightColor = vec3(0.9803, 0.9372, 0.537);
-float ambientStrength = 0.7;
+float ambientStrength = 0.3;
 vec3 ambient = ambientStrength * lightColor;
 
 /*difuse lighting*/
