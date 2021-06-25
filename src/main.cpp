@@ -6,9 +6,7 @@
 #include <iostream>
 #include<string>
 #include<windows.h>
-#include <GL/glew.h>
 #include <algorithm>
-#include <GLFW/glfw3.h>
 #include <filesystem>
 #include<cmath>
 #include "../includes/core.h"
@@ -18,6 +16,7 @@ float cot(float i) { return(1 / tanf(i)); }
 
 int main(void)
 {
+
     std::u8string path_string(fs::current_path().u8string());
     std::string endp(path_string.begin(), path_string.end());
     endp += "/";
@@ -174,7 +173,7 @@ int main(void)
     test4.objectModelDir = endp + "resources/models/car2.obj";
     test4.shaderDirs = {
         {
-            endp + "resources/shaders/vertShip.glsl",
+            endp + "resources/shaders/vertCube.glsl",
             GL_VERTEX_SHADER
         },
         {
