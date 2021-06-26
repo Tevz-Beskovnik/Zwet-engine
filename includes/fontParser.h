@@ -9,7 +9,6 @@
 
 typedef struct CharInfo
 {
-	char name; //the char it represents
 	int id; //char id (have to find what the ids of chars are)
 	int x; //location of start of char (topleft of the char)
 	int y;
@@ -18,7 +17,6 @@ typedef struct CharInfo
 	int xoffset; //how much to offset the char on both axis
 	int yoffset;
 	int xadvance; //how much to move forward to the next position to palce the character
-	int yadvance;
 	vecs::vec2 UV[4]; //UVs for the letter
 };
 
@@ -34,9 +32,10 @@ class Font
 		void appendToObject(ObjectInfo* objectToAppendOnto); //add object to be appended to
 
 	private:
+		int imageResolution[2];
 		ObjectInfo* object;
 		vecs::mesh fontMesh;
-		std::string strToRender;
+		std::string currentString;
 		std::string fontFilePath;
 		std::string fontPicturePath;
 		std::map<int, CharInfo> charMap;
