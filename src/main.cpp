@@ -2,6 +2,10 @@
     #define PI 3.14159265358979323846
 #endif // PI
 
+#define WINDOW_SETTINGS
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
+
 #include<math.h>
 #include <iostream>
 #include<string>
@@ -27,7 +31,7 @@ int main(void)
 
     screenResolution(horiz, vertical);
 
-    const float resolution[2] = { horiz, vertical };
+    const float resolution[2] = { (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT };
 
     const float fov = 90.0f;
 
@@ -44,7 +48,7 @@ int main(void)
     ||||||||||||||||||||||||*/
 
     //define game engine
-    Engine gameEngine(1920.0f, 1080.0f, 60.0f);
+    Engine gameEngine((float)WINDOW_WIDTH, (float)WINDOW_HEIGHT, 60.0f);
 
     //call this before calling any scene operations (trust me :) ).
     gameEngine.setup();
@@ -196,6 +200,7 @@ int main(void)
     mainScene.addGameObject(test4);
 
     //add a step function to the added object
+    //TIP: the square brackets at the start of the enclosed function is the capture list (put the shit you want to be scoped to it in there)
     mainScene.setStepFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
         /*movement mods for by how muh it should increase the movement speed*/
         const float movementMod = 0.08f;

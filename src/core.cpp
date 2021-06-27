@@ -123,3 +123,9 @@ void Engine::endEngineWindow()
 {
 	glfwTerminate();
 }
+
+void Engine::getEngineResolution(int& screenWidth, int& screenHeight) // get the windiow size of the engine
+{
+	screenWidth = windowWidth;
+	screenHeight = windowHeight;
+}

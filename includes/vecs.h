@@ -67,6 +67,13 @@ namespace vecs
 			};
 		};
 
+		inline vec3 operator*(vec3 vec)
+		{
+			return {
+				this->x * vec.x, this->y * vec.y, this->z * vec.z
+			};
+		};
+
 		inline vec3 operator*(mat4 mat)
 		{
 			float c0r0 = mat.r[0][0], c0r1 = mat.r[0][1], c0r2 = mat.r[0][2], c0r3 = mat.r[0][3];
