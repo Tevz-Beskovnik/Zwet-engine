@@ -11,8 +11,8 @@
 #include<vector>
 #include<sstream>
 #include<fstream>
-#include "../includes/gameObj.h"
-#include "../includes/vecs.h"
+#include "gameObj.h"
+#include "vecs.h"
 
 /*
 * This class is ment for adding custom font faces to your game engine, it uses the .fnt file format, and reads off of a .png text sprite.

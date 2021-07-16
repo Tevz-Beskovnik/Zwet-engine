@@ -3,33 +3,29 @@
 #endif // PI
 
 #define WINDOW_SETTINGS
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
+#define WINDOW_WIDTH 1600
+#define WINDOW_HEIGHT 900
 
 #include<math.h>
 #include <iostream>
 #include<string>
-#include<windows.h>
+#ifdef _WIN32
+    #include<windows.h>
+#endif
 #include <algorithm>
 #include <filesystem>
 #include<cmath>
-#include "../includes/core.h"
-namespace fs = std::filesystem;
+#include "core.h"
 
 float cot(float i) { return(1 / tanf(i)); }
 
 int main(void)
 {
-
-    std::u8string path_string(fs::current_path().u8string());
-    std::string endp(path_string.begin(), path_string.end());
+    std::cout << "Lol" << std::endl;
+    std::string endp = "/Users/tevz/documents/programing/Zwet-Engine/";
     endp += "/";
     std::replace(endp.begin(), endp.end(), '\\', '/');
-    std::cout << endp;
-
-    float horiz, vertical;
-
-    screenResolution(horiz, vertical);
+    std::cout << endp << std::endl;
 
     const float resolution[2] = { (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT };
 
@@ -53,6 +49,9 @@ int main(void)
     //call this before calling any scene operations (trust me :) ).
     gameEngine.setup();
 
+    //create keyboard class for keyboard inputs
+    GLFWwindow* window = gameEngine.getWindow();
+
     //define the scene
     Scene mainScene;
 
@@ -72,11 +71,11 @@ int main(void)
     test.physicsObject.mass = 2.0f;
 
     //set the object position
-    test.position = /*{ 0.0f, 0.0f, 0.0f };/**/ { 0.0f, 20.0f, 4.0f };
+    test.position = /*{ 0.0f, 0.0f, 0.0f };/**/ { 0.0f, 20.0f, 0.0f };
     test.staticObjectRotation = { PI/2.0f, 0.0f, 0.0f };
 
     //set the color
-    test.color = { 1.0f, 0.0f, 0.0f };
+    test.color = { 0.0f, 0.0f, 0.0f };
 
     Texture newTex(endp + "resources/textures/JermaSus.jpg");
 
@@ -94,10 +93,6 @@ int main(void)
         {
             endp + "resources/shaders/frag2.glsl",
             GL_FRAGMENT_SHADER
-        },
-        {
-            endp + "resources/shaders/geom2.glsl",
-            GL_GEOMETRY_SHADER
         }
     };
 
@@ -107,7 +102,7 @@ int main(void)
     test2.name = "test2";
 
     //set the object position
-    test2.position = { 8.0f, 1.0f, 0.0f };
+    test2.position = { 0.0f, 0.0f, 2.0f };
 
     //set color
     //test2.color = { 0.0f, 1.0f, 0.0f };
@@ -128,10 +123,6 @@ int main(void)
         {
             endp + "resources/shaders/frag2.glsl",
             GL_FRAGMENT_SHADER
-        },
-        {
-            endp + "resources/shaders/geom2.glsl",
-            GL_GEOMETRY_SHADER
         }
     };
 
@@ -141,7 +132,9 @@ int main(void)
     test3.name = "test3";
 
     //set the object position
-    test3.position = { -8.0f, -1.0f, 2.0f };
+    test3.position = { -8.0f, 0.0f, 0.0f };
+
+    test3.color = { 1.0f, 1.0f, 1.0f };
 
     //enable depth test and apend all paths to shaers / object files
     test3.depthTest = true;
@@ -149,16 +142,12 @@ int main(void)
     test3.objectModelDir = endp + "resources/models/pot2.obj";
     test3.shaderDirs = {
         {
-            endp + "resources/shaders/vert.glsl",
+            endp + "resources/shaders/vertCube.glsl",
             GL_VERTEX_SHADER
         },
         {
             endp + "resources/shaders/frag.glsl",
             GL_FRAGMENT_SHADER
-        },
-        {
-            endp + "resources/shaders/geom.glsl",
-            GL_GEOMETRY_SHADER
         }
     };
 
@@ -183,10 +172,6 @@ int main(void)
         {
             endp + "resources/shaders/fragTextureLighting.glsl",
             GL_FRAGMENT_SHADER
-        },
-        {
-            endp + "resources/shaders/geom2.glsl",
-            GL_GEOMETRY_SHADER
         }
     };
 
@@ -201,22 +186,22 @@ int main(void)
 
     //add a step function to the added object
     //TIP: the square brackets at the start of the enclosed function is the capture list (put the shit you want to be scoped to it in there)
-    mainScene.setStepFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+    mainScene.setStepFunction(test.name, [window](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
         /*movement mods for by how muh it should increase the movement speed*/
         const float movementMod = 0.08f;
         const float yawMod = 0.03f;
 
         //camera controls for yaw and pitch
-        cam.pitch += (-yawMod * kbi::isKeyHeld(VK_DOWN) + yawMod * kbi::isKeyHeld(VK_UP));
-        cam.yaw += (-yawMod * kbi::isKeyHeld(VK_RIGHT) + yawMod * kbi::isKeyHeld(VK_LEFT));
+        cam.pitch += (-yawMod * kbi::isKeyHeld(window, GLFW_KEY_DOWN) + yawMod * kbi::isKeyHeld(window, GLFW_KEY_UP));
+        cam.yaw += (-yawMod * kbi::isKeyHeld(window, GLFW_KEY_RIGHT) + yawMod * kbi::isKeyHeld(window, GLFW_KEY_LEFT));
 
         //camera controls for movement
-        cam.pos.y += (movementMod * kbi::isKeyHeld(VK_SPACE)) + (-movementMod * kbi::isKeyHeld(VK_SHIFT));
-        cam.forward = ((movementMod * kbi::isKeyHeld('W')) + (-movementMod * kbi::isKeyHeld('S')));
-        cam.sideways = ((-movementMod * kbi::isKeyHeld('A')) + (movementMod * kbi::isKeyHeld('D')));
+        cam.pos.y += (movementMod * kbi::isKeyHeld(window, GLFW_KEY_SPACE)) + (-movementMod * kbi::isKeyHeld(window, GLFW_KEY_LEFT_SHIFT));
+        cam.forward = ((movementMod * kbi::isKeyHeld(window, GLFW_KEY_W)) + (-movementMod * kbi::isKeyHeld(window, GLFW_KEY_S)));
+        cam.sideways = ((-movementMod * kbi::isKeyHeld(window, GLFW_KEY_A)) + (movementMod * kbi::isKeyHeld(window, GLFW_KEY_D)));
 
-        objects[self].objectFloats["pitch"] += (-yawMod * kbi::isKeyHeld('J') + yawMod * kbi::isKeyHeld('N'));
-        objects[self].objectFloats["yaw"] += (-yawMod * kbi::isKeyHeld('B') + yawMod * kbi::isKeyHeld('M'));
+        //objects[self].objectFloats["pitch"] += (-yawMod * kbi::isKeyHeld(window, 'J') + yawMod * kbi::isKeyHeld(window, 'N'));
+        //objects[self].objectFloats["yaw"] += (-yawMod * kbi::isKeyHeld(window, 'B') + yawMod * kbi::isKeyHeld(window, 'M'));
 
         int yaw = glGetUniformLocation(objects[self].program, "objYaw");
         int pitch = glGetUniformLocation(objects[self].program, "objPitch");
@@ -226,6 +211,7 @@ int main(void)
 
         glUniformMatrix4fv(yaw, 1, GL_FALSE, &objYaw.r[0][0]);
         glUniformMatrix4fv(pitch, 1, GL_FALSE, &objPicth.r[0][0]);
+
         });
 
     mainScene.setStepFunction(test2.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {

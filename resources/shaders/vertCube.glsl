@@ -1,18 +1,17 @@
-#version 330 core
+attribute vec3 position;
+attribute vec3 iColor;
+attribute vec3 iNormal;
+attribute vec2 iUV;
 
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec3 iColor;
-layout(location = 2) in vec3 iNormal;
-layout(location = 3) in vec2 iUV;
-
-out vec3 oColor;
-out vec3 oFragPos;
-out vec3 oNormal;
-out vec2 oUV;
+varying vec3 oColor;
+varying vec3 oFragPos;
+varying vec3 oNormal;
+varying vec2 oUV;
 
 /*uniform mat4 uWorld;*/
 uniform mat4 uWorldInvTran;
 uniform vec3 uObjPos;
+uniform mat4 uViewMat;
 
 mat4 trans = mat4(
 	1.0, 0.0, 0.0, uObjPos.x,
@@ -24,10 +23,10 @@ mat4 trans = mat4(
 void main()
 {
 	vec4 pos = vec4(position, 1.0) * trans;
-	vec4 res = pos;
+	vec4 res = uViewMat * pos;
 	gl_Position = res;
 	oFragPos = res.xyz;
 	oColor = iColor;
 	oUV = iUV;
-	oNormal = normalize(mat3(uWorldInvTran) * iNormal);
+	oNormal = vec3(normalize(uWorldInvTran * vec4(iNormal, 0.0)));
 }

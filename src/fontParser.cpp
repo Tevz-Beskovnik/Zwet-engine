@@ -1,4 +1,4 @@
-#include "../includes/fontParser.h"
+#include "fontParser.h"
 
 Font::Font(std::string fontFilePath, std::string fontPicturePath, int* windowRes, int scale)
 	:fontFilePath(fontFilePath), fontPicturePath(fontPicturePath), object(nullptr), currentString(""), 

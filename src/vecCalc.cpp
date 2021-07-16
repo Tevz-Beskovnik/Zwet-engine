@@ -1,5 +1,5 @@
-#include "../includes/vecCalc.h"
-#include "../includes/vecs.h"
+#include "vecCalc.h"
+#include "vecs.h"
 #include<cmath>
 #include<math.h>
 

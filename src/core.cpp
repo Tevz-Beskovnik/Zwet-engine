@@ -1,4 +1,4 @@
-#include"../includes/core.h"
+#include"core.h"
 
 double old = 0;
 void blockFramerate(float fpsCap) {
@@ -18,8 +18,10 @@ Engine::Engine(float width, float height, float fpsCap)
 	if (!glfwInit())
 		throw "GLFW failed to initiate.";
 
+	std::cout << "GLFW initiated." << std::endl;
+
 	//set the window
-	engineWindow = glfwCreateWindow((int)windowWidth, (int)windowHeight, "Window", NULL, NULL);
+	engineWindow = glfwCreateWindow((int)windowWidth, (int)windowHeight, "game_engin", NULL, NULL);
 }
 
 void Engine::setup()
@@ -44,7 +46,7 @@ void Engine::run()
 		// Poll for and process events
 		glfwPollEvents();
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.3f, 0.6f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -99,10 +101,7 @@ void Engine::create()
 
 void Engine::initEngineWindow()
 {
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	if (!engineWindow)
 	{
@@ -116,7 +115,7 @@ void Engine::initEngineWindow()
 	if (glewInit() != GLEW_OK)
 		std::cout << "Glew error!" << std::endl;
 
-	std::cout << glGetString(GL_VERSION) << std::endl;
+	std::cout << "GL version: " << glGetString(GL_VERSION) << std::endl;
 }
 
 void Engine::endEngineWindow()
@@ -128,4 +127,9 @@ void Engine::getEngineResolution(int& screenWidth, int& screenHeight) // get the
 {
 	screenWidth = windowWidth;
 	screenHeight = windowHeight;
+}
+
+GLFWwindow* Engine::getWindow()
+{
+	return engineWindow;
 }

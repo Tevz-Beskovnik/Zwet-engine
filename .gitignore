@@ -52,3 +52,15 @@ conanbuildinfo.txt
 conaninfo.txt
 
 graph_info.json
+
+.vs/3D_voxel_physics/xs/UserPrefs.xml
+
+.vscode/c_cpp_properties.json
+
+build/
+
+conanbuildinfo.cmake
+
+.vscode/settings.json
+
+.DS_Store

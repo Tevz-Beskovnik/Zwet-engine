@@ -4,4 +4,4 @@ glew/2.2.0
 openal/1.21.0
 
 [generators]
-msbuild
+cmake

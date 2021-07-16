@@ -1,4 +1,4 @@
-#include "../includes/physicsCore.h"
+#include "physicsCore.h"
 
 void PhysicsWorld::addObject(PhyObject* object)
 {

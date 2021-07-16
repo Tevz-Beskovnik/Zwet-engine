@@ -1,4 +1,4 @@
-#include "../includes/gameObj.h"
+#include "gameObj.h"
 
 void applyStaticRotation(ObjectInfo& info)
 {
@@ -30,10 +30,9 @@ void createMesh(ObjectInfo& info)
 {
 	//load object from file
 	bool pass = vecs::loadFromObjectFile(info.objectModelDir, info.objectMesh, info.color);
-	if (pass != true)
-		throw "Provided file path is not valid or does not exist!";	
-
-	applyStaticRotation(info);
+	if (pass == true){
+		applyStaticRotation(info);
+	}
 }
 
 void addInt(std::string name, int num, ObjectInfo& obj)

@@ -2,11 +2,9 @@
 #include<GLFW/glfw3.h>
 #include<fstream>
 #include<vector>
-#include<wtypes.h>
-#include "../includes/viewport.h"
-#include "../includes/vecCalc.h"
-#include<crtdbg.h>
-#include "../includes/vecs.h"
+#include "viewport.h"
+#include "vecCalc.h"
+#include "vecs.h"
 
 Viewport::Viewport(std::vector<float>& vecC, GLenum type)
 {
@@ -91,7 +89,7 @@ void Viewport::bindAttributes(unsigned int& program, unsigned int& buffer)
     unsigned int normal = glGetAttribLocation(program, "iNormal");
     unsigned int UV = glGetAttribLocation(program, "iUV");
 
-    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(coords);
     glEnableVertexAttribArray(color);
     glEnableVertexAttribArray(normal);
     glEnableVertexAttribArray(UV);
@@ -187,18 +185,6 @@ void readShader(std::string path, std::string& shader)
         }
     }
 };
-
-void screenResolution(float& horizontal, float& vertical)
-{
-    RECT desktop;
-
-    const HWND hDesktop = GetDesktopWindow();
-
-    GetWindowRect(hDesktop, &desktop);
-
-    horizontal = desktop.right;
-    vertical = desktop.bottom;
-}
 
 unsigned int compileShader(unsigned int type, const std::string& shader)
 {

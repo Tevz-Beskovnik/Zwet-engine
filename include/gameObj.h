@@ -4,11 +4,11 @@
 #include<iostream>
 #include<vector>
 #include<functional>
-#include "kbInput.h"
 #include "vecCalc.h"
 #include "vecs.h"
 #include "vecCalc.h"
 #include "viewport.h"
+#include "kbInput.h"
 #include "texture.h"
 #include "physicsCore.h"
 

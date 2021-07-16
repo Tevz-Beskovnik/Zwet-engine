@@ -1,6 +1,11 @@
 #pragma once
 
-#include<Windows.h>
+#ifdef _WIN32
+	#include<Windows.h>
+#endif
+
+#include<GL/glew.h>
+#include<GLFW/glfw3.h>
 
 #define UP_ARROW 72
 #define DOWN_ARROW 80
@@ -59,11 +64,11 @@
 #define KB_q 0x71
 
 namespace kbi {
-	bool isKeyHeld(int);
+		bool isKeyHeld(GLFWwindow* wind, int key);
 
-	bool isKeyToggled(int);
+		bool isKeyToggled(GLFWwindow* wind, int key);
 
-	int cursorX();
+		int cursorX();
 
-	int cursorY();
-}
+		int cursorY();
+};

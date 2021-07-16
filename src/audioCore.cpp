@@ -1,2 +1,2 @@
-#include "../includes/audioCore.h"
+#include "audioCore.h"
 

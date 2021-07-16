@@ -1,31 +1,34 @@
-#include<Windows.h>
-#include<conio.h>
-#include"../includes/kbInput.h"
+#ifdef _WIN32
+	#include<Windows.h>
+	#include<conio.h>
+#endif
+#include"kbInput.h"
 
-bool kbi::isKeyHeld(int key) 
+bool kbi::isKeyHeld(GLFWwindow* activeWindow, int key) 
 {
-	short keyState = GetKeyState(key);
-	return keyState & 0x8000;
+	glfwSetInputMode(activeWindow, GLFW_STICKY_KEYS, GLFW_FALSE);
+	int state = glfwGetKey(activeWindow, key);
+	if(state == GLFW_PRESS)
+		return true;
+	else
+		return false;
 }
-
-bool kbi::isKeyToggled(int key) 
+bool kbi::isKeyToggled(GLFWwindow* activeWindow, int key) 
 {
-	short keystate = GetKeyState(key);
-	return keystate & 0x0001;
+	glfwSetInputMode(activeWindow, GLFW_STICKY_KEYS, GLFW_TRUE);
+	int state = glfwGetKey(activeWindow, key);
+	if(state == GLFW_PRESS)
+		return true;
+	else
+		return false;
 }
 
 int kbi::cursorX()
 {
-	POINT currPos;
-	int result = GetCursorPos(&currPos);
-
-	return (result * currPos.x);
+	;
 }
 
 int kbi::cursorY()
 {
-	POINT currPos;
-	int result = GetCursorPos(&currPos);
-
-	return (result * currPos.y);
+	;
 }

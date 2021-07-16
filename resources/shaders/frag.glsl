@@ -1,36 +1,38 @@
-#version 330 core
-
-layout(location = 0) out vec4 color;
-
-in vec3 iColor;
-in vec3 iFragPos;
-in vec3 iNormal;
-in float iDp;
+varying vec3 oColor;
+varying vec3 oFragPos;
+varying vec3 oNormal;
+varying vec2 oUV;
+varying float oDp;
 
 uniform vec3 uCameraPos;
 
-/*ambient lighting*/
-vec3 lightColor = vec3(0.9803, 0.9372, 0.537);
-float ambientStrength = 0.3;
-vec3 ambient = ambientStrength * lightColor;
+vec3 ambient;
+vec3 diffuse;
+vec3 specular;
 
-/*difuse lighting*/
-vec3 lightPos = vec3(0.0, 1.0, -1.0);
-vec3 lightDir = normalize(lightPos - iFragPos);
-float diff = max(dot(iNormal, lightDir), 0.0);
-vec3 diffuse = diff * lightColor;
-
-/*specular lighting*/
-float specularStrength = 0.5;
-vec3 viewDir = normalize(uCameraPos - iFragPos);
-vec3 reflectDir = reflect(-lightDir, iNormal);
-float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
-vec3 specular = specularStrength * spec * lightColor;
-
-/*combine all three to make PHONG LIGTING JAAAAAAA*/
 void main() 
 {
-    vec3 res = (ambient + diffuse + specular) * iColor;
+    /*ambient lighting*/
+    vec3 lightColor = vec3(0.9803, 0.9372, 0.537);
+    float ambientStrength = 0.3;
+    vec3 ambient = ambientStrength * lightColor;
 
-    color = vec4(res, 0.0);
+    /*difuse lighting*/
+    vec3 lightPos = vec3(0.0, 1.0, -1.0);
+    vec3 lightDir = normalize(lightPos - oFragPos);
+    float diff = max(dot(oNormal, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+
+    /*specular lighting*/
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(uCameraPos - oFragPos);
+    vec3 reflectDir = reflect(-lightDir, oNormal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
+    vec3 specular = specularStrength * spec * lightColor;
+
+    /*combine all three to make PHONG LIGTING JAAAAAAA*/
+
+    vec3 res = (ambient + diffuse + specular) * oColor;
+
+    gl_FragColor = vec4(res, 0.0);
 }

@@ -13,7 +13,7 @@
 #include <iostream>
 #include<string>
 #include<cmath>
-#include "fontParser.h"
+#include"fontParser.h"
 #include"sceneCore.h"
 
 class Engine {
@@ -31,6 +31,8 @@ class Engine {
 		void setScene(Scene);
 
 		void getEngineResolution(int& screenWidth, int& screenHeight);
+
+		GLFWwindow* getWindow();
 	
 	private:
 		Scene gameScene;

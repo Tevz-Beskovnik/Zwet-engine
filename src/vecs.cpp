@@ -1,4 +1,4 @@
-#include "../includes/vecs.h"
+#include "vecs.h"
 
 void vecs::identityMat(vecs::mat4& mat)
 {
