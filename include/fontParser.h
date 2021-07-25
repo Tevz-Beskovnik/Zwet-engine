@@ -20,7 +20,7 @@
 * Since the text is being bound to a ObjectInfo structure it's x, y, z coordinates will affect it's posisioning as well as the shaders.
 */
 
-typedef struct CharInfo
+struct CharInfo
 {
 	int id; //char id (have to find what the ids of chars are)
 	int x; //location of start of char (topleft of the char)
@@ -36,23 +36,27 @@ typedef struct CharInfo
 class Font
 {
 	public:
-		Font(std::string fontFilePath, std::string fontPicturePath, int* windowRes, int scale);
+		Font(std::string fontFilePath, std::string fontPicturePath, int* windowRes, float scale);
 
 		~Font();
 
 		void setLineWidth(int width);
 
+		void setScale(float scale);
+
 		void appendString(std::string text); //append a string to the class to be rendered
 
 		void appendToObject(ObjectInfo* objectToAppendOnto); //add object to be appended to
+
+		std::string getCurrentString();
 
 	private:
 		int maxLineWidth; //width of a line
 		int imageResolution[2];
 		int windowHeight;
 		int windowWidth;
-		int scale;
 		int lineHeight;
+		float scale;
 		ObjectInfo* object;
 		vecs::mesh fontMesh;
 		std::string currentString;

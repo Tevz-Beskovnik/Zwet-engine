@@ -1,7 +1,3 @@
-#ifdef _WIN32
-	#include<Windows.h>
-	#include<conio.h>
-#endif
 #include"kbInput.h"
 
 bool kbi::isKeyHeld(GLFWwindow* activeWindow, int key) 

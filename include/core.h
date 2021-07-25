@@ -13,8 +13,9 @@
 #include <iostream>
 #include<string>
 #include<cmath>
-#include"fontParser.h"
+#include"texture.h"
 #include"sceneCore.h"
+#include"fontParser.h"
 
 class Engine {
 	/*TODO

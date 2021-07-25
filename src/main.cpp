@@ -9,9 +9,6 @@
 #include<math.h>
 #include <iostream>
 #include<string>
-#ifdef _WIN32
-    #include<windows.h>
-#endif
 #include <algorithm>
 #include <filesystem>
 #include<cmath>
@@ -59,6 +56,9 @@ int main(void)
 
     //add the projection mat to the scene camera
     mainScene.addCameraProjMat(resolution[0], resolution[1], fFar, fNear, fov);
+
+    //create a font
+    Font arial(endp + "resources/fonts/arial.fnt", endp + "resources/fonts/arial.jpg", (int*)resolution, 0.01);
 
     //create new game object
     ObjectInfo test;
@@ -155,7 +155,7 @@ int main(void)
 
     test4.name = "car";
 
-    test4.position = { 0.0f, 0.0f, 3.0f };
+    test4.position = { 0.0f, 0.0f, -3.0f };
 
     Texture tex4(endp + "resources/textures/lowPoly.jpg");
 
@@ -175,12 +175,87 @@ int main(void)
         }
     };
 
+    //game object to be used for the font parser test (nothing else pls don't do anything else idk what will happen)
+    ObjectInfo test5;
+
+    test5.name = "Font test";
+
+    test5.position = { -3.5f, -1.5f, -4.0f };
+
+    arial.appendToObject(&test5);
+
+    arial.appendString("this baby can do at least 1000 polygons");
+
+    test5.drawType = GL_STATIC_DRAW;
+
+    test5.shaderDirs = {
+        {
+            endp + "resources/shaders/vertCube.glsl",
+            GL_VERTEX_SHADER
+        },
+        {
+            endp + "resources/shaders/frag2.glsl",
+            GL_FRAGMENT_SHADER
+        }
+    };
+
+    ObjectInfo test6;
+
+    test6.name = "Font lmao";
+
+    test6.position = { -1.6f, 2.0f, -4.0f };
+
+    arial.appendToObject(&test6);
+
+    arial.appendString("*Slaps roof of car*");
+
+    test6.drawType = GL_STATIC_DRAW;
+
+    test6.shaderDirs = {
+        {
+            endp + "resources/shaders/vertCube.glsl",
+            GL_VERTEX_SHADER
+        },
+        {
+            endp + "resources/shaders/frag2.glsl",
+            GL_FRAGMENT_SHADER
+        }
+    };
+
+    ObjectInfo test7;
+
+    test7.name = "room";
+
+    test7.position = { 0.0f, 0.0f, 5.0f };
+
+    test7.tex = tex4;
+
+    test7.depthTest = true;
+    test7.drawType = GL_STATIC_DRAW;
+    test7.objectModelDir = endp + "resources/models/room1.obj";
+    test7.shaderDirs = {
+        {
+            endp + "resources/shaders/vertCube.glsl",
+            GL_VERTEX_SHADER
+        },
+        {
+            endp + "resources/shaders/fragTextureLighting.glsl",
+            GL_FRAGMENT_SHADER
+        }
+    };
+
     //add the object to the game scene
+    mainScene.addGameObject(test5);
+
+    mainScene.addGameObject(test6);
+
+    mainScene.addGameObject(test7);
+
     mainScene.addGameObject(test);
 
-    mainScene.addGameObject(test2);
+    //mainScene.addGameObject(test2);
 
-    mainScene.addGameObject(test3);
+    //mainScene.addGameObject(test3);
 
     mainScene.addGameObject(test4);
 
@@ -214,13 +289,22 @@ int main(void)
 
         });
 
-    mainScene.setStepFunction(test2.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
-        });
+    /*mainScene.setStepFunction(test2.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        });*/
 
-    mainScene.setStepFunction(test3.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
-        });
+    /*mainScene.setStepFunction(test3.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        });*/
 
     mainScene.setStepFunction(test4.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        });
+
+    mainScene.setStepFunction(test5.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        });
+
+    mainScene.setStepFunction(test6.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
+        });
+
+    mainScene.setStepFunction(test7.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {
         });
 
     mainScene.setCreateFunction(test.name, [](std::map<std::string, ObjectInfo>& objects, std::string self, Camera& cam) {

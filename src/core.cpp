@@ -46,7 +46,7 @@ void Engine::run()
 		// Poll for and process events
 		glfwPollEvents();
 
-		glClearColor(0.0f, 0.3f, 0.6f, 1.0f);
+		glClearColor(0.36862f, 0.20392f, 0.9215686f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -101,6 +101,8 @@ void Engine::create()
 
 void Engine::initEngineWindow()
 {
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+ 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); 
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	if (!engineWindow)
@@ -115,7 +117,12 @@ void Engine::initEngineWindow()
 	if (glewInit() != GLEW_OK)
 		std::cout << "Glew error!" << std::endl;
 
+	char *GL_version=(char *)glGetString(GL_VERSION);
+    char *GL_vendor=(char *)glGetString(GL_VENDOR);
+    char *GL_renderer=(char *)glGetString(GL_RENDERER);
+
 	std::cout << "GL version: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 }
 
 void Engine::endEngineWindow()

@@ -1,10 +1,11 @@
 #include "fontParser.h"
 
-Font::Font(std::string fontFilePath, std::string fontPicturePath, int* windowRes, int scale)
+Font::Font(std::string fontFilePath, std::string fontPicturePath, int* windowRes, float scale)
 	:fontFilePath(fontFilePath), fontPicturePath(fontPicturePath), object(nullptr), currentString(""), 
 	windowWidth(windowRes[0]), windowHeight(windowRes[1]), scale(scale), lineHeight(0), maxLineWidth(500)
 {
 	readFontFile();
+	convertToUV();
 }
 
 Font::~Font()
@@ -17,20 +18,39 @@ void Font::setLineWidth(int width)
 	maxLineWidth = width;
 }
 
+void Font::setScale(float newScale)
+{
+	scale = newScale;
+}
+
 void Font::appendString(std::string text) //append a string to the class to be rendered
 {
+	std::reverse(text.begin(), text.end());
+
 	currentString = text;
+
 	calculateMesh();
+
+	appendStringToObject();
+}
+
+std::string Font::getCurrentString()
+{
+	return currentString;
 }
 
 void Font::appendToObject(ObjectInfo* objectToAppendOnto) //add object to be appended to
 {
 	object = objectToAppendOnto;
+
+	Texture fontTexture(fontPicturePath);
+
+	object->tex = fontTexture;
 }
 
 void Font::appendStringToObject() //append the string to the object
 {
-
+	object->objectMesh = fontMesh;
 }
 
 void Font::convertToUV() //converts the data to uvs on the texture
@@ -41,10 +61,10 @@ void Font::convertToUV() //converts the data to uvs on the texture
 		CharInfo charData = it.second;
 		
 		//translate the coordinate pixel data to UV data uv is from 0-1 starting in the bottom left corner
-		charData.UV[0] = {1-((float)charData.x/ (float)imageResolution[0]), 1-((float)charData.y- (float)charData.height/ (float)imageResolution[1])}; // bottom left
-		charData.UV[1] = {1-((float)charData.x/ (float)imageResolution[0]), 1-((float)charData.y/ (float)imageResolution[1])}; // top left
-		charData.UV[2] = {1-((float)charData.x+ (float)charData.width/ (float)imageResolution[0]), 1-((float)charData.y- (float)charData.height/ (float)imageResolution[1])}; // bottom right
-		charData.UV[3] = {1-((float)charData.x+ (float)charData.width/ (float)imageResolution[0]), 1-((float)charData.y/ (float)imageResolution[1])}; // top right
+		charData.UV[2] = { (float)charData.x / (float)imageResolution[0], 1.0f - ((float)charData.y + (float)charData.height ) / (float)imageResolution[1] }; // bottom left
+		charData.UV[3] = { (float)charData.x / (float)imageResolution[0], 1.0f - (float)charData.y / (float)imageResolution[0] }; // top left
+		charData.UV[0] = { ((float)charData.x + (float)charData.width) / (float)imageResolution[0], 1.0f - ((float)charData.y + (float)charData.height) / (float)imageResolution[1] }; // bottom right
+		charData.UV[1] = { ((float)charData.x + (float)charData.width) / (float)imageResolution[0], 1.0f - (float)charData.y / (float)imageResolution[1]}; // top right
 
 		charMap[charData.id] = charData;
 	}
@@ -69,10 +89,10 @@ void Font::readFontFile() //reads the .fnt file
 
 		if (line[0] == 'c' && line[1] == 'o')
 		{
-			s >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> lineHeight;
-			s >> sJunk >> sJunk;
-			s >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> imageResolution[0]; //width of the font sprite
-			s >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> imageResolution[1]; //height of the font sprite
+			s >> sJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> lineHeight;
+			s >> sJunk;
+			s >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> imageResolution[0]; //width of the font sprite
+			s >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> cJunk >> imageResolution[1]; //height of the font sprite
 		}
 		
 		if (line[0] == 'c' && line[1] == 'h' && line[4] != 's')
@@ -108,6 +128,8 @@ void Font::calculateMesh() //create the text mesh
 		/*
 			verticies go counter clockvise
 		*/
+
+
 		vecs::vec3 vert1 = { // bottom left
 			cursorPos.x + currChar.xoffset,
 			cursorPos.y,
@@ -116,13 +138,13 @@ void Font::calculateMesh() //create the text mesh
 
 		vecs::vec3 vert2 = { // top left
 			cursorPos.x + currChar.xoffset,
-			cursorPos.y + currChar.yoffset,
+			cursorPos.y + 71.0f-currChar.yoffset,
 			0.0f
 		};
 
 		vecs::vec3 vert3 = { // top right
 			cursorPos.x + currChar.xadvance,
-			cursorPos.y + currChar.yoffset,
+			cursorPos.y + 71.0f-currChar.yoffset,
 			0.0f
 		};
 
@@ -132,17 +154,17 @@ void Font::calculateMesh() //create the text mesh
 			0.0f
 		};
 
-		vert1 = vert1 * pixSize;
-		vert2 = vert2 * pixSize;
-		vert3 = vert3 * pixSize;
-		vert4 = vert4 * pixSize;
+		vert1 = vert1 * scale;
+		vert2 = vert2 * scale;
+		vert3 = vert3 * scale;
+		vert4 = vert4 * scale;
 
 		fontMesh.tris.push_back({
-			{ vert1, vert2, vert4 }, { currChar.UV[0], currChar.UV[1], currChar.UV[2] }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f }
+			{ vert3, vert1, vert4 }, { currChar.UV[3], currChar.UV[0], currChar.UV[2] }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }
 			});
 
 		fontMesh.tris.push_back({
-			{ vert1, vert4, vert3 }, { currChar.UV[0], currChar.UV[2], currChar.UV[3] }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f }
+			{ vert3, vert2, vert1 }, { currChar.UV[3], currChar.UV[1], currChar.UV[0] }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }
 			});
 
 		cursorPos.x += currChar.xadvance;
