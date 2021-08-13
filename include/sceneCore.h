@@ -5,8 +5,9 @@
 #endif // PI
 
 #include<math.h>
-#include "gameObj.h"
-#include"physicsCore.h"
+#include "gameObject.h"
+#include "physicsCore.h"
+#include "vecCalc.h"
 
 typedef struct Camera
 {
@@ -52,7 +53,7 @@ class Scene
 			-create animation engine (as in 3d movement)
 			-possiblity to create multiple instances of the same object that have the same create and step functions,
 				-add objectID system za managenje tega,
-				-možnost kreiranja drugih objektov iz step / create funkcij drugih objecktov,
+				-moï¿½nost kreiranja drugih objektov iz step / create funkcij drugih objecktov,
 				-when adding this make sure to make a proper *create* function that runs on object
 				 creation and not when the game starts becouse you can add them at run time duh,
 				-add a event that runs before the game starts (becouse the create function now
@@ -60,7 +61,12 @@ class Scene
 			-parent child system (to je probably malo komplicirano),
 			-etc......
 		*/
+
+		void stepStart(std::string);
+
 		void callStepFunction(std::string);
+		
+		void stepEnd(std::string);
 	
 		void callCreateFunction(std::string);
 
@@ -72,8 +78,8 @@ class Scene
 		vecs::mat4 transposedWorldMat;
 		vecs::mat4 viewMat;
 		std::map<std::string, ObjectInfo> sceneObjects;
-		std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>> stepFunctions;
-		std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>> createFunctions;
+		std::map< std::string, std::function< void(std::map< std::string, ObjectInfo >&, std::string, Camera&) > > stepFunctions;
+		std::map< std::string, std::function< void(std::map< std::string, ObjectInfo >&, std::string, Camera&) > > createFunctions;
 
 		void calculateWorldMat();
 

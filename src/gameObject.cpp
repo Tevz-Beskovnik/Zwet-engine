@@ -1,4 +1,4 @@
-#include "gameObj.h"
+#include "gameObject.h"
 
 void applyStaticRotation(ObjectInfo& info)
 {
@@ -7,9 +7,9 @@ void applyStaticRotation(ObjectInfo& info)
 
 	for (const auto& tri : info.objectMesh.tris)
 	{
-		vecs::vec3 t0 = vc::customVecMultiply(createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[0]);
-		vecs::vec3 t1 = vc::customVecMultiply(createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[1]);
-		vecs::vec3 t2 = vc::customVecMultiply(createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[2]);
+		vecs::vec3 t0 = vc::customVecMultiply(vc::createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[0]);
+		vecs::vec3 t1 = vc::customVecMultiply(vc::createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[1]);
+		vecs::vec3 t2 = vc::customVecMultiply(vc::createWorldMatrix(info.staticObjectRotation, info.position, 1.0f), tri.p[2]);
 
 		vecs::vec3 U = t1 - t0;
 		vecs::vec3 V = t2 - t0;

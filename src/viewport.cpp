@@ -7,6 +7,7 @@
 #include "vecs.h"
 
 Viewport::Viewport(std::vector<float>& vecC, GLenum type)
+    :frameBuffer(0)
 {
     startVec = vecC;
     drawType = type;
@@ -15,7 +16,7 @@ Viewport::Viewport(std::vector<float>& vecC, GLenum type)
 
 void convertMeshToArray(const vecs::mesh iMesh, std::vector<float>& oMesh)
 {
-    for (const auto& tri : iMesh.tris)
+    for (const vecs::triangle& tri : iMesh.tris)
     {
         //fist vec3
         oMesh.push_back(tri.p[0].x);
@@ -137,42 +138,7 @@ void Viewport::bindAttributes(unsigned int& program, unsigned int& buffer)
     );
 }
 
-vecs::mat4 createWorldMatrix(vecs::vec3 rot, vecs::vec3 translation, float time)
-{
-    vecs::mat4 mRotX, mRotY, mRotZ, mTranslation;
-    mRotX = vc::rotX(rot.x * time);
-    mRotY = vc::rotY(rot.y * time);
-    mRotZ = vc::rotZ(rot.z * time);
-    mTranslation = vc::translationMat(translation.x, translation.y, translation.z);
-
-    return mRotX * mRotZ * mTranslation;
-}
-
-vecs::mat4 createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up, float pitch, float yaw, float roll)
-{
-    vecs::mat4 mCameraRotX = vc::rotX(pitch);
-    vecs::mat4 mCameraRotY = vc::rotY(yaw);
-    vecs::mat4 mCameraRotZ = vc::rotZ(roll);
-    vecs::mat4 mView = vc::quickInverse((mCameraRotX * mCameraRotZ * mCameraRotY) * pointAtMatrix(pos, target, up));
-    return mView * mProjMat;
-}
-
-vecs::mat4 pointAtMatrix(vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up)
-{
-    vecs::vec3 newForward = vc::normalize(target - pos);
-    vecs::vec3 a = newForward * vc::dotPru(up, newForward);
-    vecs::vec3 newUp = vc::normalize(up - a);
-    vecs::vec3 newRight = vc::crossPru(newUp, newForward);
-
-    vecs::mat4 matrix;
-    matrix.r[0][0] = newRight.x;	matrix.r[0][1] = newRight.y;	matrix.r[0][2] = newRight.z;	matrix.r[0][3] = 0.0f;
-    matrix.r[1][0] = newUp.x;		matrix.r[1][1] = newUp.y;		matrix.r[1][2] = newUp.z;		matrix.r[1][3] = 0.0f;
-    matrix.r[2][0] = newForward.x;	matrix.r[2][1] = newForward.y;	matrix.r[2][2] = newForward.z;	matrix.r[2][3] = 0.0f;
-    matrix.r[3][0] = pos.x;			matrix.r[3][1] = pos.y;			matrix.r[3][2] = pos.z;			matrix.r[3][3] = 1.0f;
-    return matrix;
-}
-
-void readShader(std::string path, std::string& shader)
+void Viewport::readShader(std::string path, std::string& shader)
 {
     std::string line;
     std::ifstream shaderFile(path);
@@ -186,7 +152,7 @@ void readShader(std::string path, std::string& shader)
     }
 };
 
-unsigned int compileShader(unsigned int type, const std::string& shader)
+unsigned int Viewport::compileShader(unsigned int type, const std::string& shader)
 {
     unsigned int id = glCreateShader(type);
     const char* src = shader.c_str();
@@ -215,13 +181,14 @@ unsigned int compileShader(unsigned int type, const std::string& shader)
     return id;
 };
 
-unsigned int createShader(std::vector<ShaderInfo> shaders)
+unsigned int Viewport::createShader(std::vector<ShaderInfo> shaders)
 {
     unsigned int program = glCreateProgram();
 
     std::vector<unsigned int> delShader;
 
-    for (const auto& shader : shaders) {
+    for (const ShaderInfo& shader : shaders) 
+    {
         std::string shaderSrc;
 
         readShader(shader.shader, shaderSrc);
@@ -257,3 +224,84 @@ unsigned int createShader(std::vector<ShaderInfo> shaders)
 
     return program;
 };
+
+unsigned int Viewport::setupFramebuffer(int frameBufferWidth, int frameBufferHeight)
+{
+    genFrameBuffer(frameBufferWidth, frameBufferHeight);
+    genFrameBufferTex();
+    genRednderBuffer();
+    attachToRenderBuffer();
+
+    return frameBuffer;
+}
+
+void Viewport::bindFrameBuffer(unsigned int frameBuffer)
+{
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
+}
+
+void Viewport::genFrameBuffer(int textureWidth, int textureHeight)
+{
+    frameBufferWidth = textureWidth;
+    frameBufferHeight = textureHeight;
+    glGenFramebuffers(1, &frameBuffer);
+}
+	
+void Viewport::genFrameBufferTex()
+{
+    glGenTextures(1, &frameBufferTex);
+    glBindTexture(GL_TEXTURE_2D, frameBufferTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, frameBufferWidth, frameBufferHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
+	
+void Viewport::genRednderBuffer()
+{
+    glGenRenderbuffers(1, &renderBufferObject);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, frameBufferWidth, frameBufferHeight);
+}
+	
+void Viewport::attachToRenderBuffer()
+{
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, frameBufferTex, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject);
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+}
+
+void Viewport::bindAttribute(unsigned int& program, unsigned int& buffer, std::string nameOfAttribute, int size, GLenum type, GLenum normalise, int totalSizeInBytes, ptrdiff_t offset)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+    unsigned int attribute = glGetAttribLocation(program, nameOfAttribute.c_str());
+
+    glEnableVertexAttribArray(attribute);
+
+    glVertexAttribPointer(
+        attribute,
+        size,
+        type,
+        normalise,
+        totalSizeInBytes,
+        (void*)offset
+    );
+}
+
+void Viewport::render(GLenum mode, int first, int vertCount)
+{
+    glDrawArrays(mode, first, vertCount);
+}
+
+void Viewport::unbindFrameBuffer()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+unsigned int Viewport::getFrameBufferTexture()
+{
+    return frameBufferTex;
+}

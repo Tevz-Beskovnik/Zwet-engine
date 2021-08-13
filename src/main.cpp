@@ -58,7 +58,7 @@ int main(void)
     mainScene.addCameraProjMat(resolution[0], resolution[1], fFar, fNear, fov);
 
     //create a font
-    Font arial(endp + "resources/fonts/arial.fnt", endp + "resources/fonts/arial.jpg", (int*)resolution, 0.01);
+    Font arial(endp + "resources/fonts/segoe.fnt", endp + "resources/fonts/segoe.jpg", (int*)resolution, 0.01);
 
     //create new game object
     ObjectInfo test;
@@ -73,28 +73,6 @@ int main(void)
     //set the object position
     test.position = /*{ 0.0f, 0.0f, 0.0f };/**/ { 0.0f, 20.0f, 0.0f };
     test.staticObjectRotation = { PI/2.0f, 0.0f, 0.0f };
-
-    //set the color
-    test.color = { 0.0f, 0.0f, 0.0f };
-
-    Texture newTex(endp + "resources/textures/JermaSus.jpg");
-
-    test.tex = newTex;
-
-    //enable depth test and apend all paths to shaers / object files
-    test.depthTest = true;
-    test.drawType = GL_STATIC_DRAW;
-    test.objectModelDir = endp + "resources/models/ship7.obj";
-    test.shaderDirs = {
-        {
-            endp + "resources/shaders/vertCube.glsl",
-            GL_VERTEX_SHADER
-        },
-        {
-            endp + "resources/shaders/frag2.glsl",
-            GL_FRAGMENT_SHADER
-        }
-    };
 
     ObjectInfo test2;
 
@@ -184,7 +162,7 @@ int main(void)
 
     arial.appendToObject(&test5);
 
-    arial.appendString("this baby can do at least 1000 polygons");
+    arial.appendString("Janova sestra");
 
     test5.drawType = GL_STATIC_DRAW;
 
@@ -207,7 +185,7 @@ int main(void)
 
     arial.appendToObject(&test6);
 
-    arial.appendString("*Slaps roof of car*");
+    arial.appendString("*Njegova mama*");
 
     test6.drawType = GL_STATIC_DRAW;
 

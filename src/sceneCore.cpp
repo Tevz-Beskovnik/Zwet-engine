@@ -3,8 +3,6 @@
 void Scene::addGameObject(ObjectInfo info)
 {
 	//put a new object in the scene
-	info.program = createShader(info.shaderDirs);
-
 	createMesh(info);
 
 	applyStaticRotation(info);
@@ -20,6 +18,8 @@ void Scene::addGameObject(ObjectInfo info)
 	info.viewport.bindBufferData(info.buffer);
 
 	sceneObjects.insert(std::pair<std::string, ObjectInfo>(info.name, info));
+
+	sceneObjects[info.name].program = sceneObjects[info.name].viewport.createShader(info.shaderDirs);
 }
 
 void Scene::setStepFunction(std::string objName, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)> func)
@@ -31,7 +31,7 @@ void Scene::setStepFunction(std::string objName, std::function<void(std::map<std
 	if (it == sceneObjects.end())
 		throw "The object you are tring to asign a function to doesn't exist";
 
-	stepFunctions.insert(std::pair<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>(objName, func));
+	stepFunctions.insert(std::pair<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)> >(objName, func));
 }
 
 void Scene::setCreateFunction(std::string objName, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)> func)
@@ -48,64 +48,13 @@ void Scene::setCreateFunction(std::string objName, std::function<void(std::map<s
 
 void Scene::callStepFunction(std::string objName)
 {
-	sceneObjects[objName].viewport.bindAttributes(sceneObjects[objName].program, sceneObjects[objName].buffer);
-
-	glUseProgram(sceneObjects[objName].program);
-
 	//call the before asigned step function
-	std::map<std::string, std::function<void(std::map<std::string, ObjectInfo>&, std::string, Camera&)>>::const_iterator el;
+	std::map< std::string, std::function< void(std::map< std::string, ObjectInfo >&, std::string, Camera&) > >::const_iterator el;
 	el = stepFunctions.find(objName);
 	if (el == stepFunctions.end())
 		return;
 
 	el->second(sceneObjects, objName, sceneCamera);
-	
-	vecs::vec3 vec = { sceneObjects[objName].physicsObject.position.x, 
-					   sceneObjects[objName].physicsObject.position.y, 
-					   sceneObjects[objName].physicsObject.position.z };
-
-	vecs::vec3 camPos = {
-		sceneCamera.pos.x, 
-		sceneCamera.pos.y, 
-		sceneCamera.pos.z
-	};
-	
-	sceneObjects[objName].tex.bind();
-
-	vecs::mat4 yawMat = vc::rotY(-sceneCamera.yaw);
-	vecs::mat4 pitchMat = vc::rotX(-sceneCamera.pitch);
-	vecs::mat4 rollMat = vc::rotZ(-sceneCamera.roll);
-
-	//get uniform locations to bind the predefined uniforms
-	int uTexture = glGetUniformLocation(sceneObjects[objName].program, "uTexture");
-	int uWorld = glGetUniformLocation(sceneObjects[objName].program, "uWorld");
-	int uWorldInvTran = glGetUniformLocation(sceneObjects[objName].program, "uWorldInvTran");
-	int uViewMat = glGetUniformLocation(sceneObjects[objName].program, "uViewMat");
-	int uCameraPos = glGetUniformLocation(sceneObjects[objName].program, "uCameraPos");
-	int uObjPos = glGetUniformLocation(sceneObjects[objName].program, "uObjPos");
-	int uYaw = glGetUniformLocation(sceneObjects[objName].program, "uYaw");
-	int uYawMat = glGetUniformLocation(sceneObjects[objName].program, "uYawMat");
-	int uPitch = glGetUniformLocation(sceneObjects[objName].program, "uPitch");
-	int uPitchMat = glGetUniformLocation(sceneObjects[objName].program, "uPitchMat");
-	int uRoll = glGetUniformLocation(sceneObjects[objName].program, "uRoll");
-	int uRollMat = glGetUniformLocation(sceneObjects[objName].program, "uRollMat");
-
-	glUniform1i(uTexture, 0);
-	glUniformMatrix4fv(uWorld, 1, GL_FALSE, &worldMat.r[0][0]);
-	glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &transposedWorldMat.r[0][0]);
-	glUniformMatrix4fv(uViewMat, 1, GL_FALSE, &viewMat.r[0][0]);
-	glUniform3f(uCameraPos, camPos.x, camPos.y, camPos.z);
-	glUniform3f(uObjPos, vec.x, vec.y, vec.z);
-	glUniform1f(uYaw, sceneCamera.yaw);
-	glUniform1f(uPitch, sceneCamera.pitch);
-	glUniform1f(uRoll, sceneCamera.roll);
-	glUniformMatrix4fv(uYawMat, 1, GL_FALSE, &yawMat.r[0][0]);
-	glUniformMatrix4fv(uPitchMat, 1, GL_FALSE, &pitchMat.r[0][0]);
-	glUniformMatrix4fv(uRollMat, 1, GL_FALSE, &rollMat.r[0][0]);
-
-	glDrawArrays(GL_TRIANGLES, 0, sceneObjects[objName].convertedMesh.size() / 6);
-
-	sceneObjects[objName].tex.unbind();
 }
 
 void Scene::callCreateFunction(std::string objName)
@@ -163,13 +112,13 @@ void Scene::calculateViewMat(Camera& cam)
 	//asign new target
 	vTargetF = cam.pos + cam.lookDir;
 
-	viewMat =  createViewMatrix(cam.projMat, cam.pos, vTargetF, cam.up, cam.pitch, 0.0f, 0.0f);
+	viewMat =  vc::createViewMatrix(cam.projMat, cam.pos, vTargetF, cam.up, cam.pitch, 0.0f, 0.0f);
 }
 
 void Scene::calculateWorldMat()
 {
 	//calculates the world and the inverted transposed world mat 
-	worldMat = createWorldMatrix(dynamicSceneRotation, { 0.0f, 0.0f, 0.0f }, 1.0f);
+	worldMat = vc::createWorldMatrix(dynamicSceneRotation, { 0.0f, 0.0f, 0.0f }, 1.0f);
 	transposedWorldMat = vc::transposeMat(vc::quickInverse(worldMat));
 }
 
@@ -181,9 +130,9 @@ void Scene::applyStaticSceneRotation()
 
 		for (const auto& tri : kv.second.objectMesh.tris)
 		{
-			vecs::vec3 t0 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[0]);
-			vecs::vec3 t1 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[1]);
-			vecs::vec3 t2 = vc::customVecMultiply(createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[2]);
+			vecs::vec3 t0 = vc::customVecMultiply(vc::createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[0]);
+			vecs::vec3 t1 = vc::customVecMultiply(vc::createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[1]);
+			vecs::vec3 t2 = vc::customVecMultiply(vc::createWorldMatrix(staticSceneRotation, kv.second.position, 1.0f), tri.p[2]);
 
 			endWorld.tris.push_back({ { t0, t1, t2 }, { tri.texUv[0], tri.texUv[1], tri.texUv[2] }, tri.color, tri.normal});
 		}
@@ -218,4 +167,105 @@ std::vector<std::string> Scene::objectNames()
 	}
 
 	return objName;
+}
+
+void Scene::stepStart(std::string objName)
+{
+	glUseProgram(sceneObjects[objName].program);
+
+	sceneObjects[objName].viewport.bindAttribute(
+		sceneObjects[objName].program, 
+		sceneObjects[objName].buffer, 
+		"position",
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		11 * sizeof(float),
+		0
+	);
+
+	sceneObjects[objName].viewport.bindAttribute(
+		sceneObjects[objName].program, 
+		sceneObjects[objName].buffer, 
+		"iColor",
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		11 * sizeof(float),
+		3 * sizeof(float)
+	);
+
+	sceneObjects[objName].viewport.bindAttribute(
+		sceneObjects[objName].program, 
+		sceneObjects[objName].buffer, 
+		"iNormal",
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		11 * sizeof(float),
+		6 * sizeof(float)
+	);
+
+	sceneObjects[objName].viewport.bindAttribute(
+		sceneObjects[objName].program, 
+		sceneObjects[objName].buffer, 
+		"iUV",
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		11 * sizeof(float),
+		9 * sizeof(float)
+	);
+}
+
+void Scene::stepEnd(std::string objName)
+{
+	vecs::vec3 vec = { 
+		sceneObjects[objName].physicsObject.position.x, 
+		sceneObjects[objName].physicsObject.position.y, 
+		sceneObjects[objName].physicsObject.position.z
+	};
+
+	vecs::vec3 camPos = {
+		sceneCamera.pos.x, 
+		sceneCamera.pos.y, 
+		sceneCamera.pos.z
+	};
+	
+	sceneObjects[objName].tex.bind();
+
+	vecs::mat4 yawMat = vc::rotY(-sceneCamera.yaw);
+	vecs::mat4 pitchMat = vc::rotX(-sceneCamera.pitch);
+	vecs::mat4 rollMat = vc::rotZ(-sceneCamera.roll);
+
+	//get uniform locations to bind the predefined uniforms
+	int uTexture = glGetUniformLocation(sceneObjects[objName].program, "uTexture");
+	int uWorld = glGetUniformLocation(sceneObjects[objName].program, "uWorld");
+	int uWorldInvTran = glGetUniformLocation(sceneObjects[objName].program, "uWorldInvTran");
+	int uViewMat = glGetUniformLocation(sceneObjects[objName].program, "uViewMat");
+	int uCameraPos = glGetUniformLocation(sceneObjects[objName].program, "uCameraPos");
+	int uObjPos = glGetUniformLocation(sceneObjects[objName].program, "uObjPos");
+	int uYaw = glGetUniformLocation(sceneObjects[objName].program, "uYaw");
+	int uYawMat = glGetUniformLocation(sceneObjects[objName].program, "uYawMat");
+	int uPitch = glGetUniformLocation(sceneObjects[objName].program, "uPitch");
+	int uPitchMat = glGetUniformLocation(sceneObjects[objName].program, "uPitchMat");
+	int uRoll = glGetUniformLocation(sceneObjects[objName].program, "uRoll");
+	int uRollMat = glGetUniformLocation(sceneObjects[objName].program, "uRollMat");
+
+	glUniform1i(uTexture, 0);
+	glUniformMatrix4fv(uWorld, 1, GL_FALSE, &worldMat.r[0][0]);
+	glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &transposedWorldMat.r[0][0]);
+	glUniformMatrix4fv(uViewMat, 1, GL_FALSE, &viewMat.r[0][0]);
+	glUniform3f(uCameraPos, camPos.x, camPos.y, camPos.z);
+	glUniform3f(uObjPos, vec.x, vec.y, vec.z);
+	glUniform1f(uYaw, sceneCamera.yaw);
+	glUniform1f(uPitch, sceneCamera.pitch);
+	glUniform1f(uRoll, sceneCamera.roll);
+	glUniformMatrix4fv(uYawMat, 1, GL_FALSE, &yawMat.r[0][0]);
+	glUniformMatrix4fv(uPitchMat, 1, GL_FALSE, &pitchMat.r[0][0]);
+	glUniformMatrix4fv(uRollMat, 1, GL_FALSE, &rollMat.r[0][0]);
+
+	glDrawArrays(GL_TRIANGLES, 0, sceneObjects[objName].convertedMesh.size() / 6);
+
+	sceneObjects[objName].tex.unbind();
 }

@@ -13,6 +13,9 @@ void blockFramerate(float fpsCap) {
 Engine::Engine(float width, float height, float fpsCap)
 	:windowWidth(width), windowHeight(height), currentTime(glfwGetTime()), lastTime(0), deltaTime(currentTime - lastTime), fpsCap(fpsCap)
 {
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+ 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); 
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	// Initialize the library
 	if (!glfwInit())
@@ -47,8 +50,7 @@ void Engine::run()
 		glfwPollEvents();
 
 		glClearColor(0.36862f, 0.20392f, 0.9215686f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClear(GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//execute all the things that have to happend at frame
 		frame();
@@ -78,7 +80,11 @@ void Engine::frame()
 	//call step function for each object
 	for (const auto& objectName : sceneObjectNames)
 	{
+		gameScene.stepStart(objectName);
+
 		gameScene.callStepFunction(objectName);
+
+		gameScene.stepEnd(objectName);
 	}
 
 	lastTime = glfwGetTime();
@@ -101,10 +107,6 @@ void Engine::create()
 
 void Engine::initEngineWindow()
 {
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
- 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); 
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
 	if (!engineWindow)
 	{
 		glfwTerminate();

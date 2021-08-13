@@ -33,6 +33,7 @@ typedef struct ObjectInfo
 	unsigned int program;
 	unsigned int buffer;
 	unsigned int drawType;
+	unsigned int frameBuffer = 0;
 	std::vector<ShaderInfo> shaderDirs;
 	std::string objectModelDir;
 	Viewport viewport = Viewport(convertedMesh, GL_STATIC_DRAW);

@@ -38,4 +38,10 @@ namespace vc
 	vecs::mat4 matrixPointAt(vecs::vec3&, vecs::vec3&, vecs::vec3&);
 
 	vecs::mat4 transposeMat(vecs::mat4);
+
+	vecs::mat4 createWorldMatrix(vecs::vec3, vecs::vec3, float);
+
+	vecs::mat4 createViewMatrix(vecs::mat4, vecs::vec3&, vecs::vec3&, vecs::vec3&, float, float, float);
+
+	vecs::mat4 pointAtMatrix(vecs::vec3&, vecs::vec3&, vecs::vec3&);
 };

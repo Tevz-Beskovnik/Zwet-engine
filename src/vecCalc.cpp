@@ -17,13 +17,12 @@ vecs::vec3 vc::normalize(vecs::vec3 vec)
 {
 	float l = vc::vecLen(vec);
 	bool lf = l != 0, lt = l == 0;
-	return vecs::vec3{((vec.x / l)*lf + vec.x*lt), ((vec.y / l) * lf + vec.y * lt), ((vec.z / l) * lf + vec.z * lt)};
+	return {((vec.x / l)*lf + vec.x*lt), ((vec.y / l) * lf + vec.y * lt), ((vec.z / l) * lf + vec.z * lt)};
 }
 
 vecs::vec3 vc::crossPru(vecs::vec3 vec1, vecs::vec3 vec2) 
 {
-	return vecs::vec3
-	{
+	return {
 		(vec1.y * vec2.z - vec1.z * vec2.y),
 		(vec1.z * vec2.x - vec1.x * vec2.z),
 		(vec1.x * vec2.y - vec1.y * vec2.x)
@@ -32,7 +31,7 @@ vecs::vec3 vc::crossPru(vecs::vec3 vec1, vecs::vec3 vec2)
 
 vecs::vec3 vc::vecSub(vecs::vec3 vec1, vecs::vec3 vec2)
 {
-	return vecs::vec3{
+	return {
 		vec1.x - vec2.x,
 		vec1.y - vec2.y,
 		vec1.z - vec2.z
@@ -41,7 +40,7 @@ vecs::vec3 vc::vecSub(vecs::vec3 vec1, vecs::vec3 vec2)
 
 vecs::vec3 vc::vecAdd(vecs::vec3 v1, vecs::vec3 v2) 
 {
-	return vecs::vec3{
+	return {
 		v1.x + v2.x,
 		v1.y + v2.y,
 		v1.z + v2.z
@@ -50,7 +49,7 @@ vecs::vec3 vc::vecAdd(vecs::vec3 v1, vecs::vec3 v2)
 
 vecs::vec3 vc::vecPru(vecs::vec3 v, float k) 
 {
-	return vecs::vec3{
+	return {
 		v.x * k,
 		v.y * k,
 		v.z * k
@@ -59,7 +58,7 @@ vecs::vec3 vc::vecPru(vecs::vec3 v, float k)
 
 vecs::vec3 vc::vecDiv(vecs::vec3 v, float k) 
 {
-	return vecs::vec3{
+	return {
 		v.x / k,
 		v.y / k,
 		v.z / k
@@ -185,4 +184,39 @@ vecs::mat4 vc::transposeMat(vecs::mat4 m)
 			outMat.r[i][j] = m.r[j][i];
 
 	return outMat;
+}
+
+vecs::mat4 vc::createWorldMatrix(vecs::vec3 rot, vecs::vec3 translation, float time)
+{
+    vecs::mat4 mRotX, mRotY, mRotZ, mTranslation;
+    mRotX = vc::rotX(rot.x * time);
+    mRotY = vc::rotY(rot.y * time);
+    mRotZ = vc::rotZ(rot.z * time);
+    mTranslation = vc::translationMat(translation.x, translation.y, translation.z);
+
+    return mRotX * mRotZ * mTranslation;
+}
+
+vecs::mat4 vc::createViewMatrix(vecs::mat4 mProjMat, vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up, float pitch, float yaw, float roll)
+{
+    vecs::mat4 mCameraRotX = vc::rotX(pitch);
+    vecs::mat4 mCameraRotY = vc::rotY(yaw);
+    vecs::mat4 mCameraRotZ = vc::rotZ(roll);
+    vecs::mat4 mView = vc::quickInverse((mCameraRotX * mCameraRotZ * mCameraRotY) * vc::pointAtMatrix(pos, target, up));
+    return mView * mProjMat;
+}
+
+vecs::mat4 vc::pointAtMatrix(vecs::vec3& pos, vecs::vec3& target, vecs::vec3& up)
+{
+    vecs::vec3 newForward = vc::normalize(target - pos);
+    vecs::vec3 a = newForward * vc::dotPru(up, newForward);
+    vecs::vec3 newUp = vc::normalize(up - a);
+    vecs::vec3 newRight = vc::crossPru(newUp, newForward);
+
+    vecs::mat4 matrix;
+    matrix.r[0][0] = newRight.x;	matrix.r[0][1] = newRight.y;	matrix.r[0][2] = newRight.z;	matrix.r[0][3] = 0.0f;
+    matrix.r[1][0] = newUp.x;		matrix.r[1][1] = newUp.y;		matrix.r[1][2] = newUp.z;		matrix.r[1][3] = 0.0f;
+    matrix.r[2][0] = newForward.x;	matrix.r[2][1] = newForward.y;	matrix.r[2][2] = newForward.z;	matrix.r[2][3] = 0.0f;
+    matrix.r[3][0] = pos.x;			matrix.r[3][1] = pos.y;			matrix.r[3][2] = pos.z;			matrix.r[3][3] = 1.0f;
+    return matrix;
 }

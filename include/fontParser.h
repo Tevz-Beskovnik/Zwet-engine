@@ -11,7 +11,7 @@
 #include<vector>
 #include<sstream>
 #include<fstream>
-#include "gameObj.h"
+#include "gameObject.h"
 #include "vecs.h"
 
 /*
