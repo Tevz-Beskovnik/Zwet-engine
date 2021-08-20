@@ -15,4 +15,6 @@ add_executable("${CMAKE_PROJECT_NAME}" ${Zwet_Engine_SOURCES})
 
 target_link_libraries("${CMAKE_PROJECT_NAME}" CONAN_PKG::glfw CONAN_PKG::glew CONAN_PKG::openal)
 
-target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(Zwet_Engine_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include/core ${CMAKE_CURRENT_SOURCE_DIR}/include/renderer)
+
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC Zwet_Engine_HEADERS)
