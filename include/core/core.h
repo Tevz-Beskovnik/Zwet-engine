@@ -15,6 +15,10 @@
 #include <cmath>
 #include <algorithm>
 #include <functional>
+#include <memory>
+
+// MY LIBS
+#include <utils.h>
 
 // EXTERNAL LIBS
 #include <GL/glew.h>
