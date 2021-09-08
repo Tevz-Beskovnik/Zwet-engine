@@ -1,4 +1,7 @@
+#pragma once
+
 #include <core.h>
+#include <utils.h>
 
 namespace ZWET
 {
@@ -22,7 +25,7 @@ namespace ZWET
 }
 
 // logging service
-#define ZWET_INFO(...) ::ZWET::Log::createLogService()->info(__VA__ARGS__)
-#define ZWET_ERROR(...) ::ZWET::Log::createLogService()->error(__VA__ARGS__)
-#define ZWET_MESSAGE(...) ::ZWET::Log::createLogService()->message(__VA__ARGS__)
-#define ZWET_WARN(...) ::ZWET::Log::createLogService()->warn(__VA__ARGS__)
+#define ZWET_INFO(args)    ::ZWET::Log::createLogService()->info(args)
+#define ZWET_ERROR(args)   ::ZWET::Log::createLogService()->error(args)
+#define ZWET_MESSAGE(args) ::ZWET::Log::createLogService()->message(args)
+#define ZWET_WARN(args)    ::ZWET::Log::createLogService()->warn(args)

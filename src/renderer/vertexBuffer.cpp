@@ -43,7 +43,7 @@ namespace ZWET
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    SharedPtr<VertexBuffer> Create(size_t amount, std::vector<float>* positions)
+    SharedPtr<VertexBuffer> create(size_t amount, std::vector<float>* positions)
     {
         return CreateShared<VertexBuffer>(amount, positions);
     }

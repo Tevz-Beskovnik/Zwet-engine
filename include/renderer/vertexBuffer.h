@@ -13,13 +13,15 @@ namespace ZWET
 
             ~VertexBuffer();
 
-            static SharedPtr<VertexBuffer> Create(size_t amount, std::vector<float>* positions);
+            static SharedPtr<VertexBuffer> create(size_t amount, std::vector<float>* positions);
 
             void bind();
 
             static void unbind();
 
             void setData(std::vector<float>* positions);
+
+            unsigned int getBuffer() { return buffer; };
 
         private: 
             unsigned int buffer;

@@ -22,9 +22,9 @@ namespace ZWET
         glUseProgram(0);
     }
 
-    UniquePtr<Shader> Shader::create(std::vector<ShaderData> settings)
+    SharedPtr<Shader> Shader::create(std::vector<ShaderData> settings)
     {
-        return CreateUnique<Shader>(settings);
+        return CreateShared<Shader>(settings);
     }
 
     bool Shader::readShader(std::string directory)

@@ -3,45 +3,45 @@
 #include<vector>
 #include<math.h>
 #include<cmath>
-#include "vecs.h"
+#include <structs.h>
 
-namespace vc
+namespace ZWET
 {
-	float vecLen(vecs::vec3);
+	float vecLen(vec3);
 
-	float dotPru(vecs::vec3, vecs::vec3);
+	float dotPru(vec3, vec3);
 
-	vecs::vec3 normalize(vecs::vec3);
+	vec3 normalize(vec3);
 
-	vecs::vec3 crossPru(vecs::vec3, vecs::vec3);
+	vec3 crossPru(vec3, vec3);
 
-	vecs::vec3 vecSub(vecs::vec3, vecs::vec3);
+	vec3 vecSub(vec3, vec3);
 
-	vecs::vec3 vecAdd(vecs::vec3, vecs::vec3);
+	vec3 vecAdd(vec3, vec3);
 
-	vecs::vec3 vecPru(vecs::vec3, float);
+	vec3 vecPru(vec3, float);
 
-	vecs::vec3 vecDiv(vecs::vec3, float);
+	vec3 vecDiv(vec3, float);
 
-	vecs::mat4 rotX(float);
+	mat4 rotX(float);
 
-	vecs::mat4 rotY(float);
+	mat4 rotY(float);
 	
-	vecs::mat4 rotZ(float);
+	mat4 rotZ(float);
 
-	vecs::mat4 translationMat(float, float, float);
+	mat4 translationMat(float, float, float);
 
-	vecs::mat4 quickInverse(vecs::mat4);
+	mat4 quickInverse(mat4);
 
-	vecs::vec3 customVecMultiply(vecs::mat4, vecs::vec3);
+	vec3 customVecMultiply(mat4, vec3);
 
-	vecs::mat4 matrixPointAt(vecs::vec3&, vecs::vec3&, vecs::vec3&);
+	mat4 matrixPointAt(vec3&, vec3&, vec3&);
 
-	vecs::mat4 transposeMat(vecs::mat4);
+	mat4 transposeMat(mat4);
 
-	vecs::mat4 createWorldMatrix(vecs::vec3, vecs::vec3, float);
+	mat4 createWorldMatrix(vec3, vec3, float);
 
-	vecs::mat4 createViewMatrix(vecs::mat4, vecs::vec3&, vecs::vec3&, vecs::vec3&, float, float, float);
+	mat4 createViewMatrix(mat4, vec3&, vec3&, vec3&, float, float, float);
 
-	vecs::mat4 pointAtMatrix(vecs::vec3&, vecs::vec3&, vecs::vec3&);
+	mat4 pointAtMatrix(vec3&, vec3&, vec3&);
 };

@@ -1,4 +1,7 @@
+#pragma once
+
 #include <core.h>
+#include <utils.h>
 
 namespace ZWET
 {
@@ -6,7 +9,7 @@ namespace ZWET
     {
         std::string shaderDirectory;
 	    unsigned int shaderType;
-    }
+    };
 
     class Shader
     {
@@ -21,7 +24,9 @@ namespace ZWET
 
             void remove();
 
-            static UniquePtr<Shader> create(std::vector<ShaderData> settings);
+            unsigned int getProgram() { return program; };
+
+            static SharedPtr<Shader> create(std::vector<ShaderData> settings);
 
         private: 
             unsigned int program;
