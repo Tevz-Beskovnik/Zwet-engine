@@ -6,10 +6,19 @@ namespace ZWET
 {
     class Drawer
     {
-        Drawer();
+        public:
+            Drawer(unsigned int type, int first, size_t amount);
 
-        ~Drawer();
+            ~Drawer();
 
-        static void draw(unsigned int type, int first, size_t amount);
+            void setPolyCount(size_t newAmount) { amount = newAmount; };
+
+            static void draw(unsigned int type, int first, size_t amount);
+            void draw();
+
+        private:
+            unsigned int type;
+            int first;
+            size_t amount;
     };
 }

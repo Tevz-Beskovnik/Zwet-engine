@@ -4,7 +4,7 @@ project(Zwet_Engine VERSION 1.0)
 include(${CMAKE_CURRENT_SOURCE_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
-set(CMAKE_BUILD_TYPE Debug)
+target_compile_definitions(ZWET_DEBUG)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_APPLE_SILICON_PROCESSOR arm64)

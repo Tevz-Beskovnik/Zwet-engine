@@ -2,55 +2,9 @@
 
 namespace ZWET 
 {
-    Entity::Entity(entityData data)
-        :position(data.position), 
-         dynamicRotation(data.dynamicRotation),
-         family(data.name),
-         texture(Texture::create(data.texturePath)),
-         shader(Shader::create(data.shaderData)),
-         frameBuffer(FrameBuffer::create(&data.frameBufferSettings))
+    SharedPtr<Entity> Entity::create()
     {
-        if(!Mesh::readMesh(entityMesh, data.modelLocation, data.color))
-        {
-            ZWET_ERROR("THE FILE COULD NOT BE READ.");
-            return;
-        }
-
-        Mesh::applyStaticRotation(entityMesh, data.staticRotation, data.position);
-
-        convretMesh = Mesh::convertMesh(entityMesh);
-
-        vertexBuffer = VertexBuffer::create(1, &convretMesh);
-    }
-
-    Entity::~Entity()
-    {
-        ;
-    }
-
-    SharedPtr<Entity> Entity::create(entityData data)
-    {
-        return CreateShared<Entity>(data);
-    }
-
-    void Entity::setStepFunction(std::function<void(tsl::hopscotch_map<int, SharedPtr<Entity>>&)> step)
-    {
-        stepFunc = step;
-    }
-
-    void Entity::stepFunction(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap)
-    {
-        stepFunc(entityMap);
-    }
-
-    void Entity::setCreateFunction(std::function<void(tsl::hopscotch_map<int, SharedPtr<Entity>>&)> create)
-    {
-        createFunc = create;
-    }
-
-    void Entity::createFunction(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap)
-    {
-        createFunc(entityMap);
+        return CreateShared<Entity>();
     }
 
     void Entity::newMesh(mesh newMesh)
@@ -70,5 +24,23 @@ namespace ZWET
     {
         position = data.position;
         dynamicRotation = data.dynamicRotation;
+        texture = Texture::create(data.texturePath);
+        shader = Shader::create(data.shaderData);
+        frameBuffer = FrameBuffer::create(&data.frameBufferSettings);
+        physicsEnabled = data.physicsObject;
+        velocity = data.velocity;
+        weight = data.weight;
+
+        if(!Mesh::readMesh(entityMesh, data.modelLocation, data.color))
+        {
+            ZWET_ERROR("THE FILE COULD NOT BE READ.");
+            return;
+        }
+
+        Mesh::applyStaticRotation(entityMesh, data.staticRotation, data.position);
+
+        convretMesh = Mesh::convertMesh(entityMesh);
+
+        vertexBuffer = VertexBuffer::create(1, &convretMesh);
     }
 }

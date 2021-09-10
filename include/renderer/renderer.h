@@ -2,30 +2,35 @@
 
 #include <core.h>
 #include <utils.h>
+#include <log.h>
+#include <scene.h>
+#include <attributeLayout.h>
+#include <drawer.h>
 
 namespace ZWET
 {
-    struct AttirbuteLayout
-    {
-
-    };
-
-    struct RendererSettings
-    {
-
-    };
-
     class Renderer
     {
         public:
-            Renderer();
+            Renderer(SharedPtr<Scene> scene);
 
             ~Renderer();
 
-            static UniquePtr<Renderer> create();
+            void init();
+
+            void viewport(size_t x, size_t y, size_t width, size_t height);
+
+            static UniquePtr<Renderer> create(SharedPtr<Scene> scene);
 
             void frame();
 
         private:
+            SharedPtr<Scene> scene;
+
+            void stepStart(); // at vertex buffer bind 
+            // ^ (optimal place to do framebuffer draw call)
+            void step(); // at uniform bind
+
+            void stepEnd(); // at draw call
     };
 }

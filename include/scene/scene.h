@@ -2,6 +2,7 @@
 
 #include <core.h>
 #include <utils.h>
+#include <log.h>
 #include <entity.h>
 
 namespace ZWET
@@ -9,7 +10,6 @@ namespace ZWET
     using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
     using EntityFamilyMap = tsl::hopscotch_map<std::string, SharedPtr<Entity>>;
     using FamilyRelationsMap = tsl::hopscotch_map<std::string, std::vector<int>>;
-    using EntityFunction = std::function<void(tsl::hopscotch_map<int, SharedPtr<Entity>>&)>;
     using namespace simdjson;
 
     class Scene
@@ -21,13 +21,13 @@ namespace ZWET
 
             static UniquePtr<Scene> create(std::string scenePath);
 
-            void sceneCreate();
+            void sceneCreateFunc();
 
-            void sceneStep();
+            void sceneStepFunc();
 
-            void addEntity(SharedPtr<Entity>);
+            void registerEntity(SharedPtr<Entity> entity);
 
-            void removeEntity(SharedPtr<Entity>);
+            void removeEntity(int entityId);
 
             std::vector<int> getEntityRelations(std::string familyName);
 
@@ -46,10 +46,8 @@ namespace ZWET
 
             void addToEntities(entityData entity);
 
-            bool applyCreateToEntity(EntityFunction createFunc);
+            void addRelation(std::string family, int location);
 
-            bool applyStepToEntity(EntityFunction stepFunc)
-
-            bool addToEntityFamilyMap(entityData entity);
+            bool addToEntityFamilyMap(SharedPtr<Entity> entity);
     };
 }

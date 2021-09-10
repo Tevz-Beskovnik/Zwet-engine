@@ -18,24 +18,24 @@ namespace ZWET
         return CreateUnique<Scene>(scenePath);
     }
 
-    void Scene::sceneCreate()
+    void Scene::sceneCreateFunc()
     {
 
     }
 
-    void Scene::sceneStep()
+    void Scene::sceneStepFunc()
     {
 
     }
 
-    void Scene::addEntity(SharedPtr<Entity>)
+    void Scene::registerEntity(SharedPtr<Entity> entity)
     {
-
+        addToEntityFamilyMap(entity);
     }
 
-    void Scene::removeEntity(SharedPtr<Entity>)
+    void Scene::removeEntity(int entityId)
     {
-
+        entities.erase(entityId);
     }
 
     EntityMap& Scene::getEntities()
@@ -102,7 +102,11 @@ namespace ZWET
 
     void Scene::addToEntities(entityData entity)
     {
-        addToEntityFamilyMap(entity);
+        if(entityFamilies.find(entity.name) == entityFamilies.end())
+            entityFamilies.insert({
+                entity.name,
+                Entity::create()
+            });
 
         SharedPtr<Entity> entityObject = CreateShared<Entity>(entityFamilies[entity.name]);
         entityObject->setEntityData(entity);
@@ -110,15 +114,29 @@ namespace ZWET
 
         entityCount++;
     } 
-            
-    bool Scene::addToEntityFamilyMap(entityData entity)
+
+    void Scene::addRelation(std::string family, int location)
     {
-        if(entityFamilies.find(entity.name) != entityFamilies.end())
+        if(entityRelations.find(family) != entityRelations.end())
+        {
+            entityRelations.insert({
+                family,
+                { location }
+            });
+            return;
+        }
+
+        entityRelations[family].push_back(location);
+    }
+            
+    bool Scene::addToEntityFamilyMap(SharedPtr<Entity> entity)
+    {
+        if(entityFamilies.find(entity->family) != entityFamilies.end())
             return false;
 
         entityFamilies.insert({
-            entity.name,
-            CreateShared<Entity>(entity)
+            entity->family,
+            CreateShared<Entity>(*entity)
         });
 
         return true;
@@ -130,15 +148,5 @@ namespace ZWET
             return entityRelations[familyName]; 
         else
             return {};
-    }
-
-    bool Scene::applyCreateToEntity(EntityFunction createFunc)
-    {
-        
-    }
-
-    bool Scene::applyStepToEntity(EntityFunction stepFunc)
-    {
-
     }
 }
