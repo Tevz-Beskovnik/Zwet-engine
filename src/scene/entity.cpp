@@ -42,5 +42,6 @@ namespace ZWET
         convretMesh = Mesh::convertMesh(entityMesh);
 
         vertexBuffer = VertexBuffer::create(1, &convretMesh);
+        drawer = Drawer::create(GL_STATIC_DRAW, 0, vertexBuffer->getPolyCount());
     }
 }

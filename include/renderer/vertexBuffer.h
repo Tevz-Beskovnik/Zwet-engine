@@ -21,9 +21,12 @@ namespace ZWET
 
             void setData(std::vector<float>* positions);
 
-            unsigned int getBuffer() { return buffer; };
+            size_t& getPolyCount();
+
+            unsigned int& getBuffer() { return buffer; };
 
         private: 
             unsigned int buffer;
+            size_t polyCount;
     };
 }

@@ -2,7 +2,12 @@
 
 namespace ZWET
 {
-    void AttributeLayout::setLayout(layout attributeLayout)
+    AttributeLayout::AttributeLayout(unsigned int& program, unsigned int& buffer)
+        :program(program), buffer(buffer)
+    {
+    }
+
+    void AttributeLayout::setLayout(Layout attributeLayout)
     {
         glBindBuffer(GL_ARRAY_BUFFER, attributeLayout.buffer);
 

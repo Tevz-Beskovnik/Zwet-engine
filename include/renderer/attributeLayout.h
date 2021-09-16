@@ -5,7 +5,7 @@
 
 namespace ZWET
 {
-    struct layout
+    struct Layout
     {
         unsigned int& program;
         unsigned int& buffer;
@@ -19,10 +19,15 @@ namespace ZWET
 
     class AttributeLayout
     {
-        AttributeLayout();
+        public:
+            AttributeLayout(unsigned int& program, unsigned int& buffer);
 
-        ~AttributeLayout();
+            ~AttributeLayout();
 
-        static void setLayout(layout attribLayout);
+            static void setLayout(Layout attribLayout);
+
+        private:
+            unsigned int& program;
+            unsigned int& buffer;
     };
 }

@@ -1,12 +1,20 @@
 #pragma once
 
+#ifndef WORLD_TYPE
+    #define WORLD_TYPE
+    #define WORLD_3D
+#endif
+
 #include <core.h>
 #include <utils.h>
 #include <log.h>
 #include <entity.h>
+#include <vecCalc.h>
+#include <camera.h>
 
 namespace ZWET
 {
+
     using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
     using EntityFamilyMap = tsl::hopscotch_map<std::string, SharedPtr<Entity>>;
     using FamilyRelationsMap = tsl::hopscotch_map<std::string, std::vector<int>>;
@@ -15,6 +23,10 @@ namespace ZWET
     class Scene
     {
         public:
+            mat4 world;
+            mat4 inverseWorld;
+            vec3 dynamicSceneRotation;
+
             Scene(std::string scenePath);
 
             ~Scene();
@@ -25,19 +37,29 @@ namespace ZWET
 
             void sceneStepFunc();
 
+            void setCamera(SharedPtr<Camera>& camera);
+
             void registerEntity(SharedPtr<Entity> entity);
 
             void removeEntity(int entityId);
+
+            SharedPtr<Camera>& getCamera();
 
             std::vector<int> getEntityRelations(std::string familyName);
 
             EntityMap& getEntities();
         private:
+            //camera stuff
+            SharedPtr<Camera> camera;
+
+            //entity relations
             int entityCount = 0;
             std::string scenePath;
             EntityFamilyMap entityFamilies;
             EntityMap entities;
             FamilyRelationsMap entityRelations;
+
+            //document parsing
             ondemand::parser parser;
             padded_string sceneToSerialise;
             ondemand::document doc;

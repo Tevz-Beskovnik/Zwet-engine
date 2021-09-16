@@ -9,6 +9,7 @@
 #include <vertexBuffer.h>
 #include <shader.h>
 #include <texture.h>
+#include <drawer.h>
 
 namespace ZWET
 {
@@ -42,18 +43,23 @@ namespace ZWET
             vec3 dynamicRotation;
             int entityId;
             std::string family;
+            SharedPtr<VertexBuffer> vertexBuffer;
+            SharedPtr<FrameBuffer> frameBuffer;
+            SharedPtr<Shader> shader;
+            SharedPtr<Texture> texture;
+            SharedPtr<Drawer> drawer;
 
             virtual ~Entity();
 
             static SharedPtr<Entity> create();
             
-            virtual void create(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap);
+            virtual void createFun(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap, SharedPtr<Camera>& cam);
 
-            virtual void stepStart(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap);
+            virtual void stepStart(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap, SharedPtr<Camera>& cam);
 
-            virtual void step(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap);
+            virtual void step(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap, SharedPtr<Camera>& cam);
 
-            virtual void stepEnd(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap);
+            virtual void stepEnd(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap, SharedPtr<Camera>& cam);
 
             void newMesh(mesh newMesh);
 
@@ -61,10 +67,6 @@ namespace ZWET
             
         private:
             entityData data;
-            SharedPtr<VertexBuffer> vertexBuffer;
-            SharedPtr<FrameBuffer> frameBuffer;
-            SharedPtr<Shader> shader;
-            SharedPtr<Texture> texture;
             bool physicsEnabled;
             vec3 velocity;
             float weight;

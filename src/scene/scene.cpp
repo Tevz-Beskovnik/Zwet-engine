@@ -5,12 +5,12 @@ namespace ZWET
     Scene::Scene(std::string scenePath)
         :scenePath(scenePath)
     {
-
+        ;
     }
 
     Scene::~Scene()
     {
-
+        ;
     }
 
     UniquePtr<Scene> Scene::create(std::string scenePath)
@@ -20,12 +20,17 @@ namespace ZWET
 
     void Scene::sceneCreateFunc()
     {
+        world = createWorldMatrix(dynamicSceneRotation, { 0.0f, 0.0f, 0.0f }, 1.0f);
+        inverseWorld = quickInverse(world);
 
+        camera->create();
     }
 
     void Scene::sceneStepFunc()
     {
-
+        world = createWorldMatrix(dynamicSceneRotation, { 0.0f, 0.0f, 0.0f }, 1.0f);
+        inverseWorld = quickInverse(world);
+        camera->step();
     }
 
     void Scene::registerEntity(SharedPtr<Entity> entity)
@@ -47,7 +52,7 @@ namespace ZWET
     {
         sceneToSerialise = padded_string::load(scenePath);
         doc = parser.iterate(sceneToSerialise);
-        auto sceneArray = doc.get_array();
+        auto sceneArray = doc["scene"].get_array();
 
         for(ondemand::object entity : sceneArray)
         {
@@ -148,5 +153,10 @@ namespace ZWET
             return entityRelations[familyName]; 
         else
             return {};
+    }
+
+    void Scene::setCamera(SharedPtr<Camera>& newCamera)
+    {
+        camera = newCamera;
     }
 }

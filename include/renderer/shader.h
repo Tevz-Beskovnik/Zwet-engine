@@ -24,7 +24,7 @@ namespace ZWET
 
             void remove();
 
-            unsigned int getProgram() { return program; };
+            unsigned int& getProgram() { return program; };
 
             static SharedPtr<Shader> create(std::vector<ShaderData> settings);
 
