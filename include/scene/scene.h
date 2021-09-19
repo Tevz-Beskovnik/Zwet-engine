@@ -11,12 +11,13 @@
 #include <entity.h>
 #include <vecCalc.h>
 #include <camera.h>
+#include <keyInput.h>
 
 namespace ZWET
 {
 
-    using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
-    using EntityFamilyMap = tsl::hopscotch_map<std::string, SharedPtr<Entity>>;
+    using EntityMap = tsl::hopscotch_map<int, Entity>;
+    using EntityFamilyMap = tsl::hopscotch_map<std::string, Entity>;
     using FamilyRelationsMap = tsl::hopscotch_map<std::string, std::vector<int>>;
     using namespace simdjson;
 
@@ -39,16 +40,22 @@ namespace ZWET
 
             void setCamera(SharedPtr<Camera>& camera);
 
-            void registerEntity(SharedPtr<Entity> entity);
+            void registerEntity(Entity entity);
 
             void removeEntity(int entityId);
+
+            void setKeyInputSource(GLFWwindow* window);
 
             SharedPtr<Camera>& getCamera();
 
             std::vector<int> getEntityRelations(std::string familyName);
 
             EntityMap& getEntities();
+
         private:
+            //keyboard input
+            SharedPtr<KeyboardInput> keyBoard;
+
             //camera stuff
             SharedPtr<Camera> camera;
 
@@ -70,6 +77,6 @@ namespace ZWET
 
             void addRelation(std::string family, int location);
 
-            bool addToEntityFamilyMap(SharedPtr<Entity> entity);
+            bool addToEntityFamilyMap(Entity entity);
     };
 }

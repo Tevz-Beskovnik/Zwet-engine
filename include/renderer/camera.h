@@ -1,7 +1,10 @@
+#pragma once
+
 #include <core.h>
 #include <structs.h>
 #include <utils.h>
 #include <vecCalc.h>
+#include <keyInput.h>
 
 namespace ZWET
 {
@@ -16,10 +19,6 @@ namespace ZWET
 
             void create2d();
 
-            virtual void cameraCreate();
-
-            virtual void cameraStep();
-
             void create();
 
             void step();
@@ -30,9 +29,22 @@ namespace ZWET
 
             vec3& getPosition();
 
+            float& getYaw();
+
+            float& getRoll();
+
+            float& getPitch();
+
+            float& getForward();
+
+            float& getSideways();
+
+            float& getVertical();
+
             static SharedPtr<Camera> create(float x, float y, float z);
 
-        private:
+        protected:
+
             vec3 position;
             vec3 lookDir = { 0.0f, 0.0f, 1.0f };
 	        vec3 lookDirSqued = { 1.0f, 0.0f, 0.0f };

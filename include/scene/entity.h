@@ -10,9 +10,13 @@
 #include <shader.h>
 #include <texture.h>
 #include <drawer.h>
+#include <keyInput.h>
+#include <camera.h>
 
 namespace ZWET
 {
+    class Entity;
+
     struct entityData
     {
         std::string name;
@@ -36,6 +40,8 @@ namespace ZWET
         vec3 velocity = { 0.0f, 0.0f, 0.0f };
     };
 
+    using EntityMap = tsl::hopscotch_map<int, Entity>;
+
     class Entity
     {
         public:
@@ -49,23 +55,27 @@ namespace ZWET
             SharedPtr<Texture> texture;
             SharedPtr<Drawer> drawer;
 
-            virtual ~Entity();
+            virtual ~Entity() {};
 
-            static SharedPtr<Entity> create();
+            virtual std::string getFamilyName() { return family; };
             
-            virtual void createFun(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap, SharedPtr<Camera>& cam);
+            virtual void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
 
-            virtual void stepStart(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap, SharedPtr<Camera>& cam);
+            virtual void stepStart(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
 
-            virtual void step(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap, SharedPtr<Camera>& cam);
+            virtual void step(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
 
-            virtual void stepEnd(tsl::hopscotch_map<int, SharedPtr<Entity>>& entityMap, SharedPtr<Camera>& cam);
+            virtual void stepEnd(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
 
             void newMesh(mesh newMesh);
 
             void setEntityData(entityData data);
+
+            void setKeyInput(SharedPtr<KeyboardInput> keyInput);
             
-        private:
+        protected:
+            SharedPtr<KeyboardInput> keyBoard;
+
             entityData data;
             bool physicsEnabled;
             vec3 velocity;

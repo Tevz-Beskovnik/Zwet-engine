@@ -7,6 +7,7 @@
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 #endif
+#include <stb_image.h>
 
 namespace ZWET
 {

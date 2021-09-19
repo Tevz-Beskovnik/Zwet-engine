@@ -9,12 +9,12 @@
 
 namespace ZWET
 {
-    using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
+    using EntityMap = tsl::hopscotch_map<int, Entity>;
 
     class Renderer
     {
         public:
-            Renderer(SharedPtr<Scene>& scene);
+            Renderer(Scene& scene, unsigned int fpsCap);
 
             ~Renderer();
 
@@ -22,12 +22,18 @@ namespace ZWET
 
             void viewport(size_t x, size_t y, size_t width, size_t height);
 
-            static UniquePtr<Renderer> create(SharedPtr<Scene>& scene);
+            void setWindow(GLFWwindow* window);
+
+            void setFpsCap(unsigned int fpsCap);
+
+            static UniquePtr<Renderer> create(Scene& scene, unsigned int fpsCap);
 
             void frame();
 
         private:
-            SharedPtr<Scene>& scene;
+            unsigned int fpsCap;
+            GLFWwindow* window;
+            Scene& scene;
             EntityMap& entities;
             SharedPtr<Camera>& camera;
 

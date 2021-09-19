@@ -55,18 +55,45 @@ namespace ZWET
         return position;
     }
 
+    
+    float& Camera::getYaw()
+    {
+        return yaw;
+    }
+
+    float& Camera::getRoll()
+    {
+        return roll;
+    }
+
+    float& Camera::getPitch()
+    {
+        return pitch;
+    }
+
     void Camera::create()
     {
         viewMat();
-
-        cameraCreate();
     }
 
     void Camera::step()
     {
         viewMat();
+    }
 
-        cameraStep();
+    float& Camera::getForward()
+    {
+        return forward;
+    } 
+
+    float& Camera::getSideways()
+    {
+        return sideways;
+    }
+
+    float& Camera::getVertical()
+    {
+        return vertical;
     }
 
     void Camera::viewMat()

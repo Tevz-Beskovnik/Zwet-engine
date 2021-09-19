@@ -2,7 +2,7 @@
 
 namespace ZWET
 {
-    std::vector<float> convertMesh(mesh inputMesh)
+    std::vector<float> Mesh::convertMesh(mesh inputMesh)
     {
 		std::vector<float> oMesh;
 
@@ -55,9 +55,11 @@ namespace ZWET
 	        oMesh.push_back(tri.texUV[2].x);
 	        oMesh.push_back(tri.texUV[2].y);
 	    }
+
+		return oMesh;
 	}
 
-    bool readMesh(mesh &inputMesh, std::string modelLocation, rgb color)
+    bool Mesh::readMesh(mesh &inputMesh, std::string modelLocation, rgb color)
     {
             std::ifstream f(modelLocation);
 	    if (!f.is_open())
@@ -125,7 +127,7 @@ namespace ZWET
 	    return true;
     }
 
-    void applyStaticRotation(mesh& outMesh, vec3 rotationVector, vec3 position)
+    void Mesh::applyStaticRotation(mesh& outMesh, vec3 rotationVector, vec3 position)
     {
 		mesh endWorld;
 

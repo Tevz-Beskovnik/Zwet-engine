@@ -4,6 +4,60 @@
 
 namespace ZWET
 {
+	struct mat4
+	{
+		float r[4][4] = { 
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		inline mat4 operator*(mat4 mat)
+		{
+			mat4 matrix;
+			for (int c = 0; c < 4; c++)
+				for (int r = 0; r < 4; r++)
+					matrix.r[r][c] = this->r[r][0] * mat.r[0][c] + this->r[r][1] * mat.r[1][c] + this->r[r][2] * mat.r[2][c] + this->r[r][3] * mat.r[3][c];
+			return matrix;
+		};
+	};
+
+	struct mat3
+	{
+		float r[3][3] = {
+			1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f
+		};
+
+		inline mat3 operator*(mat3 mat)
+		{
+			mat3 matrix;
+			for(int c = 0; c < 3; c++)
+				for(int r = 0; r < 3; r++)
+					matrix.r[r][c] = this->r[r][0] * mat.r[0][c] + this->r[r][1] * mat.r[1][c] + this->r[r][2] * mat.r[2][c];
+			return matrix;
+		}
+	};
+
+	struct mat2
+	{
+		float r[2][2] = {
+			1.0f, 0.0f, 
+			0.0f, 1.0f
+		};
+
+		inline mat2 operator*(mat2 mat)
+		{
+			mat2 matrix;
+			for(int c = 0; c < 2; c++)
+				for(int r = 0; r < 2; r++)
+					matrix.r[r][c] = this->r[r][0] * mat.r[0][c] + this->r[r][1] * mat.r[1][c];
+			return matrix;
+		}
+	};
+
     struct vec3
     {
         float x = 0.0f, y = 0.0f, z = 0.0f;
@@ -106,60 +160,6 @@ namespace ZWET
             };
         }
     };
-
-	struct mat4
-	{
-		float r[4][4] = { 
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f
-		};
-
-		inline mat4 operator*(mat4 mat)
-		{
-			mat4 matrix;
-			for (int c = 0; c < 4; c++)
-				for (int r = 0; r < 4; r++)
-					matrix.r[r][c] = this->r[r][0] * mat.r[0][c] + this->r[r][1] * mat.r[1][c] + this->r[r][2] * mat.r[2][c] + this->r[r][3] * mat.r[3][c];
-			return matrix;
-		};
-	};
-
-	struct mat3
-	{
-		float r[3][3] = {
-			1.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 1.0f
-		};
-
-		inline mat3 operator*(mat3 mat)
-		{
-			mat3 matrix;
-			for(int c = 0; c < 3; c++)
-				for(int r = 0; r < 3; r++)
-					matrix.r[r][c] = this->r[r][0] * mat.r[0][c] + this->r[r][1] * mat.r[1][c] + this->r[r][2] * mat.r[2][c];
-			return matrix;
-		}
-	};
-
-	struct mat2
-	{
-		float r[2][2] = {
-			1.0f, 0.0f, 
-			0.0f, 1.0f
-		};
-
-		inline mat2 operator*(mat2 mat)
-		{
-			mat2 matrix;
-			for(int c = 0; c < 2; c++)
-				for(int r = 0; r < 2; r++)
-					matrix.r[r][c] = this->r[r][0] * mat.r[0][c] + this->r[r][1] * mat.r[1][c];
-			return matrix;
-		}
-	};
 
 	struct rgb
 	{

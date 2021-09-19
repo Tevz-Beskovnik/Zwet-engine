@@ -1,9 +1,11 @@
 #pragma once
 
 #include <core.h>
-
-#include <sceneCore.h>
+#include <scene.h>
+#include <renderer.h>
 #include <window.h>
+#include <utils.h>
+#include <log.h>
 
 namespace ZWET
 {
@@ -13,24 +15,21 @@ namespace ZWET
     		-ect...
     	*/
     	public:
-    		Application(size_t, size_t, bool);
-    
-    		void setup();
+    		Application();
+
+			void setFpsCap(unsigned int fpsCap);
+
+			void setWindowDims(size_t width, size_t height);
 
     		void run();
     
-    		void setScene(Scene);
+    		void setScene(Scene& scene);
     
     	private:
-    		Scene gameScene;
+    		UniquePtr<Renderer> renderer;
 
     		GLFWwindow* engineWindow;
-    		float fpsCap;
+    		unsigned int fpsCap;
     		float currentTime, lastTime, deltaTime;
-    		std::vector<std::string> sceneObjectNames;
-    
-    		void frame();
-    
-    		void create();
     };
 }

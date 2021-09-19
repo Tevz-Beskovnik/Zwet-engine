@@ -2,11 +2,6 @@
 
 namespace ZWET
 {
-    VertexBuffer::VertexBuffer(size_t amount)
-    {
-        glGenBuffers(amount, &buffer);
-    }
-
     VertexBuffer::VertexBuffer(size_t amount, std::vector<float>* positions)
         :polyCount(positions->size() / 6)
     {

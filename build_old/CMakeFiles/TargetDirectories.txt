@@ -1,0 +1,3 @@
+/Users/tevz/Documents/programing/Zwet-engine/build/CMakeFiles/rebuild_cache.dir
+/Users/tevz/Documents/programing/Zwet-engine/build/CMakeFiles/edit_cache.dir
+/Users/tevz/Documents/programing/Zwet-engine/build/CMakeFiles/Zwet_Engine.dir

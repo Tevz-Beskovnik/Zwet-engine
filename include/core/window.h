@@ -15,9 +15,13 @@ namespace ZWET
 
             ~Window();
 
-            static GLFWwindow* create(size_t width = 800, size_t height = 600);
+            static GLFWwindow* create(size_t width, size_t height);
 
-            static void bindWindow(GLFWwindow*);
+            static void bindWindow(GLFWwindow* window);
+
+            static void resize(GLFWwindow* window, size_t width, size_t height);
+
+            static int* getSize(GLFWwindow* window);
 
             static void close();
     };

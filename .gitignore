@@ -40,6 +40,11 @@
 *.out
 *.app
 
+# old files
+*.cpp.old
+*.h.old
+*.old
+
 x64/Debug/*.obj
 x64/Release/*.obj
 

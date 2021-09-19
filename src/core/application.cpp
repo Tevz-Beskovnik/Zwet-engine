@@ -1,21 +1,11 @@
 #include <application.h>
 
-double old = 0;
-void blockFramerate(float fpsCap) {
-	if (old == 0) {
-		old = glfwGetTime();
-	}
-	while (glfwGetTime() - old < 1.0 / fpsCap) {
-	}
-	old = glfwGetTime();
-}
-
 namespace ZWET
 {
-	Application::Application(size_t width, size_t height, bool vSync)
-		:currentTime(glfwGetTime()), lastTime(0), deltaTime(currentTime - lastTime), fpsCap(fpsCap)
+	Application::Application()
+		:currentTime(glfwGetTime()), lastTime(0), deltaTime(currentTime - lastTime), fpsCap(60)
 	{
-		engineWindow = Window::create(width, height);
+		engineWindow = Window::create(800, 600);
 
 		Window::bindWindow(engineWindow);
 	}
@@ -23,67 +13,28 @@ namespace ZWET
 	void Application::run()
 	{
 		//execute all things that have to happend at create time
-		create();
+		renderer->init();
 
 		while (!glfwWindowShouldClose(engineWindow))
 		{
-			blockFramerate(fpsCap);
-			// Poll for and process events
-			glfwPollEvents();
-
-			glClearColor(0.36862f, 0.20392f, 0.9215686f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			//execute all the things that have to happend at frame
-			frame();
-
-			// Swap front and back buffers
-			glfwSwapBuffers(engineWindow);
+			renderer->frame();
 		}
 
 		Window::close();
 	}
 
-	void Application::setScene(Scene sc)
+	void Application::setScene(Scene& scene)
 	{
-		//return the refrence to the games scene
-		gameScene = sc;
+		renderer = CreateUnique<Renderer>(scene, 60);
 	}
 
-	void Application::frame()
+	void Application::setFpsCap(unsigned int fpsCap)
 	{
-		currentTime = glfwGetTime();
-
-		deltaTime = currentTime - lastTime;
-
-		//call scene step function
-		gameScene.sceneStep(deltaTime);
-
-		//call step function for each object
-		for (const auto& objectName : sceneObjectNames)
-		{
-			gameScene.stepStart(objectName);
-
-			gameScene.callStepFunction(objectName);
-
-			gameScene.stepEnd(objectName);
-		}
-
-		lastTime = glfwGetTime();
+		renderer->setFpsCap(fpsCap);
 	}
 
-	void Application::create()
+	void Application::setWindowDims(size_t width, size_t height)
 	{
-		//get a list of all the object names
-		sceneObjectNames = gameScene.objectNames();
-
-		//call create function for all of the objects
-		for (const auto& objectName : sceneObjectNames)
-		{
-			gameScene.callCreateFunction(objectName);
-		}
-
-		//call scene create function
-		gameScene.sceneCreate();
+		Window::resize(engineWindow, width, height);
 	}
 }

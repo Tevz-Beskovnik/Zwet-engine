@@ -2,11 +2,6 @@
 
 namespace ZWET 
 {
-    SharedPtr<Entity> Entity::create()
-    {
-        return CreateShared<Entity>();
-    }
-
     void Entity::newMesh(mesh newMesh)
     {
         entityMesh = newMesh;
@@ -17,7 +12,7 @@ namespace ZWET
 
         vertexBuffer.reset();
 
-        vertexBuffer = CreateShared<VertexBuffer>(convretMesh);
+        vertexBuffer = CreateShared<VertexBuffer>(1, &convretMesh);
     }
 
     void Entity::setEntityData(entityData data)
@@ -43,5 +38,10 @@ namespace ZWET
 
         vertexBuffer = VertexBuffer::create(1, &convretMesh);
         drawer = Drawer::create(GL_STATIC_DRAW, 0, vertexBuffer->getPolyCount());
+    }
+
+    void Entity::setKeyInput(SharedPtr<KeyboardInput> keyInput)
+    {
+        keyBoard = keyInput;
     }
 }

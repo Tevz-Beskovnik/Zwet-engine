@@ -8,7 +8,6 @@ namespace ZWET
     class VertexBuffer
     {
         public:
-            VertexBuffer(size_t amount);
             VertexBuffer(size_t amount, std::vector<float>* positions);
 
             ~VertexBuffer();

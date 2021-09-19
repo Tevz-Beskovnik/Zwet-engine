@@ -8,6 +8,11 @@ namespace ZWET
         ;
     }
 
+    Drawer::~Drawer()
+    {
+        ;
+    }
+
     void Drawer::draw(unsigned int type, int first, size_t amount)
     {
         glDrawArrays(type, first, amount);

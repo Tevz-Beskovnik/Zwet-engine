@@ -33,7 +33,7 @@ namespace ZWET
         camera->step();
     }
 
-    void Scene::registerEntity(SharedPtr<Entity> entity)
+    void Scene::registerEntity(Entity entity)
     {
         addToEntityFamilyMap(entity);
     }
@@ -105,17 +105,24 @@ namespace ZWET
         }
     }
 
+    SharedPtr<Camera>& Scene::getCamera()
+    {
+        return camera;
+    }
+
     void Scene::addToEntities(entityData entity)
     {
         if(entityFamilies.find(entity.name) == entityFamilies.end())
             entityFamilies.insert({
                 entity.name,
-                Entity::create()
+                Entity()
             });
 
-        SharedPtr<Entity> entityObject = CreateShared<Entity>(entityFamilies[entity.name]);
-        entityObject->setEntityData(entity);
+        Entity entityObject = entityFamilies[entity.name];
+        entityObject.setEntityData(entity);
+        entityObject.setKeyInput(keyBoard);
         entities.insert({entityCount, entityObject});
+        addRelation(entity.name, entityCount);
 
         entityCount++;
     } 
@@ -134,14 +141,14 @@ namespace ZWET
         entityRelations[family].push_back(location);
     }
             
-    bool Scene::addToEntityFamilyMap(SharedPtr<Entity> entity)
+    bool Scene::addToEntityFamilyMap(Entity entity)
     {
-        if(entityFamilies.find(entity->family) != entityFamilies.end())
+        if(entityFamilies.find(entity.getFamilyName()) != entityFamilies.end())
             return false;
 
         entityFamilies.insert({
-            entity->family,
-            CreateShared<Entity>(*entity)
+            entity.getFamilyName(),
+            entity
         });
 
         return true;
@@ -158,5 +165,10 @@ namespace ZWET
     void Scene::setCamera(SharedPtr<Camera>& newCamera)
     {
         camera = newCamera;
+    }
+
+    void Scene::setKeyInputSource(GLFWwindow* window)
+    {
+        keyBoard = KeyboardInput::create(window);
     }
 }

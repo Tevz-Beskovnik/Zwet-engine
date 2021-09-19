@@ -33,4 +33,18 @@ namespace ZWET
     {
         glfwTerminate();
     }
+
+	void Window::resize(GLFWwindow* window, size_t width, size_t height)
+	{
+		glfwSetWindowSize(window, width, height);
+	}
+
+	int* Window::getSize(GLFWwindow* window)
+	{
+		int* dimensions = (int*)malloc(2 * sizeof(int));
+
+		glfwGetWindowSize(window , &dimensions[0], &dimensions[1]);
+
+		return dimensions;
+	}
 }

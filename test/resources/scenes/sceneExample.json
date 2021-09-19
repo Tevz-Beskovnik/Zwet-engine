@@ -1,0 +1,69 @@
+{
+  "scene": [
+    {
+      "entity": {
+        "name": "cube",
+        "position": {
+          "x": 7,
+          "y": 3,
+          "z": 0
+        },
+        "static_rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "dynamic_rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "rgb": {
+          "r": 0,
+          "g": 0,
+          "b": 0
+        },
+        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/resources/textures/lol.jpg",
+        "model_location": "/Users/tevz/documents/programing/Zwet-Engine/resources/models/cube2.obj",
+        "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/resources/shaders/vertCube.glsl",
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/resources/shaders/frag2.glsl"
+      }
+    },
+    {
+      "entity": {
+        "name": "cube1",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 2
+        },
+        "static_rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "dynamic_rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "rgb": {
+          "r": 0,
+          "g": 0,
+          "b": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "weight": 0,
+        "physics": false,
+        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/resources/textures/JermaSus.jpg",
+        "model_location": "/Users/tevz/documents/programing/Zwet-Engine/resources/models/cube2.obj",
+        "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/resources/shaders/vertCube.glsl",
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/resources/shaders/frag2.glsl"
+      }
+    }
+  ]
+}
