@@ -48,6 +48,8 @@
 x64/Debug/*.obj
 x64/Release/*.obj
 
+build_old/
+
 x64/Debug/Project1.vcxproj.FileListAbsolute.txt
 
 conan.lock
