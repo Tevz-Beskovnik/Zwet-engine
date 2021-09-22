@@ -176,8 +176,6 @@ namespace ZWET
             entity
         });
 
-        ZWET_INFO(entityFamilies[entity->getFamilyName()]->getFamilyName());
-
         return true;
     }
 

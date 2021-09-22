@@ -21,7 +21,9 @@ namespace ZWET
         dynamicRotation = data.dynamicRotation;
         texture = Texture::create(data.texturePath);
         shader = Shader::create(data.shaderData);
-        frameBuffer = FrameBuffer::create(&data.frameBufferSettings);
+        //frameBuffer = FrameBuffer::create(&data.frameBufferSettings);
+        std::cout << data.shaderData[0].shaderDirectory << std::endl;
+        std::cout << data.shaderData[1].shaderDirectory << std::endl;
         physicsEnabled = data.physicsObject;
         velocity = data.velocity;
         weight = data.weight;
@@ -38,9 +40,9 @@ namespace ZWET
 
         vertexBuffer = VertexBuffer::create(1, &convretMesh);
 
-        std::cout << vertexBuffer->getPolyCount();
+        std::cout << "Poly count: " << vertexBuffer->getPolyCount() << std::endl;
 
-        drawer = Drawer::create(GL_STATIC_DRAW, 0, vertexBuffer->getPolyCount());
+        drawer = Drawer::create(GL_TRIANGLES, 0, vertexBuffer->getPolyCount());
     }
 
     void Entity::setKeyInput(SharedPtr<KeyboardInput> keyInput)

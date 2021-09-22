@@ -19,9 +19,9 @@
           "z": 0
         },
         "rgb": {
-          "r": 0,
-          "g": 0,
-          "b": 0
+          "r": 1,
+          "g": 1,
+          "b": 1
         },
         "velocity": {
           "x": 0,
@@ -33,7 +33,7 @@
         "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/textures/lol.jpg",
         "model_location": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/models/cube2.obj",
         "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/vertCube.glsl",
-        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag2.glsl"
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag.glsl"
       }
     },
     {
@@ -42,7 +42,7 @@
         "position": {
           "x": 0,
           "y": 0,
-          "z": 2
+          "z": 4
         },
         "static_rotation": {
           "x": 0,
@@ -55,9 +55,9 @@
           "z": 0
         },
         "rgb": {
-          "r": 0,
-          "g": 0,
-          "b": 0
+          "r": 1,
+          "g": 1,
+          "b": 1
         },
         "velocity": {
           "x": 0,
@@ -69,7 +69,7 @@
         "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/textures/JermaSus.jpg",
         "model_location": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/models/cube2.obj",
         "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/vertCube.glsl",
-        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag2.glsl"
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag.glsl"
       }
     }
   ]

@@ -42,6 +42,8 @@ class CubeEntityCam : public Entity
             float& sideways = cam->getSideways();
             vec3& pos = cam->getPosition();
 
+            std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
+
             /*movement mods for by how muh it should increase the movement speed*/
             const float movementMod = 0.08f;
             const float yawMod = 0.03f;
@@ -90,17 +92,13 @@ int main()
 
     Application testApp;
 
-    ZWET_INFO("Setting up window");
-
-    testApp.setup();
-
     ZWET_INFO("Created application");
 
-    testApp.setFpsCap(60);
+    //testApp.setFpsCap(60);
 
     ZWET_INFO("Set fps cap");
 
-    testApp.setWindowDims(1920, 1080);
+    //testApp.setWindowDims(1920, 1080);
 
     ZWET_INFO("Set window dims");
 
@@ -112,7 +110,7 @@ int main()
 
     ZWET_INFO("Created camera");
 
-    camera->create3d(1920, 1080, 1000.0f, 0.1f, 70);
+    camera->create3d(800, 600, 1000.0f, 0.1f, 70);
 
     scene.setCamera(camera);
 

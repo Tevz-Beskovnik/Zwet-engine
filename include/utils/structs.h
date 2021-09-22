@@ -60,7 +60,7 @@ namespace ZWET
 
     struct vec3
     {
-        float x = 0.0f, y = 0.0f, z = 0.0f;
+        float x, y, z;
 
         inline vec3 operator+(vec3 vec)
 		{

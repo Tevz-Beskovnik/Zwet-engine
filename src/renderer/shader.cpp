@@ -3,8 +3,10 @@
 namespace ZWET
 {
     Shader::Shader(std::vector<ShaderData> settings)
+        : settings(settings)
     {
-
+        if(!createShader())
+            ZWET_ERROR("Shader didn't properly compile");
     }
 
     Shader::~Shader()
@@ -36,20 +38,22 @@ namespace ZWET
         {
             while (std::getline(shaderFile, line))
             {
+                //std::cout << line << std::endl;
                 shaderScriptAcumulator += line + "\n";
             }
         }
         else
             return false;
 
-        shader = shaderScriptAcumulator.c_str();
+        shader = shaderScriptAcumulator;
         return true;
     }
 
     bool Shader::compileShader(unsigned int type)
     {
+        const char* src = shader.c_str();
         shaderLocation = glCreateShader(type);
-        glShaderSource(shaderLocation, 1, &shader, nullptr);
+        glShaderSource(shaderLocation, 1, &src, nullptr);
         glCompileShader(shaderLocation);
 
         int result;
@@ -112,6 +116,8 @@ namespace ZWET
         {   
             glDeleteShader(shaderLoc);
         }
+
+        glUseProgram(0);
 
         return true;
     }

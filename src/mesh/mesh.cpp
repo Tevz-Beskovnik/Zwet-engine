@@ -40,7 +40,6 @@ namespace ZWET
 	        oMesh.push_back(tri.texUV[1].y);
 	        //third vec3
 	        oMesh.push_back(tri.p[2].x);
-
 	        oMesh.push_back(tri.p[2].y);
 	        oMesh.push_back(tri.p[2].z);
 	        //colors for the triangle

@@ -22,16 +22,17 @@ namespace ZWET
 			void setWindowDims(size_t width, size_t height);
 
     		void run();
-
-			void setup();
     
     		void setScene(Scene& scene);
-    
+
     	private:
     		UniquePtr<Renderer> renderer;
 
     		GLFWwindow* engineWindow;
     		unsigned int fpsCap;
     		float currentTime, lastTime, deltaTime;
+			double old = 0;
+
+			void blockFramerate(float fpsCap);
     };
 }

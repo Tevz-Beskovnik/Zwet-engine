@@ -8,11 +8,11 @@ namespace ZWET
     class Drawer
     {
         public:
-            Drawer(unsigned int type, int first, size_t& amount);
+            Drawer(unsigned int type, int first, size_t amount);
 
             ~Drawer();
 
-            void setPolyCount(size_t& newAmount) { amount = newAmount; };
+            void setPolyCount(size_t newAmount) { amount = newAmount; };
 
             void setDrawType(unsigned int newType);
 
@@ -21,11 +21,11 @@ namespace ZWET
             static void draw(unsigned int type, int first, size_t amount);
             void draw();
 
-            static SharedPtr<Drawer> create(unsigned int type, int first, size_t& amount);
+            static SharedPtr<Drawer> create(unsigned int type, int first, size_t amount);
 
         private:
             unsigned int type;
             int first;
-            size_t& amount;
+            size_t amount;
     };
 }

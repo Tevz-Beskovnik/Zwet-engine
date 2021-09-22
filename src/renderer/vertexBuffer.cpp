@@ -3,14 +3,14 @@
 namespace ZWET
 {
     VertexBuffer::VertexBuffer(size_t amount, std::vector<float>* positions)
-        :polyCount(positions->size() / 6)
+        :polyCount(positions->size() / 11)
     {
         float* positionsPointer = positions->data();
         int sizeOfVector = positions->size();
 
         glGenBuffers(amount, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(buffer, sizeOfVector * sizeof(float), (void*)positionsPointer, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeOfVector * sizeof(float), positionsPointer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 

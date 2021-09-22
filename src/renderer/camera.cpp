@@ -19,15 +19,12 @@ namespace ZWET
 
         const float aspectRatio = height / width;
 
-        mat4 oCamera;
-
-        camera.r[0][0] = aspectRatio * fovRad;
-        camera.r[1][1] = fovRad;
-        camera.r[2][2] = fFar / (fFar - fNear);
-        camera.r[2][3] = 1.0f;
-        camera.r[3][2] = (-fFar * fNear) / (fFar - fNear);
-
-        camera = oCamera;
+        camera = {
+	    	aspectRatio * fovRad, 0.0f, 0.0f, 0.0f,
+	    	0.0f, fovRad, 0.0f, 0.0f,
+	    	0.0f, 0.0f, fFar / (fFar - fNear), 1.0f,
+	    	0.0f, 0.0f, (-fFar * fNear) / (fFar - fNear), 0.0f
+	    };
     }
 
     void Camera::create2d()
@@ -47,14 +44,14 @@ namespace ZWET
 
     void Camera::step()
     {
-        std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
 
         viewMat();
     }
 
     void Camera::viewMat()
     {
-        position = position + ((lookDir * forward) + (lookDirSqued * sideways) + (lookDirSquedUp * vertical));
+        position = position + (lookDir * forward) + (lookDirSqued * sideways) + (lookDirSquedUp * vertical);
         
         vec3 vTargetF = { 0.0f, 0.0f, 1.0f };
         
@@ -66,7 +63,6 @@ namespace ZWET
         
         vTargetF = position + lookDir;
         
-        view = createViewMatrix(camera, position, vTargetF, up, pitch, yaw, roll);
-
+        view = createViewMatrix(camera, position, vTargetF, up, pitch, 0.0f, 0.0f);
     }
 }

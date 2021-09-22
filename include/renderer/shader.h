@@ -2,6 +2,7 @@
 
 #include <core.h>
 #include <utils.h>
+#include <log.h>
 
 namespace ZWET
 {
@@ -31,7 +32,7 @@ namespace ZWET
         private: 
             unsigned int program;
             unsigned int shaderLocation;
-            const char* shader;
+            std::string shader;
             std::vector<ShaderData> settings;
 
             bool readShader(std::string directory);

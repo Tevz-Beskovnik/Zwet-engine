@@ -36,12 +36,13 @@ namespace ZWET
     
     void Renderer::frame()
     {
-		// Poll for and process events
+        // Poll for and process events
 		glfwPollEvents();
-        
+	
 		glClearColor(0.36862f, 0.20392f, 0.9215686f, 1.0f);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
         scene.sceneStepFunc();
         
         for(auto it = entities.begin(); it != entities.end(); it++)
@@ -115,6 +116,11 @@ namespace ZWET
             float roll = camera->getRoll();
             float pitch = camera->getPitch();
 
+            /*std::cout << view.r[0][0] << view.r[0][1] << view.r[0][2] << view.r[0][3] << std::endl;
+            std::cout << view.r[1][0] << view.r[1][1] << view.r[1][2] << view.r[1][3] << std::endl;
+            std::cout << view.r[2][0] << view.r[2][1] << view.r[2][2] << view.r[2][3] << std::endl;
+            std::cout << view.r[3][0] << view.r[3][1] << view.r[3][2] << view.r[3][3] << std::endl;/**/
+
             unsigned int& program = it.value()->shader->getProgram();
 
             //get uniform locations to bind the predefined uniforms
@@ -154,12 +160,9 @@ namespace ZWET
 
             it.value()->vertexBuffer->unbind();
         }
-        
-        if(window == nullptr)
-            ZWET_ERROR("Window is null pointer!");
 
         // Swap front and back buffers
-		glfwSwapBuffers(window);
+        glfwSwapBuffers(window);
     }
 
     void Renderer::create()
