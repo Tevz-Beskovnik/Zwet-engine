@@ -116,11 +116,6 @@ namespace ZWET
             float roll = camera->getRoll();
             float pitch = camera->getPitch();
 
-            /*std::cout << view.r[0][0] << view.r[0][1] << view.r[0][2] << view.r[0][3] << std::endl;
-            std::cout << view.r[1][0] << view.r[1][1] << view.r[1][2] << view.r[1][3] << std::endl;
-            std::cout << view.r[2][0] << view.r[2][1] << view.r[2][2] << view.r[2][3] << std::endl;
-            std::cout << view.r[3][0] << view.r[3][1] << view.r[3][2] << view.r[3][3] << std::endl;/**/
-
             unsigned int& program = it.value()->shader->getProgram();
 
             //get uniform locations to bind the predefined uniforms

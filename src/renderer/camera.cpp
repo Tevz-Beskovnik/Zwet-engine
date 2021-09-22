@@ -17,7 +17,7 @@ namespace ZWET
     {
         const float fovRad = 1 / tanf(fov * 0.5f / 180.0f * (float)PI);
 
-        const float aspectRatio = height / width;
+        const float aspectRatio = (float)height / (float)width;
 
         camera = {
 	    	aspectRatio * fovRad, 0.0f, 0.0f, 0.0f,
