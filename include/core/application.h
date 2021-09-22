@@ -17,11 +17,13 @@ namespace ZWET
     	public:
     		Application();
 
-			void setFpsCap(unsigned int fpsCap);
+			void setFpsCap(float fpsCap);
 
 			void setWindowDims(size_t width, size_t height);
 
     		void run();
+
+			void setup();
     
     		void setScene(Scene& scene);
     

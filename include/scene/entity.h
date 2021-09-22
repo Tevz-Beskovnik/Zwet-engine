@@ -40,7 +40,7 @@ namespace ZWET
         vec3 velocity = { 0.0f, 0.0f, 0.0f };
     };
 
-    using EntityMap = tsl::hopscotch_map<int, Entity>;
+    using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
 
     class Entity
     {

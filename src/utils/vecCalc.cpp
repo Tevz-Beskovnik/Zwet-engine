@@ -1,6 +1,4 @@
 #include <vecCalc.h>
-#include<cmath>
-#include<math.h>
 
 namespace ZWET
 {

@@ -1,8 +1,6 @@
 #pragma once
-#include<iostream>
-#include<vector>
-#include<math.h>
-#include<cmath>
+
+#include <core.h>
 #include <structs.h>
 
 namespace ZWET

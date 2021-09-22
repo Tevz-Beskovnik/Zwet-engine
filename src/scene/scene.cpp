@@ -5,7 +5,10 @@ namespace ZWET
     Scene::Scene(std::string scenePath)
         :scenePath(scenePath)
     {
-        ;
+        std::ifstream file(scenePath);
+
+        if(!file.is_open())
+            ZWET_ERROR("File can't be opened");
     }
 
     Scene::~Scene()
@@ -18,22 +21,33 @@ namespace ZWET
         return CreateUnique<Scene>(scenePath);
     }
 
+    void Scene::serialize()
+    {
+        serializeScene();
+    }
+
     void Scene::sceneCreateFunc()
     {
+        if(camera == nullptr)
+            ZWET_ERROR("Camera is a null pointer");
+
         world = createWorldMatrix(dynamicSceneRotation, { 0.0f, 0.0f, 0.0f }, 1.0f);
         inverseWorld = quickInverse(world);
-
+        
         camera->create();
     }
 
     void Scene::sceneStepFunc()
     {
+        if(camera == nullptr)
+            ZWET_ERROR("Camera is a null pointer");
+
         world = createWorldMatrix(dynamicSceneRotation, { 0.0f, 0.0f, 0.0f }, 1.0f);
         inverseWorld = quickInverse(world);
         camera->step();
     }
 
-    void Scene::registerEntity(Entity entity)
+    void Scene::registerEntity(SharedPtr<Entity> entity)
     {
         addToEntityFamilyMap(entity);
     }
@@ -52,60 +66,63 @@ namespace ZWET
     {
         sceneToSerialise = padded_string::load(scenePath);
         doc = parser.iterate(sceneToSerialise);
+
+        
         auto sceneArray = doc["scene"].get_array();
 
+        
         for(ondemand::object entity : sceneArray)
         {
             entityData newEntity;
-
-            newEntity.name = std::string_view(entity["name"]);
-
-            newEntity.position.x = (float)entity["position"]["x"].get_double();
-            newEntity.position.y = (float)entity["position"]["y"].get_double();
-            newEntity.position.z = (float)entity["position"]["z"].get_double();
-
-            newEntity.staticRotation.x = (float)entity["static_rotation"]["x"].get_double();
-            newEntity.staticRotation.y = (float)entity["static_rotation"]["y"].get_double();
-            newEntity.staticRotation.z = (float)entity["static_rotation"]["z"].get_double();
             
-            newEntity.dynamicRotation.x = (float)entity["dynamic_rotation"]["x"].get_double();
-            newEntity.dynamicRotation.y = (float)entity["dynamic_rotation"]["y"].get_double();
-            newEntity.dynamicRotation.z = (float)entity["dynamic_rotation"]["z"].get_double();
-
-            newEntity.color.r = (float)entity["rgb"]["r"].get_double();
-            newEntity.color.g = (float)entity["rgb"]["g"].get_double();
-            newEntity.color.b = (float)entity["rgb"]["b"].get_double();
-
-            newEntity.texturePath = std::string_view(entity["texture_path"]);
-            newEntity.modelLocation = std::string_view(entity["model_location"]);
-
+            newEntity.name = std::string_view(entity["entity"]["name"]);
+            
+            newEntity.position.x = (float)entity["entity"]["position"]["x"].get_double();
+            newEntity.position.y = (float)entity["entity"]["position"]["y"].get_double();
+            newEntity.position.z = (float)entity["entity"]["position"]["z"].get_double();
+            
+            newEntity.staticRotation.x = (float)entity["entity"]["static_rotation"]["x"].get_double();
+            newEntity.staticRotation.y = (float)entity["entity"]["static_rotation"]["y"].get_double();
+            newEntity.staticRotation.z = (float)entity["entity"]["static_rotation"]["z"].get_double();
+                        
+            newEntity.dynamicRotation.x = (float)entity["entity"]["dynamic_rotation"]["x"].get_double();
+            newEntity.dynamicRotation.y = (float)entity["entity"]["dynamic_rotation"]["y"].get_double();
+            newEntity.dynamicRotation.z = (float)entity["entity"]["dynamic_rotation"]["z"].get_double();
+            
+            newEntity.color.r = (float)entity["entity"]["rgb"]["r"].get_double();
+            newEntity.color.g = (float)entity["entity"]["rgb"]["g"].get_double();
+            newEntity.color.b = (float)entity["entity"]["rgb"]["b"].get_double();
+            
+            newEntity.texturePath = std::string_view(entity["entity"]["texture_path"]);
+            newEntity.modelLocation = std::string_view(entity["entity"]["model_location"]);
+            
             std::string vertexShaderLoc = "";
-            vertexShaderLoc += std::string_view(entity["vertex_shader"]);
+            vertexShaderLoc += std::string_view(entity["entity"]["vertex_shader"]);
             newEntity.shaderData.push_back({
                 vertexShaderLoc,
                 GL_VERTEX_SHADER
             });
-
+            
             std::string fragShaderLoc = "";
-            fragShaderLoc += std::string_view(entity["fragment_shader"]);
+            fragShaderLoc += std::string_view(entity["entity"]["fragment_shader"]);
             newEntity.shaderData.push_back({
                 fragShaderLoc,
                 GL_FRAGMENT_SHADER
             });
-
-            newEntity.physicsObject = entity["physics"].get_bool();
-
-            newEntity.weight += (float)entity["weight"].get_double();
-
-            newEntity.velocity.x = (float)entity["velocity"]["x"].get_double();
-            newEntity.velocity.y = (float)entity["velocity"]["y"].get_double();
-            newEntity.velocity.z = (float)entity["velocity"]["z"].get_double();
+            
+            newEntity.physicsObject = entity["entity"]["physics"].get_bool();
+            
+            newEntity.weight += (float)entity["entity"]["weight"].get_double();
+            
+            newEntity.velocity.x = (float)entity["entity"]["velocity"]["x"].get_double();
+            newEntity.velocity.y = (float)entity["entity"]["velocity"]["y"].get_double();
+            newEntity.velocity.z = (float)entity["entity"]["velocity"]["z"].get_double();
 
             addToEntities(newEntity);
         }
     }
 
-    SharedPtr<Camera>& Scene::getCamera()
+    SharedPtr<Camera> Scene::getCamera()
     {
         return camera;
     }
@@ -115,12 +132,17 @@ namespace ZWET
         if(entityFamilies.find(entity.name) == entityFamilies.end())
             entityFamilies.insert({
                 entity.name,
-                Entity()
+                CreateShared<Entity>()
             });
 
-        Entity entityObject = entityFamilies[entity.name];
-        entityObject.setEntityData(entity);
-        entityObject.setKeyInput(keyBoard);
+        SharedPtr<Entity> entityObject = entityFamilies[entity.name];
+
+        ZWET_INFO("adding entity to scene");
+        ZWET_INFO(entityFamilies[entity.name]->getFamilyName());
+        entityObject->setEntityData(entity);
+        ZWET_INFO("entity data was set");
+        entityObject->setKeyInput(keyBoard);
+        ZWET_INFO("entities keyboard input was set up");
         entities.insert({entityCount, entityObject});
         addRelation(entity.name, entityCount);
 
@@ -141,15 +163,20 @@ namespace ZWET
         entityRelations[family].push_back(location);
     }
             
-    bool Scene::addToEntityFamilyMap(Entity entity)
+    bool Scene::addToEntityFamilyMap(SharedPtr<Entity> entity)
     {
-        if(entityFamilies.find(entity.getFamilyName()) != entityFamilies.end())
+        ZWET_MESSAGE("Adding entity to family tree");
+        ZWET_INFO(entity->getFamilyName());
+
+        if(entityFamilies.find(entity->getFamilyName()) != entityFamilies.end())
             return false;
 
         entityFamilies.insert({
-            entity.getFamilyName(),
+            entity->getFamilyName(),
             entity
         });
+
+        ZWET_INFO(entityFamilies[entity->getFamilyName()]->getFamilyName());
 
         return true;
     }
@@ -162,9 +189,9 @@ namespace ZWET
             return {};
     }
 
-    void Scene::setCamera(SharedPtr<Camera>& newCamera)
+    void Scene::setCamera(SharedPtr<Camera> newCamera)
     {
-        camera = newCamera;
+        camera = CreateShared<Camera>(*newCamera);
     }
 
     void Scene::setKeyInputSource(GLFWwindow* window)

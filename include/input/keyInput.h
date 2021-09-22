@@ -2,6 +2,7 @@
 
 #include <core.h>
 #include <utils.h>
+#include <log.h>
 
 namespace ZWET
 {

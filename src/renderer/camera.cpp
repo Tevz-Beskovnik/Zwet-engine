@@ -40,37 +40,6 @@ namespace ZWET
         return CreateUnique<Camera>(x, y, z);
     }
 
-    mat4& Camera::getCamera()
-    {
-        return camera;
-    }
-
-    mat4& Camera::getView()
-    {
-        return view;
-    }
-
-    vec3& Camera::getPosition()
-    {
-        return position;
-    }
-
-    
-    float& Camera::getYaw()
-    {
-        return yaw;
-    }
-
-    float& Camera::getRoll()
-    {
-        return roll;
-    }
-
-    float& Camera::getPitch()
-    {
-        return pitch;
-    }
-
     void Camera::create()
     {
         viewMat();
@@ -78,38 +47,26 @@ namespace ZWET
 
     void Camera::step()
     {
+        std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+
         viewMat();
-    }
-
-    float& Camera::getForward()
-    {
-        return forward;
-    } 
-
-    float& Camera::getSideways()
-    {
-        return sideways;
-    }
-
-    float& Camera::getVertical()
-    {
-        return vertical;
     }
 
     void Camera::viewMat()
     {
-        position = position + (lookDir * forward) + (lookDirSqued * sideways) + (lookDirSquedUp * vertical);
-
+        position = position + ((lookDir * forward) + (lookDirSqued * sideways) + (lookDirSquedUp * vertical));
+        
         vec3 vTargetF = { 0.0f, 0.0f, 1.0f };
-
+        
         mat4 mCameraRot = rotY(yaw);
-
+        
         lookDir = customVecMultiply(mCameraRot, vTargetF);
         lookDirSqued = customVecMultiply(mCameraRot, { 1.0f, 0.0f, 0.0f });
         lookDirSquedUp = customVecMultiply(mCameraRot, { 0.0f, 1.0f, 0.0f});
-
+        
         vTargetF = position + lookDir;
-
+        
         view = createViewMatrix(camera, position, vTargetF, up, pitch, yaw, roll);
+
     }
 }

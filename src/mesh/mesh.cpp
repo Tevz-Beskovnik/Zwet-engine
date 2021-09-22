@@ -61,7 +61,7 @@ namespace ZWET
 
     bool Mesh::readMesh(mesh &inputMesh, std::string modelLocation, rgb color)
     {
-            std::ifstream f(modelLocation);
+        std::ifstream f(modelLocation);
 	    if (!f.is_open())
 	    	return false;
 

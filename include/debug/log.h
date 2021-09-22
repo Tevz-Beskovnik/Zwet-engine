@@ -3,6 +3,8 @@
 #include <core.h>
 #include <utils.h>
 
+#define STRING(num) #num
+
 namespace ZWET
 {
     class Log

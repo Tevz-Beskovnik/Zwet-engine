@@ -16,8 +16,8 @@
 namespace ZWET
 {
 
-    using EntityMap = tsl::hopscotch_map<int, Entity>;
-    using EntityFamilyMap = tsl::hopscotch_map<std::string, Entity>;
+    using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
+    using EntityFamilyMap = tsl::hopscotch_map<std::string, SharedPtr<Entity>>;
     using FamilyRelationsMap = tsl::hopscotch_map<std::string, std::vector<int>>;
     using namespace simdjson;
 
@@ -38,15 +38,17 @@ namespace ZWET
 
             void sceneStepFunc();
 
-            void setCamera(SharedPtr<Camera>& camera);
+            void setCamera(SharedPtr<Camera> camera);
 
-            void registerEntity(Entity entity);
+            void registerEntity(SharedPtr<Entity> entity);
 
             void removeEntity(int entityId);
 
             void setKeyInputSource(GLFWwindow* window);
 
-            SharedPtr<Camera>& getCamera();
+            void serialize();
+
+            SharedPtr<Camera> getCamera();
 
             std::vector<int> getEntityRelations(std::string familyName);
 
@@ -77,6 +79,6 @@ namespace ZWET
 
             void addRelation(std::string family, int location);
 
-            bool addToEntityFamilyMap(Entity entity);
+            bool addToEntityFamilyMap(SharedPtr<Entity> entity);
     };
 }

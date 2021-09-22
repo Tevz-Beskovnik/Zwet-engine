@@ -5,6 +5,7 @@
 #include <utils.h>
 #include <vecCalc.h>
 #include <keyInput.h>
+#include <log.h>
 
 namespace ZWET
 {
@@ -23,29 +24,28 @@ namespace ZWET
 
             void step();
 
-            mat4& getCamera();
+            mat4& getCamera() { return camera; };
 
-            mat4& getView();
+            mat4& getView() { return view; };
 
-            vec3& getPosition();
+            vec3& getPosition() { return position; };
 
-            float& getYaw();
+            float& getYaw() { return yaw; };
 
-            float& getRoll();
+            float& getRoll() { return roll; };
 
-            float& getPitch();
+            float& getPitch() { return pitch; };
 
-            float& getForward();
+            float& getForward() { return forward; };
 
-            float& getSideways();
+            float& getSideways() { return sideways; };
 
-            float& getVertical();
+            float& getVertical() { return vertical; };
 
             static SharedPtr<Camera> create(float x, float y, float z);
 
-        protected:
-
-            vec3 position;
+        private:
+            vec3 position = { 0.0f, 0.0f, 0.0f };
             vec3 lookDir = { 0.0f, 0.0f, 1.0f };
 	        vec3 lookDirSqued = { 1.0f, 0.0f, 0.0f };
 	        vec3 lookDirSquedUp = { 0.0f, 1.0f, 0.0f };

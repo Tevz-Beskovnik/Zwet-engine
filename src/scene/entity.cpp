@@ -28,7 +28,7 @@ namespace ZWET
 
         if(!Mesh::readMesh(entityMesh, data.modelLocation, data.color))
         {
-            ZWET_ERROR("THE FILE COULD NOT BE READ.");
+            ZWET_ERROR("THE FILE " + data.modelLocation + " COULD NOT BE READ.");
             return;
         }
 
@@ -37,11 +37,15 @@ namespace ZWET
         convretMesh = Mesh::convertMesh(entityMesh);
 
         vertexBuffer = VertexBuffer::create(1, &convretMesh);
+
+        std::cout << vertexBuffer->getPolyCount();
+
         drawer = Drawer::create(GL_STATIC_DRAW, 0, vertexBuffer->getPolyCount());
     }
 
     void Entity::setKeyInput(SharedPtr<KeyboardInput> keyInput)
     {
+        ZWET_INFO("In set key input func");
         keyBoard = keyInput;
     }
 }

@@ -2,20 +2,10 @@
 
 namespace ZWET
 {
-    double old = 0;
-    void blockFramerate(float fpsCap) {
-    	if (old == 0) {
-    		old = glfwGetTime();
-    	}
-    	while (glfwGetTime() - old < 1.0 / fpsCap) {
-    	}
-    	old = glfwGetTime();
-    }
-
-    Renderer::Renderer(Scene& outsideScene, unsigned int fpsCap)
-        : scene(outsideScene), entities(scene.getEntities()), camera(scene.getCamera()), fpsCap(fpsCap)
+    Renderer::Renderer(Scene& outsideScene, unsigned int fpsCap, GLFWwindow* window)
+        : scene(outsideScene), entities(scene.getEntities()), camera(scene.getCamera()), window(window)
     {
-        ;
+        outsideScene.setKeyInputSource(window);
     }
 
     Renderer::~Renderer()
@@ -26,12 +16,7 @@ namespace ZWET
     void Renderer::init()
     {
         create(); 
-
-        #ifdef ZWET_DEBUG
-            glEnable(GL_DEBUG_OUTPUT);
-		    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        #endif
-
+        
         glEnable(GL_DEPTH_TEST);
 	    glEnable(GL_CULL_FACE);
 	    glFrontFace(GL_CCW);
@@ -44,29 +29,28 @@ namespace ZWET
         glViewport(x, y, width, height);
     }
 
-    UniquePtr<Renderer> Renderer::create(Scene& scene, unsigned int fpsCap)
+    UniquePtr<Renderer> Renderer::create(Scene& scene, unsigned int fpsCap, GLFWwindow* window)
     {
-        return CreateUnique<Renderer>(scene, fpsCap);
+        return CreateUnique<Renderer>(scene, fpsCap, window);
     }
     
     void Renderer::frame()
     {
-        blockFramerate(fpsCap);
 		// Poll for and process events
 		glfwPollEvents();
-
+        
 		glClearColor(0.36862f, 0.20392f, 0.9215686f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        
         scene.sceneStepFunc();
-
+        
         for(auto it = entities.begin(); it != entities.end(); it++)
         {
-            it.value().vertexBuffer->bind();
-
+            it.value()->vertexBuffer->bind();
+                        
             AttributeLayout::setLayout({
-                it.value().shader->getProgram(),
-                it.value().vertexBuffer->getBuffer(),
+                it.value()->shader->getProgram(),
+                it.value()->vertexBuffer->getBuffer(),
                 "position",
 		        3,
 		        GL_FLOAT,
@@ -76,8 +60,8 @@ namespace ZWET
             });
 
             AttributeLayout::setLayout({
-                it.value().shader->getProgram(),
-                it.value().vertexBuffer->getBuffer(),
+                it.value()->shader->getProgram(),
+                it.value()->vertexBuffer->getBuffer(),
                 "iColor",
 		        3,
 		        GL_FLOAT,
@@ -87,8 +71,8 @@ namespace ZWET
             });
 
             AttributeLayout::setLayout({
-                it.value().shader->getProgram(),
-                it.value().vertexBuffer->getBuffer(),
+                it.value()->shader->getProgram(),
+                it.value()->vertexBuffer->getBuffer(),
                 "iNormal",
 		        3,
 		        GL_FLOAT,
@@ -98,8 +82,8 @@ namespace ZWET
             });
 
             AttributeLayout::setLayout({
-                it.value().shader->getProgram(),
-                it.value().vertexBuffer->getBuffer(),
+                it.value()->shader->getProgram(),
+                it.value()->vertexBuffer->getBuffer(),
                 "iUV",
 		        2,
 		        GL_FLOAT,
@@ -108,16 +92,17 @@ namespace ZWET
 		        9 * sizeof(float)
             });
 
-            it.value().shader->bind();
-
-            it.value().texture->bind();
-
-            it.value().stepStart(entities, camera);
-
-            it.value().step(entities, camera);
-
+                        
+            it.value()->shader->bind();
+            
+            it.value()->texture->bind();
+                        
+            it.value()->stepStart(entities, camera);
+            
             vec3 camPosition = camera->getPosition();
 
+            it.value()->step(entities, camera);
+            
             mat4 yawRotation = rotY(camera->getYaw());
             mat4 rollRotation = rotZ(camera->getRoll());
             mat4 pitchRotation = rotX(camera->getPitch());
@@ -130,7 +115,7 @@ namespace ZWET
             float roll = camera->getRoll();
             float pitch = camera->getPitch();
 
-            unsigned int& program = it.value().shader->getProgram();
+            unsigned int& program = it.value()->shader->getProgram();
 
             //get uniform locations to bind the predefined uniforms
 	        int uTexture = glGetUniformLocation(program, "uTexture");
@@ -151,7 +136,7 @@ namespace ZWET
 	        glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &inverseWorld.r[0][0]);
 	        glUniformMatrix4fv(uViewMat, 1, GL_FALSE, &view.r[0][0]);
 	        glUniform3f(uCameraPos, camPosition.x, camPosition.y, camPosition.z);
-	        glUniform3f(uObjPos, it.value().position.x, it.value().position.y, it.value().position.z);
+	        glUniform3f(uObjPos, it.value()->position.x, it.value()->position.y, it.value()->position.z);
 	        glUniform1f(uYaw, yaw);
 	        glUniform1f(uPitch, pitch);
 	        glUniform1f(uRoll, roll);
@@ -159,16 +144,19 @@ namespace ZWET
 	        glUniformMatrix4fv(uPitchMat, 1, GL_FALSE, &pitchRotation.r[0][0]);
 	        glUniformMatrix4fv(uRollMat, 1, GL_FALSE, &rollRotation.r[0][0]);
 
-            it.value().stepEnd(entities, camera);
+            it.value()->stepEnd(entities, camera);
 
-            it.value().drawer->draw();
+            it.value()->drawer->draw();
 
-            it.value().texture->unbind();
+            it.value()->texture->unbind();
 
-            it.value().shader->unbind();
+            it.value()->shader->unbind();
 
-            it.value().vertexBuffer->unbind();
+            it.value()->vertexBuffer->unbind();
         }
+        
+        if(window == nullptr)
+            ZWET_ERROR("Window is null pointer!");
 
         // Swap front and back buffers
 		glfwSwapBuffers(window);
@@ -176,21 +164,15 @@ namespace ZWET
 
     void Renderer::create()
     {
+        scene.serialize();
+
         scene.sceneCreateFunc();
 
+        camera = scene.getCamera();
+        
         for(auto it = entities.begin(); it != entities.end(); it++)
         {
-            it.value().createFun(scene.getEntities(), scene.getCamera());
+            it.value()->createFun(scene.getEntities(), camera);
         }
-    }
-
-    void Renderer::setWindow(GLFWwindow* newWindow)
-    {
-        window = newWindow;
-    }
-
-    void Renderer::setFpsCap(unsigned int newCap)
-    {
-        fpsCap = newCap;
     }
 }

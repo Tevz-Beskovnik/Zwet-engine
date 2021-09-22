@@ -4,9 +4,17 @@
     #define PATH ""
 #endif
 
+/*
+    ZWET_INFO\("[\w\s\W]{1,50}"\);\n
+
+    regex to remove info
+*/
+
 #include <zwet.h>
 
 using namespace ZWET;
+
+using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
 
 class CubeEntityCam : public Entity
 {
@@ -21,12 +29,12 @@ class CubeEntityCam : public Entity
             return classFamily;
         }
 
-        void createFun(tsl::hopscotch_map<int, Entity>& entityMap, SharedPtr<Camera>& cam)
+        void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam)
         {
             std::cout << "Yes hello this is the create function" << std::endl;
         }
 
-        void step(tsl::hopscotch_map<int, Entity>& entityMap, SharedPtr<Camera>& cam)
+        void step(EntityMap& entityMap, SharedPtr<Camera>& cam)
         {
             float& yaw = cam->getYaw();
             float& pitch = cam->getPitch();
@@ -56,16 +64,6 @@ class CubeEntityCam : public Entity
             glUniformMatrix4fv(yawLoc, 1, GL_FALSE, &objYaw.r[0][0]);
             glUniformMatrix4fv(pitchLoc, 1, GL_FALSE, &objPicth.r[0][0]);
         }
-
-        void stepStart(tsl::hopscotch_map<int, Entity>& entityMap, SharedPtr<Camera>& cam)
-        {
-
-        }
-
-        void stepEnd(tsl::hopscotch_map<int, Entity>& entityMap, SharedPtr<Camera>& cam)
-        {
-
-        }
 };
 
 class CubeEntity : public Entity
@@ -78,19 +76,9 @@ class CubeEntity : public Entity
             return classFamily;
         }
 
-        void createFun(tsl::hopscotch_map<int, Entity>& entityMap, SharedPtr<Camera>& cam)
+        void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam)
         {
             std::cout << "Yes hello this is the create function of cube1" << std::endl;
-        }
-
-        void stepStart(tsl::hopscotch_map<int, Entity>& entityMap, SharedPtr<Camera>& cam)
-        {
-
-        }
-
-        void stepEnd(tsl::hopscotch_map<int, Entity>& entityMap, SharedPtr<Camera>& cam)
-        {
-
         }
 };
 
@@ -98,27 +86,51 @@ int main()
 {
     std::string path = PATH;
 
+    ZWET_INFO("In main function");
+
     Application testApp;
+
+    ZWET_INFO("Setting up window");
+
+    testApp.setup();
+
+    ZWET_INFO("Created application");
 
     testApp.setFpsCap(60);
 
+    ZWET_INFO("Set fps cap");
+
     testApp.setWindowDims(1920, 1080);
+
+    ZWET_INFO("Set window dims");
 
     Scene scene(path + "scenes/sceneExample.json");
 
+    ZWET_INFO("Created scene");
+
     SharedPtr<Camera> camera = Camera::create(0, 0, 0);
+
+    ZWET_INFO("Created camera");
 
     camera->create3d(1920, 1080, 1000.0f, 0.1f, 70);
 
-    CubeEntityCam ent1;
+    scene.setCamera(camera);
 
-    CubeEntity ent2;
+    SharedPtr<Entity> ent1 = CreateShared<CubeEntityCam>();
+
+    SharedPtr<Entity> ent2 = CreateShared<CubeEntity>();
 
     scene.registerEntity(ent1);
 
     scene.registerEntity(ent2);
 
+    ZWET_INFO("Registered entities");
+
     testApp.setScene(scene);
+
+    ZWET_INFO("Set scene");
+
+    ZWET_INFO("Started loop");
 
     testApp.run();
 }
