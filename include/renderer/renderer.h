@@ -14,7 +14,7 @@ namespace ZWET
     class Renderer
     {
         public:
-            Renderer(Scene& scene, unsigned int fpsCap, GLFWwindow* window);
+            Renderer(Scene& scene, unsigned int fpsCap, GLFWwindow* window, double& delta);
 
             ~Renderer();
 
@@ -24,7 +24,7 @@ namespace ZWET
 
             void setFpsCap(unsigned int fpsCap);
 
-            static UniquePtr<Renderer> create(Scene& scene, unsigned int fpsCap, GLFWwindow* window);
+            static UniquePtr<Renderer> create(Scene& scene, unsigned int fpsCap, GLFWwindow* window, double& delta);
 
             void frame();
 
@@ -33,6 +33,7 @@ namespace ZWET
             Scene& scene;
             EntityMap& entities;
             SharedPtr<Camera> camera;
+            double& delta;
 
             void create();
     };

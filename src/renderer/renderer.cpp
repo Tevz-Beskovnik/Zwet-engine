@@ -2,8 +2,8 @@
 
 namespace ZWET
 {
-    Renderer::Renderer(Scene& outsideScene, unsigned int fpsCap, GLFWwindow* window)
-        : scene(outsideScene), entities(scene.getEntities()), camera(scene.getCamera()), window(window)
+    Renderer::Renderer(Scene& outsideScene, unsigned int fpsCap, GLFWwindow* window, double& delta)
+        : scene(outsideScene), entities(scene.getEntities()), camera(scene.getCamera()), window(window), delta(delta)
     {
         outsideScene.setKeyInputSource(window);
     }
@@ -29,9 +29,9 @@ namespace ZWET
         glViewport(x, y, width, height);
     }
 
-    UniquePtr<Renderer> Renderer::create(Scene& scene, unsigned int fpsCap, GLFWwindow* window)
+    UniquePtr<Renderer> Renderer::create(Scene& scene, unsigned int fpsCap, GLFWwindow* window, double& delta)
     {
-        return CreateUnique<Renderer>(scene, fpsCap, window);
+        return CreateUnique<Renderer>(scene, fpsCap, window, delta);
     }
     
     void Renderer::frame()
@@ -39,7 +39,7 @@ namespace ZWET
         // Poll for and process events
 		glfwPollEvents();
 	
-		glClearColor(0.36862f, 0.20392f, 0.9215686f, 1.0f);
+		glClearColor(0.2588f, 0.5294f, 0.9607f, 1.0f);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -98,11 +98,11 @@ namespace ZWET
             
             it.value()->texture->bind();
                         
-            it.value()->stepStart(entities, camera);
+            it.value()->stepStart(entities, camera, delta);
             
             vec3 camPosition = camera->getPosition();
 
-            it.value()->step(entities, camera);
+            it.value()->step(entities, camera, delta);
             
             mat4 yawRotation = rotY(camera->getYaw());
             mat4 rollRotation = rotZ(camera->getRoll());
@@ -145,7 +145,7 @@ namespace ZWET
 	        glUniformMatrix4fv(uPitchMat, 1, GL_FALSE, &pitchRotation.r[0][0]);
 	        glUniformMatrix4fv(uRollMat, 1, GL_FALSE, &rollRotation.r[0][0]);
 
-            it.value()->stepEnd(entities, camera);
+            it.value()->stepEnd(entities, camera, delta);
 
             it.value()->drawer->draw();
 

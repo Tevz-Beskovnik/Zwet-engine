@@ -61,11 +61,11 @@ namespace ZWET
             
             virtual void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
 
-            virtual void stepStart(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
+            virtual void stepStart(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta) {};
 
-            virtual void step(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
+            virtual void step(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta) {};
 
-            virtual void stepEnd(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
+            virtual void stepEnd(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta) {};
 
             void newMesh(mesh newMesh);
 

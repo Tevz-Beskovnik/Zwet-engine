@@ -30,9 +30,11 @@ namespace ZWET
 
     		GLFWwindow* engineWindow;
     		unsigned int fpsCap;
-    		float currentTime, lastTime, deltaTime;
+    		double currentTime, lastTime, deltaTime;
 			double old = 0;
 
 			void blockFramerate(float fpsCap);
+
+			void calculateDelta();
     };
 }

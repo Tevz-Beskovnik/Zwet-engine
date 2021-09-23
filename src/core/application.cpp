@@ -31,6 +31,7 @@ namespace ZWET
 		
 		while (!glfwWindowShouldClose(engineWindow))
 		{
+			calculateDelta();
 			blockFramerate(60.0f);
 			
 			renderer->frame();
@@ -41,7 +42,7 @@ namespace ZWET
 
 	void Application::setScene(Scene& scene)
 	{
-		renderer = CreateUnique<Renderer>(scene, 60, engineWindow);
+		renderer = CreateUnique<Renderer>(scene, 60, engineWindow, deltaTime);
 	}
 
 	void Application::setFpsCap(float fpsCap)
@@ -52,5 +53,12 @@ namespace ZWET
 	void Application::setWindowDims(size_t width, size_t height)
 	{
 		Window::resize(engineWindow, width, height);
+	}
+
+	void Application::calculateDelta()
+	{
+		lastTime = currentTime;
+		currentTime = glfwGetTime();
+		deltaTime = currentTime - lastTime;
 	}
 }
