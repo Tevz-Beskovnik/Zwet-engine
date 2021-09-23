@@ -2,11 +2,11 @@
   "scene": [
     {
       "entity": {
-        "name": "cube",
+        "name": "car",
         "position": {
-          "x": 7,
-          "y": 3,
-          "z": 0
+          "x": 3.5,
+          "y": -0.5,
+          "z": -0.2
         },
         "static_rotation": {
           "x": 0,
@@ -30,19 +30,19 @@
         },
         "weight": 0,
         "physics": false,
-        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/textures/lol.jpg",
-        "model_location": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/models/cube2.obj",
-        "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/vertCube.glsl",
-        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag.glsl"
+        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/textures/lowPoly.jpg",
+        "model_location": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/models/car2.obj",
+        "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/vertCar.glsl",
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/fragTextureLighting.glsl"
       }
     },
     {
       "entity": {
-        "name": "cube1",
+        "name": "track",
         "position": {
-          "x": 0,
-          "y": 0,
-          "z": 4
+          "x": 3.5,
+          "y": 6,
+          "z": -0.2
         },
         "static_rotation": {
           "x": 0,
@@ -66,10 +66,10 @@
         },
         "weight": 0,
         "physics": false,
-        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/textures/JermaSus.jpg",
-        "model_location": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/models/cube2.obj",
+        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/textures/lowPoly.jpg",
+        "model_location": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/models/racetrack5.obj",
         "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/vertCube.glsl",
-        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag.glsl"
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/fragTextureLighting.glsl"
       }
     }
   ]

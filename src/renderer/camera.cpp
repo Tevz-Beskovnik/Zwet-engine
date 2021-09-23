@@ -53,13 +53,13 @@ namespace ZWET
     {
         position = position + (lookDir * forward) + (lookDirSqued * sideways) + (lookDirSquedUp * vertical);
         
-        vec3 vTargetF = { 0.0f, 0.0f, 1.0f };
+        vec3 vTargetF = { 1.0f, 0.0f, 0.0f };
         
         mat4 mCameraRot = rotY(yaw);
         
         lookDir = customVecMultiply(mCameraRot, vTargetF);
-        lookDirSqued = customVecMultiply(mCameraRot, { 1.0f, 0.0f, 0.0f });
-        lookDirSquedUp = customVecMultiply(mCameraRot, { 0.0f, 1.0f, 0.0f});
+        lookDirSqued = customVecMultiply(mCameraRot, { 0.0f, 1.0f, 0.0f });
+        lookDirSquedUp = customVecMultiply(mCameraRot, { 0.0f, 0.0f, 1.0f});
         
         vTargetF = position + lookDir;
         
