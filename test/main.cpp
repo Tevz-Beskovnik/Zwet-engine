@@ -34,7 +34,7 @@ class CubeEntityCam : public Entity
             std::cout << "Yes hello this is the create function" << std::endl;
         }
 
-        void step(EntityMap& entityMap, SharedPtr<Camera>& cam)
+        void step(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta)
         {
             float& yaw = cam->getYaw();
             float& pitch = cam->getPitch();
@@ -42,7 +42,7 @@ class CubeEntityCam : public Entity
             float& sideways = cam->getSideways();
             vec3& pos = cam->getPosition();
 
-            //std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
+            std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
 
             /*movement mods for by how muh it should increase the movement speed*/
             const float movementMod = 0.08f;
