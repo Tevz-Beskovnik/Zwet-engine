@@ -4,9 +4,9 @@
       "entity": {
         "name": "cube",
         "position": {
-          "x": 7,
-          "y": 3,
-          "z": 0
+          "x": 0,
+          "y": 10,
+          "z": 4
         },
         "static_rotation": {
           "x": 0,
@@ -66,10 +66,82 @@
         },
         "weight": 0,
         "physics": false,
-        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/textures/JermaSus.jpg",
-        "model_location": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/models/cube2.obj",
+        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/textures/lowPoly.jpg",
+        "model_location": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/models/car2.obj",
         "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/vertCube.glsl",
-        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag.glsl"
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/fragTextureLighting.glsl"
+      }
+    },
+    {
+      "entity": {
+        "name": "cube3",
+        "position": {
+          "x": -0.6,
+          "y": 1.3,
+          "z": 4
+        },
+        "static_rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "dynamic_rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "rgb": {
+          "r": 0,
+          "g": 0,
+          "b": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "weight": 0,
+        "physics": false,
+        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/fonts/arial.jpg",
+        "model_location": "",
+        "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/vertCube.glsl",
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag2.glsl"
+      }
+    },
+    {
+      "entity": {
+        "name": "cube4",
+        "position": {
+          "x": -1.1,
+          "y": -1.1,
+          "z": 4
+        },
+        "static_rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "dynamic_rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "rgb": {
+          "r": 0,
+          "g": 0,
+          "b": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "weight": 0,
+        "physics": false,
+        "texture_path": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/fonts/arial.jpg",
+        "model_location": "",
+        "vertex_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/vertCube.glsl",
+        "fragment_shader": "/Users/tevz/documents/programing/Zwet-Engine/test/resources/shaders/frag2.glsl"
       }
     }
   ]

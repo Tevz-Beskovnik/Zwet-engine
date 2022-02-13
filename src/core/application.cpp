@@ -43,6 +43,7 @@ namespace ZWET
 	void Application::setScene(Scene& scene)
 	{
 		renderer = CreateUnique<Renderer>(scene, 60, engineWindow, deltaTime);
+		renderer->setBackground({0.0f, 0.0f, 0.0f}); // white background
 	}
 
 	void Application::setFpsCap(float fpsCap)

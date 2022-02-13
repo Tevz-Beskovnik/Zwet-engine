@@ -7,19 +7,25 @@
 #include <utils.h>
 #include <log.h>
 
+/*
+	TODO:
+		- Port the old physics engine and improve it,
+		- port the font library
+		- do better mesh optimisations for newer OpenGL versions (instanced rendering),
+		- rebrand the game engine to Bolt engine (We have a whole logo now goddamn it)
+*/
+
 namespace ZWET
 {
     class Application {
-    	/*TODO
-    		-add physics engine (obably runs on own clock),
-    		-ect...
-    	*/
     	public:
     		Application();
 
 			void setFpsCap(float fpsCap);
 
 			void setWindowDims(size_t width, size_t height);
+
+			void setBackgroundColor(rgb color) { renderer->setBackground(color); };
 
     		void run();
     

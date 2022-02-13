@@ -16,7 +16,7 @@ using namespace ZWET;
 
 using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
 
-class CubeEntityCam : public Entity
+/*class CubeEntityCam : public Entity
 {
     public:
         std::string classFamily = "cube";
@@ -42,9 +42,7 @@ class CubeEntityCam : public Entity
             float& sideways = cam->getSideways();
             vec3& pos = cam->getPosition();
 
-            std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
-
-            /*movement mods for by how muh it should increase the movement speed*/
+            //movement mods for by how muh it should increase the movement speed
             const float movementMod = 0.08f;
             const float yawMod = 0.03f;
 
@@ -66,12 +64,52 @@ class CubeEntityCam : public Entity
             glUniformMatrix4fv(yawLoc, 1, GL_FALSE, &objYaw.r[0][0]);
             glUniformMatrix4fv(pitchLoc, 1, GL_FALSE, &objPicth.r[0][0]);
         }
+};*/
+
+class CubeEntityCam : public Entity
+{
+    public:
+        std::string classFamily = "cube";
+
+        float entityYaw = 0.0f;
+        float entityPitch = 0.0f;
+
+        std::string getFamilyName()
+        {
+            return classFamily;
+        }
+
+        void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam)
+        {
+            vec3& pos = cam->getPosition();
+            pos.y = 1.0f;
+            std::cout << "Yes hello this is the create function" << std::endl;
+        }
+
+        void step(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta)
+        {
+            float& yaw = cam->getYaw();
+            float& pitch = cam->getPitch();
+            vec3& pos = cam->getPosition();
+
+            yaw += 0.01;
+
+            float s = sin(0.01);
+            float c = cos(0.01);
+
+            float xn = (pos.x-0.0f) * c - (pos.z - 8.0f) * s;
+            float zn = (pos.x-0.0f) * s + (pos.z - 8.0f) * c;
+
+            pos.x = xn + 0.0f;
+            pos.z = zn + 8.0f;
+        }
 };
+
 
 class CubeEntity : public Entity
 {
     public:
-        std::string classFamily = "cube1";
+        std::string classFamily = "cube3";
 
         std::string getFamilyName()
         {
@@ -81,6 +119,17 @@ class CubeEntity : public Entity
         void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam)
         {
             std::cout << "Yes hello this is the create function of cube1" << std::endl;
+        }
+};
+
+class TextEntity : public Entity
+{
+    public:
+        std::string classFamily = "cube4";
+
+        std::string getFamilyName()
+        {
+            return classFamily;
         }
 };
 
@@ -104,6 +153,8 @@ int main()
 
     Scene scene(path + "scenes/sceneExample.json");
 
+    Font arial(path + "fonts/arial.fnt", path + "fonts/arial.jpg", 0, 0, 0.01f);
+
     ZWET_INFO("Created scene");
 
     SharedPtr<Camera> camera = Camera::create(0, 0, 0);
@@ -118,13 +169,24 @@ int main()
 
     SharedPtr<Entity> ent2 = CreateShared<CubeEntity>();
 
+    SharedPtr<Entity> ent3 = CreateShared<TextEntity>();
+
+    ent2->setMesh(arial.convertString("Hey Linda"));
+
+    ent3->setMesh(arial.convertString("I stole your car"));
+
     scene.registerEntity(ent1);
 
     scene.registerEntity(ent2);
 
+    scene.registerEntity(ent3);
+
     ZWET_INFO("Registered entities");
 
     testApp.setScene(scene);
+
+    //testApp.setBackgroundColor({0.2588f, 0.5294f, 0.9607f});
+    testApp.setBackgroundColor({1.0f, 1.0f, 1.0f});
 
     ZWET_INFO("Set scene");
 

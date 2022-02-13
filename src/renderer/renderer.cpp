@@ -38,8 +38,8 @@ namespace ZWET
     {
         // Poll for and process events
 		glfwPollEvents();
-	
-		glClearColor(0.2588f, 0.5294f, 0.9607f, 1.0f);
+
+		glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

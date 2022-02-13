@@ -69,6 +69,8 @@ namespace ZWET
 
             void newMesh(mesh newMesh);
 
+            void setMesh(mesh prMesh);
+
             void setEntityData(entityData data);
 
             void setKeyInput(SharedPtr<KeyboardInput> keyInput);
@@ -80,6 +82,7 @@ namespace ZWET
             bool physicsEnabled;
             vec3 velocity;
             float weight;
+            bool presetMesh = false;
 
             mesh entityMesh;
             std::vector<float> convretMesh;

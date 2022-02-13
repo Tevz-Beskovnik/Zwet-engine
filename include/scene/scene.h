@@ -15,7 +15,6 @@
 
 namespace ZWET
 {
-
     using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
     using EntityFamilyMap = tsl::hopscotch_map<std::string, SharedPtr<Entity>>;
     using FamilyRelationsMap = tsl::hopscotch_map<std::string, std::vector<int>>;

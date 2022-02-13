@@ -9,12 +9,20 @@ varying vec3 oNormal;
 varying vec2 oUV;
 
 /*uniform mat4 uWorld;*/
-uniform float uTime;
-uniform mat4 uWorldInvTran;
+uniform mat4 uViewMat;
+
+mat4 trans = mat4(
+	1.0, 0.0, 0.0, uObjPos.x,
+	0.0, 1.0, 0.0, uObjPos.y,
+	0.0, 0.0, 1.0, uObjPos.z,
+	0.0, 0.0, 0.0, 1.0
+);
 
 void main()
 {
-	gl_Position = vec4(position, 1.0);
+	vec4 pos = vec4(position, 1.0) * trans;
+	vec4 res = uViewMat * pos;
+	gl_Position = res;
 
     oUV = iUV;
 }

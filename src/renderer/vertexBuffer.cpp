@@ -34,7 +34,7 @@ namespace ZWET
         float* positionsPointer = positions->data();
         int sizeOfVector = positions->size();
 
-        polyCount = positions->size() / 6;
+        polyCount = positions->size() / 11;
 
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeOfVector, (void*)positionsPointer);

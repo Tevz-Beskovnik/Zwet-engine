@@ -2,17 +2,24 @@
 
 namespace ZWET 
 {
+    void Entity::setMesh(mesh prMesh)
+    {
+        entityMesh = prMesh;
+
+        presetMesh = true;
+    }
+
     void Entity::newMesh(mesh newMesh)
     {
         entityMesh = newMesh;
 
-        convretMesh = Mesh::convertMesh(entityMesh);
-
         Mesh::applyStaticRotation(entityMesh, data.staticRotation, position);
 
-        vertexBuffer.reset();
+        convretMesh = Mesh::convertMesh(entityMesh);
 
-        vertexBuffer = CreateShared<VertexBuffer>(1, &convretMesh);
+        vertexBuffer->setData(&convretMesh);
+
+        drawer->setPolyCount(vertexBuffer->getPolyCount());
     }
 
     void Entity::setEntityData(entityData data)
@@ -28,11 +35,12 @@ namespace ZWET
         velocity = data.velocity;
         weight = data.weight;
 
-        if(!Mesh::readMesh(entityMesh, data.modelLocation, data.color))
-        {
-            ZWET_ERROR("THE FILE " + data.modelLocation + " COULD NOT BE READ.");
-            return;
-        }
+        if(presetMesh == false)
+            if(!Mesh::readMesh(entityMesh, data.modelLocation, data.color))
+            {
+                ZWET_ERROR("THE FILE " + data.modelLocation + " COULD NOT BE READ.");
+                return;
+            }
 
         Mesh::applyStaticRotation(entityMesh, data.staticRotation, data.position);
 

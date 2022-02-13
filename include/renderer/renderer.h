@@ -24,6 +24,8 @@ namespace ZWET
 
             void setFpsCap(unsigned int fpsCap);
 
+            void setBackground(rgb color) { backgroundColor = color; };
+
             static UniquePtr<Renderer> create(Scene& scene, unsigned int fpsCap, GLFWwindow* window, double& delta);
 
             void frame();
@@ -34,6 +36,7 @@ namespace ZWET
             EntityMap& entities;
             SharedPtr<Camera> camera;
             double& delta;
+            rgb backgroundColor;
 
             void create();
     };

@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <functional>
 #include <memory>
+#include <map>
 
 // EXTERNAL LIBS
 #include <GL/glew.h>
