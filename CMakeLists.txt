@@ -6,13 +6,13 @@ conan_basic_setup(TARGETS)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_APPLE_SILICON_PROCESSOR arm64) # comment out for linux builds
+set(CMAKE_APPLE_SILICON_PROCESSOR arm64)
 
 file (GLOB_RECURSE Zwet_Engine_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 
 add_executable("${CMAKE_PROJECT_NAME}" ${Zwet_Engine_SOURCES} "test/main.cpp")
 
-target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC ZWET_DEBUG) # comment out for release build
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC ZWET_DEBUG)
 
 target_link_libraries("${CMAKE_PROJECT_NAME}" CONAN_PKG::glfw CONAN_PKG::glew CONAN_PKG::openal CONAN_PKG::simdjson CONAN_PKG::tsl-hopscotch-map)
 

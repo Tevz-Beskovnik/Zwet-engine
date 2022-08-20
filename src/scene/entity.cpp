@@ -13,8 +13,6 @@ namespace ZWET
     {
         entityMesh = newMesh;
 
-        std::cout << "Static rot: " << data.staticRotation.y << std::endl;
-
         Mesh::applyStaticRotation(entityMesh, data.staticRotation, position);
 
         convretMesh = Mesh::convertMesh(entityMesh);
@@ -26,7 +24,6 @@ namespace ZWET
 
     void Entity::setEntityData(entityData data)
     {
-        std::cout << data.position.x << " " << data.position.y << " " << data.position.z << std::endl; 
         position = data.position;
         dynamicRotation = data.dynamicRotation;
         texture = Texture::create(data.texturePath);
@@ -44,8 +41,6 @@ namespace ZWET
                 ZWET_ERROR("THE FILE " + data.modelLocation + " COULD NOT BE READ.");
                 return;
             }
-
-        std::cout << "Static rot: " << data.staticRotation.y << std::endl;
 
         Mesh::applyStaticRotation(entityMesh, data.staticRotation, data.position);
 

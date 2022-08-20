@@ -25,7 +25,7 @@ void main()
 	vec4 pos = vec4(position, 1.0) * trans;
 	vec4 res = uViewMat * pos;
 	gl_Position = res;
-	oFragPos = position.xyz;
+	oFragPos = res.xyz;
 	oColor = iColor;
 	oUV = iUV;
 	oNormal = vec3(normalize(uWorldInvTran * vec4(iNormal, 0.0)));
