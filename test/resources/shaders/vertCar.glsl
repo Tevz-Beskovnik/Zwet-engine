@@ -13,12 +13,12 @@ uniform mat4 uWorldInvTran;
 uniform vec3 uObjPos;
 uniform mat4 uViewMat;
 uniform mat4 uObjYaw;
-uniform mat4 uObjPitch;
 uniform vec3 uCameraPos;
 
 void main()
 {
     vec3 camNew = uCameraPos;
+    camNew.y -= 4.0;
 
     mat4 trans = mat4(
     	1.0, 0.0, 0.0, camNew.x,
@@ -35,7 +35,7 @@ void main()
     );
 
 	vec4 bruh = vec4(position, 1.0) * trans;
-    vec4 pos = vec4(bruh.xyz, 1) * (trans2 * uObjPitch * uObjYaw * trans);
+    vec4 pos = vec4(bruh.xyz, 1) * (trans2 * uObjYaw * trans);
 	vec4 res = uViewMat * pos;
 	gl_Position = res;
 	oFragPos = res.xyz;

@@ -42,6 +42,7 @@ namespace ZWET
         if(camera == nullptr)
             ZWET_ERROR("Camera is a null pointer");
 
+        std::cout << dynamicSceneRotation.x << std::endl;
         world = createWorldMatrix(dynamicSceneRotation, { 0.0f, 0.0f, 0.0f }, 1.0f);
         inverseWorld = quickInverse(world);
         camera->step();
@@ -135,7 +136,7 @@ namespace ZWET
                 CreateShared<Entity>()
             });
 
-        SharedPtr<Entity> entityObject = entityFamilies[entity.name];
+        SharedPtr<Entity> entityObject =  entityFamilies[entity.name];
 
         ZWET_INFO("adding entity to scene");
         ZWET_INFO(entityFamilies[entity.name]->getFamilyName());

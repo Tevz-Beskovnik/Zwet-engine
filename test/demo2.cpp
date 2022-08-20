@@ -16,10 +16,10 @@ using namespace ZWET;
 
 using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
 
-/*class Room : public Entity
+/*class CubeEntityCam : public Entity
 {
     public:
-        std::string classFamily = "room";
+        std::string classFamily = "cube";
 
         float entityYaw = 0.0f;
         float entityPitch = 0.0f;
@@ -29,12 +29,12 @@ using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
             return classFamily;
         }
 
-        void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene)
+        void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam)
         {
             std::cout << "Yes hello this is the create function" << std::endl;
         }
 
-        void step(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene, double delta)
+        void step(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta)
         {
             float& yaw = cam->getYaw();
             float& pitch = cam->getPitch();
@@ -66,15 +66,10 @@ using EntityMap = tsl::hopscotch_map<int, SharedPtr<Entity>>;
         }
 };*/
 
-
-class Plant : public Entity
+class CubeEntityCam : public Entity
 {
     public:
-        std::string classFamily = "room";
-
-        const float right_angle_rad = 1.57079633f;
-        const float rotation_incr = 0.02f;
-        const float max_forward = 5.5f;
+        std::string classFamily = "cube";
 
         std::string getFamilyName()
         {
@@ -84,29 +79,53 @@ class Plant : public Entity
         void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene)
         {
             vec3& pos = cam->getPosition();
-            pos.y = 3.0f;
-            pos.z = -8.0f;
-            scene.dynamicSceneRotation = { 0.0f, 0.0f, 0.0f };
+            pos.y = 1.0f;
             std::cout << "Yes hello this is the create function" << std::endl;
         }
 
         void step(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene, double delta)
         {
-            float& forward = cam->getForward();
+            float& yaw = cam->getYaw();
+            vec3& pos = cam->getPosition();
 
-            if(scene.dynamicSceneRotation.x > -right_angle_rad && !keyBoard->isKeyHeld(GLFW_KEY_S))
-                scene.dynamicSceneRotation.x -= rotation_incr * keyBoard->isKeyHeld(GLFW_KEY_W);
+            yaw += 0.01;
 
-            if(scene.dynamicSceneRotation.x < 0 && !keyBoard->isKeyHeld(GLFW_KEY_W))
-                scene.dynamicSceneRotation.x += rotation_incr * keyBoard->isKeyHeld(GLFW_KEY_S);
+            float s = sin(0.01);
+            float c = cos(0.01);
 
-            if(scene.dynamicSceneRotation.y < right_angle_rad && !keyBoard->isKeyHeld(GLFW_KEY_A))
-                scene.dynamicSceneRotation.y += rotation_incr * keyBoard->isKeyHeld(GLFW_KEY_D);
+            float xn = (pos.x-0.0f) * c - (pos.z - 8.0f) * s;
+            float zn = (pos.x-0.0f) * s + (pos.z - 8.0f) * c;
 
-            if(scene.dynamicSceneRotation.y > 0 && !keyBoard->isKeyHeld(GLFW_KEY_D))
-                scene.dynamicSceneRotation.y -= rotation_incr * keyBoard->isKeyHeld(GLFW_KEY_A);
+            pos.x = xn + 0.0f;
+            pos.z = zn + 8.0f;
+        }
+};
 
-            forward = (-rotation_incr*keyBoard->isKeyHeld(GLFW_KEY_DOWN) + rotation_incr*keyBoard->isKeyHeld(GLFW_KEY_UP));
+
+class CubeEntity : public Entity
+{
+    public:
+        std::string classFamily = "cube3";
+
+        std::string getFamilyName()
+        {
+            return classFamily;
+        }
+
+        void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene)
+        {
+            std::cout << "Yes hello this is the create function of cube1" << std::endl;
+        }
+};
+
+class TextEntity : public Entity
+{
+    public:
+        std::string classFamily = "cube4";
+
+        std::string getFamilyName()
+        {
+            return classFamily;
         }
 };
 
@@ -128,7 +147,7 @@ int main()
 
     ZWET_INFO("Set window dims");
 
-    Scene scene(path + "scenes/sceneDemo3.json");
+    Scene scene(path + "scenes/sceneExample.json");
 
     Font arial(path + "fonts/arial.fnt", path + "fonts/arial.jpg", 0, 0, 0.01f);
 
@@ -142,16 +161,28 @@ int main()
 
     scene.setCamera(camera);
 
-    SharedPtr<Entity> ent1 = CreateShared<Plant>();
+    SharedPtr<Entity> ent1 = CreateShared<CubeEntityCam>();
+
+    SharedPtr<Entity> ent2 = CreateShared<CubeEntity>();
+
+    SharedPtr<Entity> ent3 = CreateShared<TextEntity>();
+
+    ent2->setMesh(arial.convertString("Hey Tilen"));
+
+    ent3->setMesh(arial.convertString("Is this your car"));
 
     scene.registerEntity(ent1);
+
+    scene.registerEntity(ent2);
+
+    scene.registerEntity(ent3);
 
     ZWET_INFO("Registered entities");
 
     testApp.setScene(scene);
 
-    testApp.setBackgroundColor({0.2588f, 0.5294f, 0.9607f});
-    //testApp.setBackgroundColor({1.0f, 1.0f, 1.0f});
+    //testApp.setBackgroundColor({0.2588f, 0.5294f, 0.9607f});
+    testApp.setBackgroundColor({1.0f, 1.0f, 1.0f});
 
     ZWET_INFO("Set scene");
 

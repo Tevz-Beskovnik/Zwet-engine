@@ -4,10 +4,6 @@
 
 namespace ZWET
 {
-    struct WindowHints{
-
-    };
-
     class Window
     {
         public: 

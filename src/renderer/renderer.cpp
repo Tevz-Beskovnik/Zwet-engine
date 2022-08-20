@@ -47,6 +47,7 @@ namespace ZWET
         
         for(auto it = entities.begin(); it != entities.end(); it++)
         {
+
             it.value()->vertexBuffer->bind();
                         
             AttributeLayout::setLayout({
@@ -98,11 +99,11 @@ namespace ZWET
             
             it.value()->texture->bind();
                         
-            it.value()->stepStart(entities, camera, delta);
+            it.value()->stepStart(entities, camera, scene, delta);
             
             vec3 camPosition = camera->getPosition();
 
-            it.value()->step(entities, camera, delta);
+            it.value()->step(entities, camera, scene, delta);
             
             mat4 yawRotation = rotY(camera->getYaw());
             mat4 rollRotation = rotZ(camera->getRoll());
@@ -137,6 +138,7 @@ namespace ZWET
 	        glUniformMatrix4fv(uWorldInvTran, 1, GL_FALSE, &inverseWorld.r[0][0]);
 	        glUniformMatrix4fv(uViewMat, 1, GL_FALSE, &view.r[0][0]);
 	        glUniform3f(uCameraPos, camPosition.x, camPosition.y, camPosition.z);
+            //std::cout << it.value()->position.x << " " << it.value()->position.y << " " << it.value()->position.z <<  std::endl;
 	        glUniform3f(uObjPos, it.value()->position.x, it.value()->position.y, it.value()->position.z);
 	        glUniform1f(uYaw, yaw);
 	        glUniform1f(uPitch, pitch);
@@ -145,7 +147,7 @@ namespace ZWET
 	        glUniformMatrix4fv(uPitchMat, 1, GL_FALSE, &pitchRotation.r[0][0]);
 	        glUniformMatrix4fv(uRollMat, 1, GL_FALSE, &rollRotation.r[0][0]);
 
-            it.value()->stepEnd(entities, camera, delta);
+            it.value()->stepEnd(entities, camera, scene, delta);
 
             it.value()->drawer->draw();
 
@@ -170,7 +172,7 @@ namespace ZWET
         
         for(auto it = entities.begin(); it != entities.end(); it++)
         {
-            it.value()->createFun(scene.getEntities(), camera);
+            it.value()->createFun(scene.getEntities(), camera, scene);
         }
     }
 }

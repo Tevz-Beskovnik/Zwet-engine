@@ -63,6 +63,6 @@ namespace ZWET
         
         vTargetF = position + lookDir;
         
-        view = createViewMatrix(camera, position, vTargetF, up, pitch, 0.0f, 0.0f);
+        view = createViewMatrix(camera, position, vTargetF, up, pitch, 0, 0);
     }
 }

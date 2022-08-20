@@ -17,6 +17,8 @@ namespace ZWET
 {
     class Entity;
 
+    class Scene;
+
     struct entityData
     {
         std::string name;
@@ -59,13 +61,13 @@ namespace ZWET
 
             virtual std::string getFamilyName() { return family; };
             
-            virtual void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam) {};
+            virtual void createFun(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene) {};
 
-            virtual void stepStart(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta) {};
+            virtual void stepStart(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene, double delta) {};
 
-            virtual void step(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta) {};
+            virtual void step(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene, double delta) {};
 
-            virtual void stepEnd(EntityMap& entityMap, SharedPtr<Camera>& cam, double delta) {};
+            virtual void stepEnd(EntityMap& entityMap, SharedPtr<Camera>& cam, Scene& scene, double delta) {};
 
             void newMesh(mesh newMesh);
 

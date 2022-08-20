@@ -193,7 +193,7 @@ mat4 createWorldMatrix(vec3 rot, vec3 translation, float time)
     mRotZ = rotZ(rot.z * time);
     mTranslation = translationMat(translation.x, translation.y, translation.z);
 
-    return mRotX * mRotZ * mTranslation;
+    return mRotX * mRotY * mRotZ * mTranslation;
 }
 
 mat4 createViewMatrix(mat4 mProjMat, vec3& pos, vec3& target, vec3& up, float pitch, float yaw, float roll)
