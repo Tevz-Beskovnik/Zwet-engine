@@ -8,7 +8,7 @@
 namespace ZWET 
 {
     struct triangle
-    {
+    {// krazy
         vec3 p[3];
         vec2 texUV[3];
         rgb color;

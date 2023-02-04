@@ -94,16 +94,16 @@ class Plant : public Entity
         {
             float& forward = cam->getForward();
 
-            if(scene.dynamicSceneRotation.x > -right_angle_rad && !keyBoard->isKeyHeld(GLFW_KEY_S))
+            if(/*scene.dynamicSceneRotation.x > -right_angle_rad && */!keyBoard->isKeyHeld(GLFW_KEY_S))
                 scene.dynamicSceneRotation.x -= rotation_incr * keyBoard->isKeyHeld(GLFW_KEY_W);
 
-            if(scene.dynamicSceneRotation.x < 0 && !keyBoard->isKeyHeld(GLFW_KEY_W))
+            if(/*scene.dynamicSceneRotation.x < 0 && */!keyBoard->isKeyHeld(GLFW_KEY_W))
                 scene.dynamicSceneRotation.x += rotation_incr * keyBoard->isKeyHeld(GLFW_KEY_S);
 
-            if(scene.dynamicSceneRotation.y < right_angle_rad && !keyBoard->isKeyHeld(GLFW_KEY_A))
+            if(/*scene.dynamicSceneRotation.y < right_angle_rad && */!keyBoard->isKeyHeld(GLFW_KEY_A))
                 scene.dynamicSceneRotation.y += rotation_incr * keyBoard->isKeyHeld(GLFW_KEY_D);
 
-            if(scene.dynamicSceneRotation.y > 0 && !keyBoard->isKeyHeld(GLFW_KEY_D))
+            if(/*scene.dynamicSceneRotation.y > 0 && */!keyBoard->isKeyHeld(GLFW_KEY_D))
                 scene.dynamicSceneRotation.y -= rotation_incr * keyBoard->isKeyHeld(GLFW_KEY_A);
 
             forward = (-rotation_incr*keyBoard->isKeyHeld(GLFW_KEY_DOWN) + rotation_incr*keyBoard->isKeyHeld(GLFW_KEY_UP));

@@ -1,5 +1,5 @@
 #include <attributeLayout.h>
-
+// YOOO DAAS KRAZY
 namespace ZWET
 {
     AttributeLayout::AttributeLayout(unsigned int& program, unsigned int& buffer)

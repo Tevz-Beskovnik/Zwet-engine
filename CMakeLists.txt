@@ -20,7 +20,7 @@ set(Zwet_Engine_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_include_directories("${CMAKE_PROJECT_NAME}" 
+target_include_directories("${CMAKE_PROJECT_NAME}"
     PUBLIC Zwet_Engine_HEADERS 
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/core
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/debug
