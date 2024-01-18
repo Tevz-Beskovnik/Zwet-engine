@@ -5,6 +5,8 @@ Zwet-engine
 
 Zwet-engine is a multy platform game engine that currently works on **Linux** and **MacOS**
 
+This engine is very poo poo I had no idea how to design big projects 3 years ago :')
+New engine currently under active development but is privated
 
 ## CURRENT FEATURES
 
